@@ -1434,15 +1434,57 @@ span.ivu-date-picker-cells-cell-disabled:hover {
   .ivu-modal-content {
     background-color: #141b2d;
   }
-  .setupModal
+  .setupModal {
+    .title {
+      color: #f6f5f6 !important;
+    }
+    .context {
+      .step {
+        .text {
+          color: #ffffff !important;
+        }
+        .table .ivu-row .ivu-col {
+          &:nth-child(1) {
+            color: #f6f5f6 !important;
+          }
+          &:nth-child(2) {
+            color: #ffffff !important;
+          }
+        }
+      }
+    }
+  }
+  .setupModalMobile {
+    .title {
+      color: #f6f5f6 !important;
+    }
+    .context {
+      .step {
+        .text {
+          color: #ffffff !important;
+        }
+        .table .ivu-row .ivu-col {
+          &:nth-child(1) {
+            color: #f6f5f6 !important;
+          }
+          &:nth-child(2) {
+            color: #ffffff !important;
+          }
+        }
+      }
+    }
+  }
+  /*.setupModal
     .ivu-modal-wrap
     .ivu-modal
     .ivu-modal-content
     .ivu-modal-body
     .title {
-    color: #f6f5f6 !important;
-  }
-  .setupModal
+      color: #f6f5f6 !important;
+      font-size: 24px;
+      line-height: 32px;
+  }*/
+  /*.setupModal
     .ivu-modal-wrap
     .ivu-modal
     .ivu-modal-content
@@ -1451,8 +1493,8 @@ span.ivu-date-picker-cells-cell-disabled:hover {
     .step
     .text {
     color: #ffffff !important;
-  }
-  .setupModal
+  }*/
+  /*.setupModal
     .ivu-modal-wrap
     .ivu-modal
     .ivu-modal-content
@@ -1469,7 +1511,7 @@ span.ivu-date-picker-cells-cell-disabled:hover {
     &:nth-child(2) {
       color: #ffffff !important;
     }
-  }
+  }*/
 
   // tooltip
   .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-inner {

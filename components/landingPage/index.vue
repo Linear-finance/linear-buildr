@@ -130,7 +130,7 @@
           <img class="boxLogo" src="@/static/metamask.svg" />
           <div class="box">
             <div class="context">Connect MetaMask Wallet</div>
-            <div class="chain">Ethereum Chain</div>
+            <div class="chain">Binance Smart Chain</div>
           </div>
         </div>
       </div>
@@ -179,7 +179,7 @@
                         <img
                             class="boxLogo"
                             src="@/static/binance.svg"
-                            
+
                         />
 
                         <div>

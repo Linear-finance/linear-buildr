@@ -13,8 +13,8 @@ let Contracts: any = contracts;
 export const RPC_URL = {
   56: "https://bsc-dataseed1.binance.org",
   // 97: "https://data-seed-prebsc-1-s3.binance.org:8545",
-  10001: "https://master.http.eth.dev.linear.finance",
-  10056: "https://master.http.bsc.dev.linear.finance",
+  10001: "https://eth-rpc-http.dev.linear.finance/",
+  10056: "https://bsc-rpc-http.dev.linear.finance/",
 };
 
 export const typedConfigs: ChainConfig[] = ChainConfigs;
@@ -75,6 +75,8 @@ export interface ChainAddresses {
   lUNI: string;
   lDEFI: string;
   lCAKE: string;
+  lMATIC: string;
+  lSOL: string;
 }
 
 export interface NetworksMap {
@@ -120,6 +122,8 @@ const assetUpgradeableSubcontract = [
   "lVET",
   "lDEFI",
   "lCAKE",
+  "lMATIC",
+  "lSOL",
 ];
 
 const perpetualSubcontract = ["LnPerpetual_lBTC", "LnPerpetual_lETH"];

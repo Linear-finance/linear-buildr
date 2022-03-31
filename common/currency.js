@@ -204,6 +204,18 @@ const currencies = {
     fullName: "PancakeSwap",
     type: "crypto",
   },
+  lMATIC: {
+    name: "ℓMATIC",
+    fullName: "Polygon",
+    type: "crypto",
+    tokenColor: "#2BBDF7",
+  },
+  lSOL: {
+    name: "ℓSOL",
+    fullName: "Solana",
+    type: "crypto",
+    tokenColor: "#9945FF",
+  },
 };
 
 //导入资源路径

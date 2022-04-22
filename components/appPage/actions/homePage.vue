@@ -389,7 +389,7 @@ export default {
       switch (value) {
         case 1:
           window.open(
-            "https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"
+            "https://pancakeswap.finance/swap?outputCurrency=0x762539b45a1dcce3d36d080f74d1aed37844b878"
           );
           break;
         case 2:
@@ -397,7 +397,9 @@ export default {
           this.$router.push("/build");
           break;
         case 3:
-          window.open("https://exchange.pancakeswap.finance/#/swap");
+          window.open(
+            "https://pancakeswap.finance/swap?outputCurrency=0x23e8a70534308a4aaf76fb8c32ec13d17a3bd89e"
+          );
           break;
         case 4:
           this.$store.commit("setCurrentAction", 2);

@@ -4,5 +4,5 @@ export const URLS = {
 
   ETH_GAS_STATION: `https://ethgasstation.info/api/ethgasAPI.json?api-key=${process.env.ETH_GAS_STATION_KEY}`,
 
-  BUY_LINA: `https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937`,
+  BUY_LINA: `https://pancakeswap.finance/swap?outputCurrency=0x762539b45a1dcce3d36d080f74d1aed37844b878`,
 };

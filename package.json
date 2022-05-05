@@ -9,6 +9,7 @@
     "postinstall": "npx typechain --target ethers-v5 --out-dir 'assets/linearLibrary/linearJs/lib/contracts'  'assets/linearLibrary/linearJs/lib/abis/*.json'",
     "build": "nuxt build",
     "analyze": "nuxt build --analyze",
+    "format": "prettier --write .",
     "start": "cross-env NODE_ENV=production node server/index.js",
     "generate": "nuxt generate",
     "ci-generate": "./scripts/export-env.sh && yarn generate",
@@ -69,9 +70,5 @@
     "iOS >= 8",
     "Firefox >= 20",
     "Android > 4.4"
-  ],
-  "devDependencies": {
-    "@types/lodash": "^4.14.177",
-    "@types/pubsub-js": "^1.8.3"
-  }
+  ]
 }

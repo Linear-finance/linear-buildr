@@ -1,2 +1,4 @@
-.nuxt
+.nuxt/
+/dist/
 node_modules
+**/contracts

@@ -216,6 +216,12 @@ const currencies = {
     type: "crypto",
     tokenColor: "#9945FF",
   },
+  lPLAY: {
+    name: "ℓPLAY",
+    fullName: "Pie DAO Index",
+    type: "index",
+    tokenColor: "#D50A99",
+  },
 };
 
 //导入资源路径

@@ -77,6 +77,7 @@ export interface ChainAddresses {
   lCAKE: string;
   lMATIC: string;
   lSOL: string;
+  lPLAY: string;
 }
 
 export interface NetworksMap {
@@ -124,6 +125,7 @@ const assetUpgradeableSubcontract = [
   "lCAKE",
   "lMATIC",
   "lSOL",
+  "lPLAY",
 ];
 
 const perpetualSubcontract = ["LnPerpetual_lBTC", "LnPerpetual_lETH"];

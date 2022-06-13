@@ -47,15 +47,17 @@ export const fetchTrackDebt = async (walletAddress) => {
         utils,
       } = lnrJSConnector;
 
-      let timestampArr = [],
-        todayZeroTime = 0;
+      const localDate = new Date();
+      localDate.setHours(0, 0, 0, 0);
 
-      todayZeroTime =
-        new Date(new Date().toLocaleDateString()).getTime() / 1000;
+      const todayDateSeconds = localDate.getTime() / 1000;
+      const SECONDS_IN_DAY = 24 * 60 * 60;
 
-      timestampArr.push(todayZeroTime - 86400 * 2);
-      timestampArr.push(todayZeroTime - 86400 * 1);
-      timestampArr.push(todayZeroTime);
+      const timestampArr = [
+        todayDateSeconds - SECONDS_IN_DAY * 2,
+        todayDateSeconds - SECONDS_IN_DAY * 1,
+        todayDateSeconds,
+      ];
 
       const [selfDebt3, selfDebt2, selfDebt] = await Promise.all([
         linearData.lnr.updateUserDebt({
@@ -96,8 +98,8 @@ export const fetchTrackDebt = async (walletAddress) => {
         }),
       ]);
 
-      let PUNIT = utils.parseEther("1000000000");
-      let HALF = utils.parseEther("0.000000001");
+      const PUNIT = utils.parseEther("1000000000");
+      const HALF = utils.parseEther("0.000000001");
 
       if (selfDebt3.length != 0) {
         let temp3 = ethers.BigNumber.from(globalDebt3[0].debtFactor)
@@ -112,45 +114,54 @@ export const fetchTrackDebt = async (walletAddress) => {
             .div(PUNIT)
             .div(HALF)
         );
-        debtSnapshot.push([(timestampArr[0] - 86400) * 1000, currentDebt3]);
+        debtSnapshot.push([
+          (timestampArr[0] - SECONDS_IN_DAY) * 1000,
+          currentDebt3,
+        ]);
       } else {
-        debtSnapshot.push([(timestampArr[0] - 86400) * 1000, 0]);
+        debtSnapshot.push([(timestampArr[0] - SECONDS_IN_DAY) * 1000, 0]);
       }
 
       if (selfDebt2.length != 0) {
-        let temp2 = ethers.BigNumber.from(globalDebt2[0].debtFactor)
+        const temp2 = ethers.BigNumber.from(globalDebt2[0].debtFactor)
           .mul(PUNIT)
           .div(selfDebt2[0].debtFactor)
           .mul(selfDebt2[0].debtProportion)
           .div(PUNIT);
-        let currentDebt2 = formatEtherToNumber(
+        const currentDebt2 = formatEtherToNumber(
           ethers.BigNumber.from(globalDebt2[0].totalAssetSupplyInUsd)
             .mul(HALF)
             .mul(temp2)
             .div(PUNIT)
             .div(HALF)
         );
-        debtSnapshot.push([(timestampArr[1] - 86400) * 1000, currentDebt2]);
+        debtSnapshot.push([
+          (timestampArr[1] - SECONDS_IN_DAY) * 1000,
+          currentDebt2,
+        ]);
       } else {
-        debtSnapshot.push([(timestampArr[1] - 86400) * 1000, 0]);
+        debtSnapshot.push([(timestampArr[1] - SECONDS_IN_DAY) * 1000, 0]);
       }
 
       if (selfDebt.length != 0) {
-        let temp = ethers.BigNumber.from(globalDebt[0].debtFactor)
+        const temp = ethers.BigNumber.from(globalDebt[0].debtFactor)
           .mul(PUNIT)
           .div(selfDebt[0].debtFactor)
           .mul(selfDebt[0].debtProportion)
           .div(PUNIT);
-        let currentDebt = formatEtherToNumber(
+        const currentDebt = formatEtherToNumber(
           ethers.BigNumber.from(globalDebt[0].totalAssetSupplyInUsd)
             .mul(HALF)
             .mul(temp)
             .div(PUNIT)
             .div(HALF)
         );
-        debtSnapshot.push([(timestampArr[2] - 86400) * 1000, currentDebt]);
+        debtSnapshot.push([
+          (timestampArr[2] - SECONDS_IN_DAY) * 1000,
+          currentDebt,
+        ]);
       } else {
-        debtSnapshot.push([(timestampArr[2] - 86400) * 1000, 0]);
+        debtSnapshot.push([(timestampArr[2] - SECONDS_IN_DAY) * 1000, 0]);
       }
 
       let tempCurrentDebt = await LnDebtSystem.GetUserDebtBalanceInUsd(

@@ -71,7 +71,6 @@ export default {
         console.log("dispatch");
         this.$store.dispatch("themeInit");
       } else {
-        console.log("commit");
         this.$store.commit("setTheme", theme);
       }
     },

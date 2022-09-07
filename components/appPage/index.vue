@@ -2,7 +2,7 @@
   <div id="appPage">
     <actions></actions>
     <walletDetails></walletDetails>
-
+    <unlockSchedule v-show="isUnlockScheduleShow"></unlockSchedule>
     <Modal
       v-model="hasUnfreeze"
       :footer-hide="true"
@@ -24,12 +24,14 @@
 <script>
 import walletDetails from "@/components/appPage/walletDetails";
 import actions from "@/components/appPage/actions";
+import unlockSchedule from "@/components/popup/unlockSchedule";
 
 export default {
   name: "appPage",
   components: {
     walletDetails,
     actions,
+    unlockSchedule,
   },
   data() {
     return {
@@ -50,6 +52,9 @@ export default {
     },
     walletNetworkId() {
       return this.$store.state?.walletNetworkId;
+    },
+    isUnlockScheduleShow() {
+      return this.$store.state?.isUnlockScheduleShow;
     },
   },
   mounted() {

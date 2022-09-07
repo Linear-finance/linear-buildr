@@ -378,7 +378,16 @@
               </div>
             </div>
             <div class="tokenItems unobtrusive">
-              <div class="left">Locked</div>
+              <div class="left">
+                Locked
+                <span
+                  v-show="walletDetails.lockLINA"
+                  @click="openUnlockSchedule"
+                  class="unlockScheduleButton"
+                >
+                  <expandMoreSvg></expandMoreSvg>
+                </span>
+              </div>
               <div class="right">
                 <template v-if="isEthereumNetwork"> N/A </template>
                 <template v-else>
@@ -621,6 +630,7 @@ import lnrJSConnector, {
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
+import expandMoreSvg from "@/components/svg/more";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import ThemeSwitch from "~/components/themeSwitch.vue";
@@ -660,6 +670,7 @@ export default {
   components: {
     ethereumSvg,
     binanceSvg,
+    expandMoreSvg,
     ThemeSwitch,
   },
   watch: {
@@ -960,6 +971,10 @@ export default {
         this.$store.commit("setRegisteredWalletConnectEvents", false);
       }
       location.reload();
+    },
+
+    openUnlockSchedule() {
+      this.$store.commit("setIsUnlockScheduleShow", true);
     },
   },
 };
@@ -1519,6 +1534,17 @@ export default {
             &.unobtrusive {
               color: #99999a;
               margin-top: 8px;
+              .left {
+                height: 18px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                .unlockScheduleButton {
+                  width: 18px;
+                  height: 18px;
+                  margin-left: 6px;
+                }
+              }
             }
           }
         }

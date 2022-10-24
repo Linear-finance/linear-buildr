@@ -218,7 +218,7 @@ export default {
         !this.feesAreClaimable ||
         this.processing ||
         (this.tradingRewards == 0 && this.stakingRewards == 0) ||
-        this.currentRatioPercent < 500
+        this.currentRatioPercent < 450
       );
     },
 

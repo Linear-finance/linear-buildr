@@ -217,7 +217,7 @@ export default {
         lock: 0,
         amountlUSD: 0,
         debt: 0,
-        targetRatio: 500,
+        targetRatio: 450,
         currentRatio: 0,
       },
     };
@@ -326,7 +326,7 @@ export default {
             this.currentRatioStatus = 2;
           } else if (
             this.walletData.currentRatio > 0 &&
-            this.walletData.currentRatio < 500
+            this.walletData.currentRatio < 450
           ) {
             //警告
             this.targetRatioCal();
@@ -358,7 +358,7 @@ export default {
     targetRatioCal() {
       //计算达到target需要补stake多少lina
       let needStakeWhenTargetRatio =
-        (5 * this.walletData.debt) / this.walletData.LINA2USD -
+        (4.5 * this.walletData.debt) / this.walletData.LINA2USD -
         this.walletData.lock;
 
       this.needLINANum = needStakeWhenTargetRatio - this.walletData.staked;
@@ -370,7 +370,7 @@ export default {
       let canBuildlUSDWhenTargetRatio =
         ((this.walletData.staked + this.walletData.lock) *
           this.walletData.LINA2USD) /
-        5;
+        4.5;
 
       this.needlUSDNum = this.walletData.debt - canBuildlUSDWhenTargetRatio;
       if (this.needlUSDNum < 0) this.needlUSDNum = 0;

@@ -502,7 +502,7 @@ export default {
         lock: 0,
         lUSD: 0,
         debt: 0,
-        targetRatio: 500,
+        targetRatio: 450,
         currentRatio: 0,
       },
 
@@ -1540,8 +1540,8 @@ export default {
             );
 
             //修复除不尽的显示错误
-            if (ratioAfterAction.lt(n2bn("500"))) {
-              ratioAfterAction = n2bn("500");
+            if (ratioAfterAction.lt(n2bn("450"))) {
+              ratioAfterAction = n2bn("450");
             }
 
             this.inputData.ratio = formatEtherToNumber(ratioAfterAction);

@@ -227,15 +227,7 @@ export const openBlockchainBrowser = (hash, networdId) => {
  * 打开购买LINA站点
  */
 export const openBuyLINA = () => {
-  const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
-  //主网时打开购买LINA
-  console.log({
-    walletNetworkId,
-    is: isMainnetNetwork(walletNetworkId),
-  });
-  if (isMainnetNetwork(walletNetworkId)) {
-    window.open(URLS.BUY_LINA);
-  }
+  window.open(URLS.BUY_LINA);
 };
 
 //设置输入框的光标位置，会选中 selectionStart 到 selectionEnd 间的内容

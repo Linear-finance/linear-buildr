@@ -112,7 +112,6 @@ export default {
   },
   watch: {
     visible() {
-      console.log("props changing");
       this.showing = this.visible;
     },
   },

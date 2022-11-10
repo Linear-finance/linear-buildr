@@ -253,7 +253,6 @@ export default {
   },
   methods: {
     toggleModal() {
-      this.showPopup = false;
       this.showPopup = true;
     },
     async checkLiquidation() {
@@ -520,7 +519,6 @@ export default {
         color: #f08b0b;
       }
     }
-
     &.urgent {
       .colorBlock {
         background-color: #df434c;
@@ -530,7 +528,6 @@ export default {
         color: #df434c;
       }
     }
-
     &.liquidated {
       .colorBlock {
         background-color: #1a38f8;
@@ -739,7 +736,6 @@ export default {
           width: 40px;
           height: 40px;
           margin-bottom: 12px;
-
           img {
             width: 100%;
             height: 100%;
@@ -758,7 +754,6 @@ export default {
             box-shadow: 0 2px 12px 0 $darkBackgroundDeepColor;
           }
         }
-
         .app-dark & {
           &.isMobile {
             background: transparent !important;
@@ -783,22 +778,18 @@ export default {
         letter-spacing: 1.5px;
         text-align: center;
         color: #1a38f8;
-
         &:nth-child(1) {
           padding-left: 10px;
         }
-
         .ivu-icon {
           font-size: 27px;
           margin-left: 0px;
           font-weight: bold;
         }
-
         &.isMobile {
           .app-dark & {
             background: none !important;
             color: $darkButtonColor !important;
-
             .ivu-icon {
               color: $darkButtonColor !important;
             }

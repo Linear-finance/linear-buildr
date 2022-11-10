@@ -242,14 +242,14 @@ export const setCursorRange = (el, selectionStart, selectionEnd) => {
 };
 
 /**
- * 打开购买LINA站点
+ * Open LINA purchase page on PancakeSwap
  */
 export const openBuyLINA = () => {
   window.open(URLS.BUY_LINA);
 };
 
 /**
- * 打开幣安购买LINA站点
+ * Open LINA purchase page on Binance
  */
 export const openBuyLINABinance = () => {
   window.open(URLS.BUY_LINA_BINANCE);

@@ -484,7 +484,6 @@ export default {
         .ivu-modal-content {
           .ivu-modal-body {
             padding: 0px 0px;
-
             .walletConnect {
               display: flex;
               //position:absolute;
@@ -842,7 +841,6 @@ export default {
           height: 16px;
           float: right;
         }
-
         .app-dark & {
           color: #3851f0 !important;
         }

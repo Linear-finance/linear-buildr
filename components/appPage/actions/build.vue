@@ -42,7 +42,7 @@
                   <div
                     class="itemTypeBtn"
                     :class="{ active: activeItemBtn == 0 }"
-                    @click.stop="clickBuy"
+                    @click.stop="toggleModal"
                   >
                     buy lina
                     <img src="@/static/arrow_right.svg" />
@@ -405,6 +405,8 @@
         in pledge tokens.
       </div>
     </Modal>
+
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -466,6 +468,7 @@ import {
 
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import gasEditorSwap from "@/components/gasEditorSwap";
+import linkModal from "~/components/linkModal.vue";
 
 export default {
   name: "build",
@@ -534,12 +537,14 @@ export default {
 
       isEthereumNetworkFunc: isEthereumNetwork,
       sourceNetworkId: "",
+      showPopup: false,
     };
   },
   components: {
     gasEditor,
     gasEditorSwap,
     watingEnhanceSwapNew,
+    linkModal,
   },
   watch: {
     walletAddress() {},
@@ -624,6 +629,9 @@ export default {
     }
   },
   methods: {
+    toggleModal() {
+      this.showPopup = !this.showPopup;
+    },
     //跳转到设置
     jumpToStep() {
       this.$store.commit("setSetupModal", true);

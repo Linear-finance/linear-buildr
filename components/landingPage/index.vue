@@ -12,13 +12,89 @@
         src="@/static/linear_buildr_logo.svg"
       />
       <theme-switch v-if="!isMobile" />
-      <div class="mBuyLINA mobileShow" @click.stop="openBuyLINA">
+      <div class="mBuyLINA mobileShow" @click.stop="buyDisplay = true">
         <theme-switch v-if="isMobile" variant="mobile" />
         BUY LINA
         <img v-if="theme === 'light'" src="@/static/arrow_right.svg" />
         <img v-else src="@/static/dark-theme/arrow_right.svg" />
       </div>
     </div>
+
+    <Modal
+      v-model="buyDisplay"
+      :footer-hide="true"
+      :closable="false"
+      :transfer="false"
+      :mask="true"
+      :mask-closable="true"
+      :width="412"
+      class="buyModal"
+    >
+      <Row justify="end">
+        <div style="padding-top: 16px; padding-right: 16px">
+          <img
+            class="closeButton"
+            src="@/static/close.svg"
+            @click.stop="buyDisplay = false"
+          />
+        </div>
+      </Row>
+      <Row justify="center">
+        <div style="padding: 16px">
+          <p v-if="theme === 'light'" style="color: #5a575c">
+            You would like to buy LINA from :
+          </p>
+          <p v-else style="color: #f6f6f6">You would like to buy LINA from :</p>
+        </div>
+        <div style="padding: 16px">
+          <Card
+            v-if="theme === 'light'"
+            class="ivu-card ivu-card-bordered"
+            style="width: 348px; height: 100px; cursor: pointer"
+            @click.stop="closeThenOpenPCS"
+          >
+            <img src="@/static/exchanges/pcs.svg" class="cardImg" />
+          </Card>
+          <Card
+            v-else
+            class="ivu-card ivu-card-dark"
+            style="
+              background: #050d20;
+              width: 348px;
+              height: 100px;
+              cursor: pointer;
+            "
+            @click.stop="closeThenOpenPCS"
+          >
+            <img src="@/static/exchanges/pcs_dark.svg" class="cardImg" />
+          </Card>
+        </div>
+        <div style="padding: 16px">
+          <Card
+            v-if="theme === 'light'"
+            class="ivu-card ivu-card-bordered"
+            style="width: 348px; height: 100px; cursor: pointer"
+            @click.stop="closeThenOpenBinance"
+          >
+            <img src="@/static/exchanges/binance.svg" class="cardImg" />
+          </Card>
+          <Card
+            v-else
+            class="ivu-card ivu-card-dark"
+            style="
+              background: #050d20;
+              width: 348px;
+              height: 100px;
+              cursor: pointer;
+            "
+            @click.stop="closeThenOpenBinance"
+          >
+            <img src="@/static/exchanges/binance.svg" class="cardImg" />
+          </Card>
+        </div>
+        <div style="padding: 24px"></div>
+      </Row>
+    </Modal>
 
     <Modal
       v-model="qrcodeDisplay"
@@ -118,7 +194,7 @@
                     </Panel> -->
         </Collapse>
 
-        <div class="buyLINA" @click.stop="openBuyLINA">
+        <div class="buyLINA" @click.stop="buyDisplay = true">
           Buy LINA
           <Icon type="ios-arrow-round-forward" />
         </div>
@@ -210,13 +286,14 @@ import {
   SUPPORTED_NETWORKS_MAP,
   SUPPORTED_WALLETS,
 } from "@/assets/linearLibrary/linearTools/network";
-import { openBuyLINA } from "@/common/utils";
+import { openBuyLINA, openBuyLINABinance } from "@/common/utils";
 import Clipboard from "clipboard";
 import QRCode from "qrcode";
+import { Row } from "view-design";
 import themeSwitch from "../themeSwitch.vue";
 
 export default {
-  components: { themeSwitch },
+  components: { themeSwitch, Row },
   name: "landingPage",
 
   data() {
@@ -224,6 +301,8 @@ export default {
       SUPPORTED_WALLETS,
       introduct: "0",
       openBuyLINA,
+      openBuyLINABinance,
+      buyDisplay: false,
       tooltipContent: "Copy to clipboard",
       qrcodeDisplay: false,
     };
@@ -271,6 +350,14 @@ export default {
     }, 100);
   },
   methods: {
+    closeThenOpenPCS() {
+      this.buyDisplay = false;
+      setTimeout(() => openBuyLINA(), 100);
+    },
+    closeThenOpenBinance() {
+      this.buyDisplay = false;
+      setTimeout(() => openBuyLINABinance(), 100);
+    },
     /**
      * 复制自己的code
      */
@@ -351,6 +438,37 @@ export default {
       width: 163px;
       height: 32px;
     }
+  }
+
+  .buyModal {
+    .ivu-modal-wrap {
+      .ivu-modal {
+        .ivu-modal-content {
+          border-radius: 16px;
+        }
+      }
+    }
+  }
+
+  .closeButton {
+    cursor: pointer;
+
+    &:hover {
+      content: url("../../static/close_hover.svg");
+    }
+  }
+
+  .ivu-card-dark:hover {
+    box-shadow: 0px 0px 12px #4e66ff;
+  }
+
+  .cardImg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 
   .seeDetailsModal {

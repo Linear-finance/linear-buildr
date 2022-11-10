@@ -223,13 +223,6 @@ export const openBlockchainBrowser = (hash, networdId) => {
   }
 };
 
-/**
- * 打开购买LINA站点
- */
-export const openBuyLINA = () => {
-  window.open(URLS.BUY_LINA);
-};
-
 //设置输入框的光标位置，会选中 selectionStart 到 selectionEnd 间的内容
 export const setCursorRange = (el, selectionStart, selectionEnd) => {
   try {
@@ -246,4 +239,18 @@ export const setCursorRange = (el, selectionStart, selectionEnd) => {
   } catch (error) {
     console.log(error, "setCursorRange");
   }
+};
+
+/**
+ * 打开购买LINA站点
+ */
+export const openBuyLINA = () => {
+  window.open(URLS.BUY_LINA);
+};
+
+/**
+ * 打开幣安购买LINA站点
+ */
+export const openBuyLINABinance = () => {
+  window.open(URLS.BUY_LINA_BINANCE);
 };

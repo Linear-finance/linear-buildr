@@ -74,7 +74,7 @@
             <div
               class="btn"
               v-if="needBuyLINA && currentRatioStatus != 3"
-              @click="actionLink(1)"
+              @click.stop="toggleModal"
             >
               Buy LINA →
             </div>
@@ -122,11 +122,7 @@
       collateral pool enables infinite liquidity and no slippage.
     </div>
     <div class="actionsBox">
-      <div
-        class="boxItem"
-        :class="{ isMobile }"
-        @click="isMobile && btnClick(1)"
-      >
+      <div class="boxItem" :class="{ isMobile }" @click.stop="toggleModal">
         <div class="imgBox">
           <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
           <img v-else src="@/static/dark-theme/LINA_logo.svg" />
@@ -135,12 +131,9 @@
           Buy LINA <br />
           on other platform
         </div>
-        <div
-          class="btn"
-          :class="{ isMobile }"
-          @click="!isMobile && btnClick(1)"
-        >
-          BUY LINA <Icon type="ios-arrow-round-forward" />
+        <div class="btn" :class="{ isMobile }" @click.stop="toggleModal">
+          BUY LINA
+          <Icon type="ios-arrow-round-forward" />
         </div>
       </div>
       <div
@@ -165,11 +158,14 @@
         </div>
       </div>
     </div>
+
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
 <script>
 import { openBuyLINA } from "@/common/utils";
+import linkModal from "@/components/linkModal.vue";
 import _ from "lodash";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
@@ -202,6 +198,7 @@ import {
 
 export default {
   name: "homePage",
+  components: { linkModal },
   data() {
     return {
       formatNumber,
@@ -220,6 +217,7 @@ export default {
         targetRatio: 450,
         currentRatio: 0,
       },
+      showPopup: false,
     };
   },
   watch: {
@@ -254,6 +252,10 @@ export default {
     this.checkLiquidation();
   },
   methods: {
+    toggleModal() {
+      this.showPopup = false;
+      this.showPopup = true;
+    },
     async checkLiquidation() {
       try {
         this.currentRatioStatus = 0;
@@ -518,6 +520,7 @@ export default {
         color: #f08b0b;
       }
     }
+
     &.urgent {
       .colorBlock {
         background-color: #df434c;
@@ -527,6 +530,7 @@ export default {
         color: #df434c;
       }
     }
+
     &.liquidated {
       .colorBlock {
         background-color: #1a38f8;
@@ -735,6 +739,7 @@ export default {
           width: 40px;
           height: 40px;
           margin-bottom: 12px;
+
           img {
             width: 100%;
             height: 100%;
@@ -753,6 +758,7 @@ export default {
             box-shadow: 0 2px 12px 0 $darkBackgroundDeepColor;
           }
         }
+
         .app-dark & {
           &.isMobile {
             background: transparent !important;
@@ -777,18 +783,22 @@ export default {
         letter-spacing: 1.5px;
         text-align: center;
         color: #1a38f8;
+
         &:nth-child(1) {
           padding-left: 10px;
         }
+
         .ivu-icon {
           font-size: 27px;
           margin-left: 0px;
           font-weight: bold;
         }
+
         &.isMobile {
           .app-dark & {
             background: none !important;
             color: $darkButtonColor !important;
+
             .ivu-icon {
               color: $darkButtonColor !important;
             }

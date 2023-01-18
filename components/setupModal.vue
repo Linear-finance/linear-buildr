@@ -261,7 +261,7 @@ body {
       .ivu-modal {
         width: 1024px !important;
         max-width: 100vw !important;
-        height: 784px;
+        height: 100%;
         top: 0 !important;
 
         .ivu-modal-content {

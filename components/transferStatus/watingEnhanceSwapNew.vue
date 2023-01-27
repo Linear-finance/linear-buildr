@@ -650,7 +650,6 @@ export default {
       waitProcessArray: [], //等待交易进度组
       waitProcessFlow: Function, //逻辑流
       confirmTransactionStep: -1, //当前确认步骤
-      swapUnfreezeContinue: false, //是否继续swap
       freezeSuccessHash: "", //冻结成功hash
       sourceWalletType: "", //原始钱包类型
       targetWalletType: "", //目标钱包类型
@@ -713,6 +712,9 @@ export default {
     },
     theme() {
       return this.$store.state.theme;
+    },
+    swapUnfreezeContinue() {
+      return this.$store.state?.swapUnfreezeContinue;
     },
   },
   created() {
@@ -790,15 +792,19 @@ export default {
         this.checkStatus.stepIndex = currentStep;
         this.checkStatus.stepError = "";
         this.checkStatus.stepType = -1;
+        if (this.swapUnfreezeContinue) {
+          this.targetNetworkId = this.walletNetworkId;
+          this.sourceNetworkId = getOtherNetworks(this.walletNetworkId)[0];
+        } else {
+          //记录原始网络类型
+          this.sourceNetworkId = this.walletNetworkId;
+
+          //记录目标网络id
+          this.targetNetworkId = getOtherNetworks(this.walletNetworkId)[0];
+        }
 
         //记录原始钱包类型
         this.sourceWalletType = this.currentWalletType;
-
-        //记录原始网络类型
-        this.sourceNetworkId = this.walletNetworkId;
-
-        //记录目标网络id
-        this.targetNetworkId = getOtherNetworks(this.walletNetworkId)[0];
 
         //记录原始钱包地址
         this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
@@ -871,7 +877,7 @@ export default {
 
           let LnProxy,
             LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-          if (isEthereumNetwork(this.walletNetworkId)) {
+          if (isEthereumNetwork(this.sourceNetworkId)) {
             // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
             this.BUILD_PROCESS_SETUP.FREEZE =
               BUILD_PROCESS_SETUP.FREEZE + "ETH";
@@ -879,7 +885,7 @@ export default {
               BUILD_PROCESS_SETUP.UNFREEZE + "BSC";
             // this.BUILD_PROCESS_SETUP.STAKING_BUILD =
             //     BUILD_PROCESS_SETUP.STAKING_BUILD + "ETH";
-          } else if (isBinanceNetwork(this.walletNetworkId)) {
+          } else if (isBinanceNetwork(this.sourceNetworkId)) {
             // LnProxy = lnrJSConnector.lnrJS.LinearFinance;
             this.BUILD_PROCESS_SETUP.FREEZE =
               BUILD_PROCESS_SETUP.FREEZE + "BSC";
@@ -1058,7 +1064,7 @@ export default {
         this.$pub.publish("notificationQueue", {
           hash: this.confirmTransactionHash,
           type: this.BUILD_PROCESS_SETUP.APPROVE,
-          networkId: this.walletNetworkId,
+          networkId: this.sourceNetworkId,
           value: `Approve ${this.confirmTransactionStep + 1} / ${
             this.waitProcessArray.length
           }`,
@@ -1151,7 +1157,7 @@ export default {
         this.$pub.publish("notificationQueue", {
           hash: this.confirmTransactionHash,
           type: this.BUILD_PROCESS_SETUP.FREEZE,
-          networkId: this.walletNetworkId,
+          networkId: this.sourceNetworkId,
           value: `Swapped on ${SETUP} ${this.confirmTransactionStep + 1}/${
             this.waitProcessArray.length
           }`,
@@ -1278,9 +1284,9 @@ export default {
       if (walletStatus) {
         let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
           SETUP;
-        if (isEthereumNetwork(this.walletNetworkId)) {
+        if (isEthereumNetwork(this.sourceNetworkId)) {
           SETUP = "ETH";
-        } else if (isBinanceNetwork(this.walletNetworkId)) {
+        } else if (isBinanceNetwork(this.sourceNetworkId)) {
           SETUP = "BSC";
         }
 
@@ -1326,7 +1332,7 @@ export default {
             this.$pub.publish("notificationQueue", {
               hash: this.confirmTransactionHash,
               type: this.BUILD_PROCESS_SETUP.UNFREEZE,
-              networkId: this.walletNetworkId,
+              networkId: this.sourceNetworkId,
               value: `Swapped on ${SETUP} ${this.confirmTransactionStep + 1}/${
                 this.waitProcessArray.length
               }`,
@@ -1426,7 +1432,7 @@ export default {
         this.$pub.publish("notificationQueue", {
           hash: this.confirmTransactionHash,
           type: BUILD_PROCESS_SETUP.BUILD,
-          networkId: this.walletNetworkId,
+          networkId: this.sourceNetworkId,
           value: `Building ${this.confirmTransactionStep + 1} / ${
             this.waitProcessArray.length
           }`,

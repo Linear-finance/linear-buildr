@@ -52,8 +52,8 @@ export default {
         width: 0,
         height: 0,
       },
-      mobileWidth: 414, //移动端布局
-      isMobile: window.innerWidth <= 414,
+      mobileWidth: 600, //移动端布局
+      isMobile: window.innerWidth <= 600,
     };
   },
   watch: {

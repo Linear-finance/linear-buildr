@@ -28,7 +28,7 @@ export const state = () => ({
   walletDetails: {}, //钱包详情
   walletDetailsLoopRefreshStatus: true,
   walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS
-  walletNetworkId: "10056", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
+  walletNetworkId: undefined, //当前钱包网络ID 参考 SUPPORTED_NETWORKS
   walletNetworkName: SUPPORTED_NETWORKS["10056"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
   mMenuState: false, //移动端 显示菜单
   mWalletState: false, //移动端 显示钱包详情

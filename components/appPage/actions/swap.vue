@@ -302,7 +302,7 @@ export default {
   },
   async created() {
     await this.initData();
-
+    await this.getPendingProcess();
     //监听链切换
     this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
       "onWalletChainChange",
@@ -563,6 +563,32 @@ export default {
     async close() {
       this.actionTabs = "m0";
       await this.initData();
+    },
+
+    async getPendingProcess() {
+      //获取存取数据
+      let [sourceArray, targetArray] = await Promise.all([
+        lnr.freeZe({
+          depositor: this.walletAddress,
+          recipient: this.walletAddress,
+          networkId: getOtherNetworks(this.walletNetworkId),
+        }),
+        lnr.unfreeze({
+          depositor: this.walletAddress,
+          recipient: this.walletAddress,
+          networkId: this.walletNetworkId,
+        }),
+      ]);
+      //取不同存储记录
+      const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
+      if (diffArray.length) {
+        if (diffArray[0].destChainId === this.walletNetworkId) {
+          this.initCurrencies();
+          this.actionTabs = "m1";
+        } else {
+          this.initData();
+        }
+      }
     },
   },
 };

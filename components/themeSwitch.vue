@@ -68,7 +68,6 @@ export default {
     setTheme() {
       const theme = Cookies.get("theme");
       if (theme === undefined) {
-        console.log("dispatch");
         this.$store.dispatch("themeInit");
       } else {
         this.$store.commit("setTheme", theme);

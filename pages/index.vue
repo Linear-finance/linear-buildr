@@ -130,6 +130,7 @@ export default {
       const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
       if (diffArray.length) {
         if (diffArray[0].destChainId === this.walletNetworkId) {
+          this.$store.commit("setUnClaimedToken", diffArray[0].source);
           this.jumoToSwap();
         }
       }

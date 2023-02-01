@@ -731,16 +731,18 @@ export default {
       this.confirmTransactionStep = unfreezeDatas.confirmTransactionStep;
       this.freezeSuccessHash = unfreezeDatas.freezeSuccessHash;
       this.sourceWalletType = unfreezeDatas.sourceWalletType;
-      this.sourceNetworkId = getOtherNetworks(this.walletNetworkId)[0];
+      this.sourceNetworkId = getOtherNetworks(
+        this.walletNetworkId
+      )[0].toString();
       this.confirmTransactionNetworkId = unfreezeDatas.targetNetworkId;
-      this.sourceWalletAddress = unfreezeDatas.sourceWalletAddress;
+      this.sourceWalletAddress = this.walletAddress;
       this.targetNetworkId = this.walletNetworkId;
       this.waitProcessArray = unfreezeDatas.waitProcessArray ?? [];
       this.swapNumber = unfreezeDatas.swapNumber;
       this.targetGasPrice = unfreezeDatas.targetGasPrice;
       this.chainChangedStatus = true;
       this.confirmTransactionChainChanging = false;
-
+      this.currency = this.$store.state?.unClaimedToken;
       this.checkContract();
     }
   },
@@ -1554,11 +1556,9 @@ export default {
           //         message: `No valid ${this.currency} was found`
           //     });
           // }
-
           this.getPendingProcessLoopId = this.waitPendingProcess
             ? setTimeout(wait, 3000)
             : 0;
-
           //获取存取数据
           let [sourceArray, targetArray] = await Promise.all([
             lnr.freeZe({

@@ -731,11 +731,11 @@ export default {
       this.confirmTransactionStep = unfreezeDatas.confirmTransactionStep;
       this.freezeSuccessHash = unfreezeDatas.freezeSuccessHash;
       this.sourceWalletType = unfreezeDatas.sourceWalletType;
-      this.sourceNetworkId = unfreezeDatas.sourceNetworkId;
+      this.sourceNetworkId = getOtherNetworks(this.walletNetworkId)[0];
       this.confirmTransactionNetworkId = unfreezeDatas.targetNetworkId;
       this.sourceWalletAddress = unfreezeDatas.sourceWalletAddress;
-      this.targetNetworkId = unfreezeDatas.targetNetworkId;
-      this.waitProcessArray = [...unfreezeDatas.waitProcessArray];
+      this.targetNetworkId = this.walletNetworkId;
+      this.waitProcessArray = unfreezeDatas.waitProcessArray ?? [];
       this.swapNumber = unfreezeDatas.swapNumber;
       this.targetGasPrice = unfreezeDatas.targetGasPrice;
       this.chainChangedStatus = true;
@@ -827,8 +827,8 @@ export default {
         // this.checkStatus.stepIndex++;
 
         if (currentStep < 2) {
-          //不是测试链,检查目标网络钱包余额
-          if (!isDevNetwork(this.targetNetworkId)) {
+          //skip check target network step if start from claimng freeze tokens
+          if (!this.swapUnfreezeContinue) {
             await this.checkTargetBalace();
           }
           if (this.checkStatus.stepType != -1) return;
@@ -927,11 +927,13 @@ export default {
 
           const freezeAmount = n2bn(this.swapNumber);
 
-          //LINA差值
-          const diffCollateralLINA = bnSub(freezeAmount, approveAmount);
+          if (freezeAmount !== undefined) {
+            //LINA差值
+            const diffCollateralLINA = bnSub(freezeAmount, approveAmount);
 
-          if (diffCollateralLINA.gt(approveAmount)) {
-            this.shouldApprove = true;
+            if (diffCollateralLINA.gt(approveAmount)) {
+              this.shouldApprove = true;
+            }
           }
 
           this.swapNumber > 0 &&

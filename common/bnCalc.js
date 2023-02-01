@@ -11,7 +11,11 @@ export const BIGNUMBER_BASENUMBER = (1e18).toString();
 export const DECIMAL_PRECISION = 2;
 
 //Number转bigNumber
-export const n2bn = (num) => utils.parseEther(num.toString());
+export const n2bn = (num) => {
+  if (num !== undefined) {
+    return utils.parseEther(num.toString());
+  }
+};
 
 //bigNumber转Number
 // export const bn2n = num => Number(utils.formatEther(num.toString()));

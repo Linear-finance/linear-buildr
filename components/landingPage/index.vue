@@ -398,7 +398,8 @@ export default {
 
     async selectedWallet(walletType) {
       const status = await checkNetwork();
-      if (status) {
+      // if (status) {
+      if (status || walletType === SUPPORTED_WALLETS.WALLET_CONNECT) {
         await selectedWallet(walletType);
       } else {
         try {

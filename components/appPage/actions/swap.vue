@@ -585,9 +585,18 @@ export default {
       const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
       if (diffArray.length) {
         if (diffArray[0].destChainId === this.walletNetworkId) {
-          this.$store.commit("setSwapUnfreezeContinue", true);
-          this.frozenTokens = diffArray[0].source;
-          this.actionTabs = "m1";
+          // Use contract to double check withdrawn result in case of subgraph delays
+          const contractResult =
+            await lnrJSConnector.lnrJS.LnErc20Bridge.withdrawnDeposits(
+              diffArray[0].destChainId,
+              diffArray[0].depositId
+            );
+          console.log(contractResult, "contractResult");
+          if (!contractResult) {
+            this.$store.commit("setSwapUnfreezeContinue", true);
+            this.frozenTokens = diffArray[0].source;
+            this.actionTabs = "m1";
+          }
         } else {
           this.initData();
         }

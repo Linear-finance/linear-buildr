@@ -46,7 +46,6 @@ export const state = () => ({
   autoConnect: false, //自动连接钱包
   setupModal: false, //nework setup 窗口
   isUnlockScheduleShow: false, //user lock lina unlock schedule popup
-  unClaimedToken: undefined, //target unfreeze token
 });
 
 export const getters = {
@@ -176,10 +175,6 @@ export const mutations = {
 
   setIsUnlockScheduleShow(state, status) {
     state.isUnlockScheduleShow = status;
-  },
-
-  setUnClaimedToken(state, status) {
-    state.unClaimedToken = status;
   },
 };
 

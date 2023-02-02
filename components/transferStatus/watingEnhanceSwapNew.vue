@@ -742,7 +742,6 @@ export default {
       this.targetGasPrice = unfreezeDatas.targetGasPrice;
       this.chainChangedStatus = true;
       this.confirmTransactionChainChanging = false;
-      this.currency = this.$store.state?.unClaimedToken;
       this.checkContract();
     }
   },

@@ -321,8 +321,6 @@ export const getNetworkSpeeds = async (walletNetworkId: number) => {
       },
     };
   } else if (isBinanceNetwork(walletNetworkId)) {
-    console.log(isBinanceNetwork(walletNetworkId));
-
     let currentGasPrice = 20;
     const res = await api.getBSCGasPrice(walletNetworkId);
     if (res?.result) {

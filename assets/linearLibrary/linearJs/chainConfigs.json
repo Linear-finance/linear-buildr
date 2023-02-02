@@ -6,7 +6,7 @@
     "networkType": "mainnet",
     "isLiquidationEnable": false,
     "isRewardable": false,
-    "rpcUrl": "",
+    "rpcUrl": "https://mainnet.infura.io/v3/",
     "blockchainBrowser": "https://etherscan.io/tx/",
     "blockchainBrowserApi": "https://api.etherscan.io/api",
     "tokenBridgeApi": "https://bridge-query.linear-finance.workers.dev/depositProof",

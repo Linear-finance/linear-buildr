@@ -7,15 +7,9 @@ import {
   TOKEN_BRIDGE_TESTNET,
 } from "~/constants/envVars";
 import * as contracts from "../linearJs/lib/contracts";
+import { INFURA_PROJECT_ID } from "../../../constants/envVars";
 
 let Contracts: any = contracts;
-
-export const RPC_URL = {
-  56: "https://bsc-dataseed1.binance.org",
-  // 97: "https://data-seed-prebsc-1-s3.binance.org:8545",
-  10001: "https://eth-rpc-http.dev.linear.finance/",
-  10056: "https://bsc-rpc-http.dev.linear.finance/",
-};
 
 export const typedConfigs: ChainConfig[] = ChainConfigs;
 
@@ -24,7 +18,7 @@ export interface ChainConfig {
   networkId: number;
   networkType: string;
   chainType: string;
-  rpcUrl?: string;
+  rpcUrl: string;
   isLiquidationEnable: boolean;
   isRewardable: boolean;
   blockchainBrowser: string;
@@ -88,12 +82,6 @@ export interface NetworksMap {
 interface Contracts {
   [k: string]: ethers.Contract;
 }
-
-const API_KEY = {
-  infura: process.env.INFURA_PROJECT_ID,
-  etherscan: process.env.ETHERSCAN_KEY,
-  alchemy: process.env.ALCHEMY_KEY,
-};
 
 export const networksMap = new Map();
 
@@ -163,9 +151,14 @@ export default class Web3Connector {
     } = chainData;
     this.networkId = networkId || 1;
     this.network = name;
-    this.provider = rpcUrl
-      ? getDefaultProvider(rpcUrl, API_KEY)
-      : getDefaultProvider();
+    let providerUrl;
+    if (this.networkId === 1) {
+      providerUrl = `${rpcUrl}${INFURA_PROJECT_ID}`;
+    } else {
+      providerUrl = rpcUrl;
+    }
+
+    this.provider = getDefaultProvider(providerUrl);
     this.signer = signer;
     this.addressList = addresses;
     this.blockchainBrowser = blockchainBrowser;

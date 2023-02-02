@@ -103,7 +103,7 @@
     "isRewardable": false,
     "rpcUrl": "https://eth-rpc-http.dev.linear.finance/",
     "blockchainBrowser": "https://eth-explorer.dev.linear.finance/tx/",
-    "blockchainBrowserApi": "https://master.explorer.eth.dev.linear.finance/api",
+    "blockchainBrowserApi": "https://eth-explorer.dev.linear.finance/api",
     "tokenBridgeApi": "https://bridge-api.dev.linear.finance/depositProof",
     "addresses": {
       "LinearFinance": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
@@ -144,7 +144,7 @@
     "isRewardable": true,
     "rpcUrl": "https://bsc-rpc-http.dev.linear.finance/",
     "blockchainBrowser": "https://bsc-explorer.dev.linear.finance/tx/",
-    "blockchainBrowserApi": "https://master.explorer.bsc.dev.linear.finance/api",
+    "blockchainBrowserApi": "https://bsc-explorer.dev.linear.finance/api",
     "tokenBridgeApi": "https://bridge-api.dev.linear.finance/depositProof",
     "addresses": {
       "SafeDecimalMath": "0x5FbDB2315678afecb367f032d93F642f64180aa3",

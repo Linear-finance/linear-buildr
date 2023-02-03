@@ -12,8 +12,6 @@ import _ from "lodash";
 import landingPage from "@/components/landingPage";
 import appPage from "@/components/appPage";
 import common from "@/config/common";
-import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
-import { getOtherNetworks } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
   components: {
@@ -60,9 +58,7 @@ export default {
   },
   watch: {
     walletAddress() {},
-    async walletNetworkId() {
-      await this.getPendingProcess();
-    },
+    walletNetworkId() {},
     theme: {
       handler(newvalue, oldValue) {
         this.setDarkThemeInBody(newvalue, oldValue);
@@ -104,41 +100,8 @@ export default {
       html.classList.add(theme);
       body.classList.add(theme);
     },
-
-    jumoToSwap() {
-      this.$store.commit("setCurrentAction", 5);
-      this.$router.push("/swap");
-      this.$store.commit("setSwapUnfreezeContinue", true);
-    },
-
-    async getPendingProcess() {
-      if (this.walletNetworkId === undefined) return;
-      //获取存取数据
-      let [sourceArray, targetArray] = await Promise.all([
-        lnr.freeZe({
-          depositor: this.walletAddress,
-          recipient: this.walletAddress,
-          networkId: getOtherNetworks(this.walletNetworkId),
-        }),
-        lnr.unfreeze({
-          depositor: this.walletAddress,
-          recipient: this.walletAddress,
-          networkId: this.walletNetworkId,
-        }),
-      ]);
-      //取不同存储记录
-      const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
-      if (diffArray.length) {
-        if (diffArray[0].destChainId === this.walletNetworkId) {
-          this.$store.commit("setUnClaimedToken", diffArray[0].source);
-          this.jumoToSwap();
-        }
-      }
-    },
   },
   async mounted() {
-    await this.getPendingProcess();
-
     this.$store.commit("setIsMobile", this.isMobile);
 
     //监视窗口变化

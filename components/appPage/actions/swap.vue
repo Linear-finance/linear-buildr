@@ -171,7 +171,7 @@
         <watingEnhanceSwapNew
           :amount="diffSwapNumber"
           v-if="actionTabs == 'm1'"
-          :currency="currency.key"
+          :currency="frozenTokens !== undefined ? frozenTokens : currency.key"
           @close="close"
         ></watingEnhanceSwapNew>
       </TabPane>
@@ -244,6 +244,8 @@ export default {
       selectCurrencyKey: "LINA",
 
       currencies: [],
+
+      frozenTokens: undefined,
     };
   },
   watch: {
@@ -583,8 +585,18 @@ export default {
       const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
       if (diffArray.length) {
         if (diffArray[0].destChainId === this.walletNetworkId) {
-          this.initCurrencies();
-          this.actionTabs = "m1";
+          // Use contract to double check withdrawn result in case of subgraph delays
+          const contractResult =
+            await lnrJSConnector.lnrJS.LnErc20Bridge.withdrawnDeposits(
+              diffArray[0].destChainId,
+              diffArray[0].depositId
+            );
+          console.log(contractResult, "contractResult");
+          if (!contractResult) {
+            this.$store.commit("setSwapUnfreezeContinue", true);
+            this.frozenTokens = diffArray[0].source;
+            this.actionTabs = "m1";
+          }
         } else {
           this.initData();
         }

@@ -397,15 +397,15 @@ export default {
     },
 
     async selectedWallet(walletType) {
+      // commit here to check walletType before checking network, if it is walletConnect, will not popup Metamask installation when getEthereumNetwork()
+      this.$store.commit("setWalletType", walletType);
       const status = await checkNetwork();
-      // if (status) {
       if (status || walletType === SUPPORTED_WALLETS.WALLET_CONNECT) {
         await selectedWallet(walletType);
       } else {
         try {
           await addEthereumChain(SUPPORTED_NETWORKS_MAP.BSCMAINNET);
           this.$store.commit("setAutoConnect", true);
-          this.$store.commit("setWalletType", walletType);
           location.reload();
         } catch (error) {
           this.$store.commit("setSetupModal", true);

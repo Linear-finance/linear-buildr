@@ -38,12 +38,9 @@ const WalletConnectSigner = async (props: WalletConnectCofig) => {
     provider.connector.chainId != 0
   ) {
     await provider.disconnect();
-    window.$nuxt.$store.commit("setAutoConnect", false);
     window.$nuxt.$store.commit("setWalletConnect", {
-      uri: "https://www.investopedia.com/terms/q/quick-response-qr-code.asp",
       qrcode: false,
     });
-    window.$nuxt.$store.commit("setWalletType", "");
     return;
   } else {
     return UpdateWalletConnectSigner(provider);

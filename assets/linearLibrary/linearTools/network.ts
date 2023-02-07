@@ -227,7 +227,12 @@ export const ETHEREUM_CHAIN_OPTIONS: { [k: number]: any } = {
 
 export async function getEthereumNetwork() {
   const isMobile = window.$nuxt.$store.state?.isMobile;
-  if (!window.ethereum && !isMobile) {
+  const walletType = window.$nuxt.$store.state?.walletType;
+  if (
+    !window.ethereum &&
+    !isMobile &&
+    walletType != SUPPORTED_WALLETS.WALLET_CONNECT
+  ) {
     window.open(WALLET_EXTENSIONS.METAMASK);
     return {};
   }

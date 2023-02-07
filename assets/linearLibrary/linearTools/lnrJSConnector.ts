@@ -147,28 +147,27 @@ const connectToWalletConnect = async () => {
         networkId: 1,
       });
       let signer = await signers.WalletConnect(walletConfig);
-      let provider = signer.provider;
-
+      if (signer) {
+        let provider = signer.provider;
+        const accounts = await provider.listAccounts();
+        if (accounts && accounts.length > 0) {
+          let network = await provider.getNetwork();
+          lnrJSConnector.setContractSettings(network.chainId, signer.signer);
+          return {
+            ...walletState,
+            currentWallet: accounts[0],
+            networkId: network.chainId,
+            networkName: network.name.toLowerCase(),
+          };
+        }
+      }
       //这里存在的原因是当enable时会改变chainId
       // let networkId = (await provider.getNetwork()).chainId;
-
       // 更新web3Provider,不然会出现调用合约方法出错的问题
       //  updateWalletConnectWeb3Provider({
       //     type: walletState.walletType,
       //     networkId,
       //   });
-
-      const accounts = await provider.listAccounts();
-      if (accounts && accounts.length > 0) {
-        let network = await provider.getNetwork();
-        lnrJSConnector.setContractSettings(network.chainId, signer.signer);
-        return {
-          ...walletState,
-          currentWallet: accounts[0],
-          networkId: network.chainId,
-          networkName: network.name.toLowerCase(),
-        };
-      }
     }
   } catch (e) {
     console.log(e);
@@ -194,7 +193,7 @@ const updateWalletConnectWeb3Provider = (props: Iprops) => {
 export const setSigner = async (props: Iprops) => {
   const walletConfig = getSignerConfig(props);
   const signer = await signers.WalletConnect(walletConfig);
-  lnrJSConnector.setContractSettings(Number(props.networkId), signer.provider);
+  lnrJSConnector.setContractSettings(Number(props.networkId), signer?.provider);
 };
 
 const getSignerConfig = (props: Iprops) => {

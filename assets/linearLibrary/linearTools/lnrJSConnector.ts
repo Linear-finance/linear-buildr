@@ -149,8 +149,8 @@ const connectToWalletConnect = async () => {
       let signer = await signers.WalletConnect(walletConfig);
       if (signer) {
         let provider = signer.provider;
-        const accounts = await provider?.listAccounts();
-        if (provider && signer && accounts && accounts.length > 0) {
+        const accounts = await provider.listAccounts();
+        if (accounts && accounts.length > 0) {
           let network = await provider.getNetwork();
           lnrJSConnector.setContractSettings(network.chainId, signer.signer);
           return {

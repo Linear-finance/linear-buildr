@@ -44,15 +44,17 @@ module.exports = {
       .then((results) => {
         const rewardEntries = [];
         results.map((item) => {
-          rewardEntries.push({
-            id: item.id,
-            entryId: parseInt(item.entryId),
-            address: utils.getAddress(item.address),
-            amount: BigNumber.from(item.amount),
-            unlockTime: parseInt(item.unlockTime),
-            unlocked: item.unlocked,
-            removed: item.removed,
-          });
+          if (!item.removed) {
+            rewardEntries.push({
+              id: item.id,
+              entryId: parseInt(item.entryId),
+              address: utils.getAddress(item.address),
+              amount: BigNumber.from(item.amount),
+              unlockTime: parseInt(item.unlockTime),
+              unlocked: item.unlocked,
+              removed: item.removed,
+            });
+          }
         });
         return rewardEntries;
       })

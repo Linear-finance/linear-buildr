@@ -11,7 +11,8 @@ const graphAPIEndpoints = {
   56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
   97: process.env.GRAPH_BUILDR_BINANCE_TESTNET,
   10001: process.env.GRAPH_BUILDR_ETHDEV,
-  10056: process.env.GRAPH_BUILDR_BSCDEV,
+  10056:
+    "https://graph-query-stacey.linear.finance/subgraphs/name/linear-finance/buildr-bsc-dev",
 };
 
 const swapGraphAPIEndpoints = {
@@ -20,7 +21,8 @@ const swapGraphAPIEndpoints = {
   56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
   97: process.env.GRAPH_BUILDR_BINANCE_TESTNET,
   10001: process.env.GRAPH_BUILDR_SWAP_ETHDEV,
-  10056: process.env.GRAPH_BUILDR_BSCDEV,
+  10056:
+    "https://graph-query-stacey.linear.finance/subgraphs/name/linear-finance/buildr-bsc-dev",
 };
 
 module.exports = {

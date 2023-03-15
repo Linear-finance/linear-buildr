@@ -142,7 +142,7 @@
     "networkType": "dev",
     "isLiquidationEnable": true,
     "isRewardable": true,
-    "rpcUrl": "https://bsc-rpc-http.dev.linear.finance/",
+    "rpcUrl": "https://bsc-rpc-http-stacey.linear.finance/",
     "blockchainBrowser": "https://bsc-explorer.dev.linear.finance/tx/",
     "blockchainBrowserApi": "https://bsc-explorer.dev.linear.finance/api",
     "tokenBridgeApi": "https://bridge-api.dev.linear.finance/depositProof",

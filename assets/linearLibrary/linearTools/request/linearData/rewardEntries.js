@@ -5,7 +5,8 @@ const pageResults = require("graph-results-pager");
 const GRAPHQL_BATCH_SIZE = 500;
 const graphLiquidationPortalEndpoints = {
   56: process.env.SUBGRAPH_LIQUIDATION_PORTAL_BINANCE_MAINNET,
-  10056: process.env.SUBGRAPH_LIQUIDATION_PORTAL_BSC_DEV,
+  10056:
+    "https://graph-query-stacey.linear.finance/subgraphs/name/linear-finance/liquidation-portal-bscdev",
 };
 
 module.exports = {

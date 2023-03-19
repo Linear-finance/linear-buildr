@@ -12,6 +12,7 @@ export const typedConfigs: ChainConfig[] = ChainConfigs;
 export interface ChainConfig {
   name: string;
   networkId: number;
+  wormholeNetworkId: number;
   networkType: string;
   chainType: string;
   rpcUrl: string;
@@ -19,7 +20,6 @@ export interface ChainConfig {
   isRewardable: boolean;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
-  tokenBridgeApi: string;
   addresses: ChainAddresses;
 }
 
@@ -116,6 +116,7 @@ const perpetualSubcontract = ["LnPerpetual_lBTC", "LnPerpetual_lETH"];
 
 export default class Web3Connector {
   networkId: number;
+  wormholeNetworkId: number;
   network: string;
   provider: providers.BaseProvider;
   signer: ethers.Signer | undefined;
@@ -128,7 +129,6 @@ export default class Web3Connector {
   isTestnetNetwork: boolean;
   isDevNetwork: boolean;
   othersNetwork: number[];
-  tokenBridgeApi: string;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
   constructor(id: number, signer?: ethers.Signer) {
@@ -137,15 +137,16 @@ export default class Web3Connector {
     const {
       name,
       networkId,
+      wormholeNetworkId,
       networkType,
       chainType,
       rpcUrl,
       addresses,
       blockchainBrowser,
       blockchainBrowserApi,
-      tokenBridgeApi,
     } = chainData;
     this.networkId = networkId || 1;
+    this.wormholeNetworkId = wormholeNetworkId;
     this.network = name;
     let providerUrl;
     if (this.networkId === 1) {
@@ -159,7 +160,6 @@ export default class Web3Connector {
     this.addressList = addresses;
     this.blockchainBrowser = blockchainBrowser;
     this.blockchainBrowserApi = blockchainBrowserApi;
-    this.tokenBridgeApi = tokenBridgeApi;
     const utils = new util(this.provider);
     this.utils = { ...utils, ...ethers.utils };
     this.isEthereumNetwork = chainType === ChainType.ETHEREUM;

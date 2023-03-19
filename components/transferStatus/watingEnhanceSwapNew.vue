@@ -562,6 +562,8 @@ import {
   getEthereumNetwork,
   isTestnetNetwork,
   isDevNetwork,
+  BRIDGE_ADDRESSES,
+  WORMHOLE_NETWORK_IDS,
 } from "@/assets/linearLibrary/linearTools/network";
 import api from "@/api";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -1316,14 +1318,7 @@ export default {
           );
 
           let transaction = await LnBridge.withdraw(
-            deposit.srcChainId,
-            deposit.destChainId,
-            deposit.depositId,
-            formatAddressToByte32(deposit.depositor),
-            formatAddressToByte32(deposit.recipient),
-            utils.formatBytes32String(deposit.currency),
-            BigNumber.from(deposit.amount),
-            deposit.signatures[0].signature,
+            utils.hexlify(utils.base64.decode(deposit.vaaBytes)),
             transactionSettings
           );
 
@@ -1387,14 +1382,7 @@ export default {
 
         //如果是bridge里面能提取的lina不足,会报错但无法捕捉异常,导致无限等待
         let gasEstimate = await LnBridge.estimateGas.withdraw(
-          deposit.srcChainId,
-          deposit.destChainId,
-          deposit.depositId,
-          formatAddressToByte32(deposit.depositor),
-          formatAddressToByte32(deposit.recipient),
-          utils.formatBytes32String(deposit.currency),
-          BigNumber.from(deposit.amount),
-          deposit.signatures[0].signature
+          utils.hexlify(utils.base64.decode(deposit.vaaBytes))
         );
         return bufferGasLimit(gasEstimate);
       } catch (e) {
@@ -1603,8 +1591,23 @@ export default {
               });
             }
 
+            const { utils } = lnrJSConnector;
+
             const depositPromise = diffArray.map((item) =>
-              api.getDeposits(this.sourceNetworkId, item.depositId)
+              api.getDepositProof(
+                item.wormholeSequence,
+                WORMHOLE_NETWORK_IDS[item.srcChainId],
+                utils
+                  .hexlify(
+                    utils.zeroPad(
+                      BigNumber.from(
+                        BRIDGE_ADDRESSES[item.srcChainId]
+                      ).toHexString(),
+                      32
+                    )
+                  )
+                  .substr(2)
+              )
             );
 
             //获取签名数据

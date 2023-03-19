@@ -23,6 +23,25 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "bridgeAddress",
+        "type": "address"
+      }
+    ],
+    "name": "BridgeAddressForChainUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "oldCandidate",
         "type": "address"
@@ -73,25 +92,6 @@
       }
     ],
     "name": "ChainSupportForTokenDropped",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldRelayer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newRelayer",
-        "type": "address"
-      }
-    ],
-    "name": "RelayerChanged",
     "type": "event"
   },
   {
@@ -163,6 +163,12 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "wormholeSequence",
+        "type": "uint64"
       }
     ],
     "name": "TokenDeposited",
@@ -231,30 +237,42 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "DEPOSIT_TYPEHASH",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "wormholeNetworkId",
+        "type": "uint16"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "WormholeNetworkIdUpdated",
+    "type": "event"
   },
   {
-    "inputs": [],
-    "name": "DOMAIN_SEPARATOR",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
+        "indexed": false,
+        "internalType": "address",
+        "name": "coreContract",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "consistencyLevel",
+        "type": "uint8"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "WormholeSetup",
+    "type": "event"
   },
   {
     "inputs": [],
@@ -297,11 +315,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_relayer",
-        "type": "address"
-      },
       {
         "internalType": "address",
         "name": "_admin",
@@ -372,6 +385,25 @@
     "name": "becomeAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "bridgeContractsByChainId",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -522,19 +554,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "relayer",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -543,6 +562,24 @@
       }
     ],
     "name": "removeToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "bridgeAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setBridgeAddressForChain",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -564,11 +601,34 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_relayer",
+        "name": "_coreContract",
         "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_consistencyLevel",
+        "type": "uint8"
       }
     ],
-    "name": "setRelayer",
+    "name": "setUpWormhole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint16",
+        "name": "wormholeNetworkId",
+        "type": "uint16"
+      }
+    ],
+    "name": "setWormholeNetworkIdForChain",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -624,43 +684,8 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "srcChainId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "destChainId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "depositId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "depositor",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "recipient",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "currency",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
         "internalType": "bytes",
-        "name": "signature",
+        "name": "encodedWormholeMessage",
         "type": "bytes"
       }
     ],
@@ -688,6 +713,43 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "wormhole",
+    "outputs": [
+      {
+        "internalType": "contract IWormhole",
+        "name": "coreContract",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "consistencyLevel",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "wormholeNetworkIdsByChainId",
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
       }
     ],
     "stateMutability": "view",

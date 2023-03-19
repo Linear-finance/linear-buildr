@@ -14,7 +14,7 @@ const graphAPIEndpoints = {
 
 const swapGraphAPIEndpoints = {
   1: process.env.GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET,
-  56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
+  56: process.env.GRAPH_BUILDR_SWAP_BINANCE_MAINNET,
   10001: process.env.GRAPH_BUILDR_SWAP_ETHDEV,
   10056: process.env.GRAPH_BUILDR_BSCDEV,
 };
@@ -611,6 +611,7 @@ module.exports = {
             "recipient",
             "currency",
             "amount",
+            "wormholeSequence",
             "timestamp",
           ],
         },
@@ -626,6 +627,7 @@ module.exports = {
               recipient,
               currency,
               amount,
+              wormholeSequence,
               timestamp,
             }) => ({
               hash: id.split("-")[0],
@@ -636,6 +638,7 @@ module.exports = {
               recipient,
               source: currency,
               value: bn2n(BigNumber.from(amount)),
+              wormholeSequence: wormholeSequence,
               timestamp: Number(timestamp * 1000),
               symbol: "-",
             })

@@ -1,9 +1,9 @@
 import {
   isEthereumNetwork,
   BLOCKCHAIN_BROWSER_API,
-  TOKEN_BRIDGE_API,
   isMainnetNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
+import { WORMHOLE_RPC } from "~/constants/envVars";
 
 export default {
   async getBSCGasPrice(walletNetworkId = 56) {
@@ -90,14 +90,12 @@ export default {
       });
   },
 
-  async getDeposits(srcChainId, depositId) {
+  async getDepositProof(wormholeSequence, emitterChain, emitterAddress) {
+    // TODO: route to different URLs base on network
     return await $nuxt.$axios
-      .$get(TOKEN_BRIDGE_API[srcChainId], {
-        params: {
-          srcChainId,
-          depositId,
-        },
-      })
+      .$get(
+        `${WORMHOLE_RPC}/v1/signed_vaa/${emitterChain}/${emitterAddress}/${wormholeSequence}`
+      )
       .then((res) => {
         return Promise.resolve(res);
       })

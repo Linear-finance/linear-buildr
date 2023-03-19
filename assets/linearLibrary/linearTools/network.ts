@@ -51,7 +51,8 @@ let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
 
 let RPC_URL: { [k: number]: string } = {};
 
-let TOKEN_BRIDGE_API: { [k: number]: string } = {};
+let BRIDGE_ADDRESSES: { [k: number]: string } = {};
+let WORMHOLE_NETWORK_IDS: { [k: number]: number } = {};
 
 for (let i = 0; i < typedConfigs.length; i++) {
   let object = typedConfigs[i];
@@ -96,7 +97,8 @@ for (let i = 0; i < typedConfigs.length; i++) {
     RPC_URL[id] = object.rpcUrl;
   }
 
-  TOKEN_BRIDGE_API[id] = object.tokenBridgeApi;
+  BRIDGE_ADDRESSES[id] = object.addresses.LnErc20Bridge;
+  WORMHOLE_NETWORK_IDS[id] = object.wormholeNetworkId;
 }
 
 export const isEthereumNetwork = (walletNetworkId: number) => {
@@ -433,6 +435,7 @@ export {
   SUPPORTED_NETWORKS,
   BLOCKCHAIN_BROWSER,
   BLOCKCHAIN_BROWSER_API,
-  TOKEN_BRIDGE_API,
   RPC_URL,
+  BRIDGE_ADDRESSES,
+  WORMHOLE_NETWORK_IDS,
 };

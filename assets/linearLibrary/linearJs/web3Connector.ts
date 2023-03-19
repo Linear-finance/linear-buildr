@@ -2,10 +2,6 @@ import * as ethers from "ethers";
 import { getDefaultProvider, providers } from "ethers";
 import ChainConfigs from "./chainConfigs.json";
 import util from "./util";
-import {
-  TOKEN_BRIDGE_MAINNET,
-  TOKEN_BRIDGE_TESTNET,
-} from "~/constants/envVars";
 import * as contracts from "../linearJs/lib/contracts";
 import { INFURA_PROJECT_ID } from "../../../constants/envVars";
 

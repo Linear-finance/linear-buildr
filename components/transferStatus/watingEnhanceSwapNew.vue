@@ -1842,9 +1842,7 @@ export default {
 
         const urls = {
           1: "",
-          3: "https://faucet.metamask.io/",
           56: "",
-          97: "https://testnet.binance.org/faucet-smart",
         };
 
         if (this.checkStatus.stepIndex == 0) {

@@ -7,18 +7,14 @@ const maxRequest = 1000;
 
 const graphAPIEndpoints = {
   1: process.env.GRAPH_BUILDR_ETHEREUM_MAINNET,
-  3: process.env.GRAPH_BUILDR_ETHEREUM_ROPSTEN,
   56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
-  97: process.env.GRAPH_BUILDR_BINANCE_TESTNET,
   10001: process.env.GRAPH_BUILDR_ETHDEV,
   10056: process.env.GRAPH_BUILDR_BSCDEV,
 };
 
 const swapGraphAPIEndpoints = {
   1: process.env.GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET,
-  3: process.env.GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN,
   56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
-  97: process.env.GRAPH_BUILDR_BINANCE_TESTNET,
   10001: process.env.GRAPH_BUILDR_SWAP_ETHDEV,
   10056: process.env.GRAPH_BUILDR_BSCDEV,
 };

@@ -202,7 +202,6 @@ export const INFURA_PROJECT_ID = infuraId;
 
 export const INFURA_JSON_RPC_URLS = {
   1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-  3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
 // export const BLOCKCHAIN = {

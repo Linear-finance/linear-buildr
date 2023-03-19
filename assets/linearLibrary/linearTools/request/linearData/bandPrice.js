@@ -6,9 +6,7 @@ const maxRequest = 1000;
 
 const graphAPIEndpoints = {
   1: process.env.GRAPH_BAND_BINANCE_MAINNET,
-  3: process.env.GRAPH_BAND_BINANCE_TESTNET,
   56: process.env.GRAPH_BAND_BINANCE_MAINNET,
-  97: process.env.GRAPH_BAND_BINANCE_TESTNET,
   10001: process.env.GRAPH_BAND_BSCDEV,
   10056: process.env.GRAPH_BAND_BSCDEV,
 };

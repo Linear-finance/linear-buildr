@@ -49,6 +49,8 @@ let BLOCKCHAIN_BROWSER: { [k: number]: string } = {};
 
 let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
 
+let REWARD_API_BASES: { [k: number]: string } = {};
+
 let RPC_URL: { [k: number]: string } = {};
 
 let BRIDGE_ADDRESSES: { [k: number]: string } = {};
@@ -93,6 +95,7 @@ for (let i = 0; i < typedConfigs.length; i++) {
   SUPPORTED_NETWORKS[id] = object.name;
   BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
   BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
+  REWARD_API_BASES[id] = object.rewardApiBase;
   if (object.rpcUrl) {
     RPC_URL[id] = object.rpcUrl;
   }
@@ -435,6 +438,7 @@ export {
   SUPPORTED_NETWORKS,
   BLOCKCHAIN_BROWSER,
   BLOCKCHAIN_BROWSER_API,
+  REWARD_API_BASES,
   RPC_URL,
   BRIDGE_ADDRESSES,
   WORMHOLE_NETWORK_IDS,

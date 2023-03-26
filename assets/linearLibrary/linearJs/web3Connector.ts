@@ -20,6 +20,7 @@ export interface ChainConfig {
   isRewardable: boolean;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
+  rewardApiBase: string;
   addresses: ChainAddresses;
 }
 

@@ -154,6 +154,7 @@ import {
   isEthDevNetwork,
   isEthereumNetwork,
   isMainnetNetwork,
+  REWARD_API_BASES,
 } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
@@ -340,9 +341,8 @@ export default {
           lnrJS: { LnRewardSystem, LnCollateralSystem, LnDebtSystem },
         } = lnrJSConnector;
 
-        const apiUrl = isMainnetNetwork(this.walletNetworkId)
-          ? `https://reward-query.linear-finance.workers.dev/rewards/${walletAddress}`
-          : `https://reward-query-dev.linear-finance.workers.dev/rewards/${walletAddress}`;
+        const apiUrl =
+          REWARD_API_BASES[this.walletNetworkId] + "rewards/" + walletAddress;
 
         const [
           firstPeriodStartTimeRes,

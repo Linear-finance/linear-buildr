@@ -527,7 +527,7 @@ export default {
         staked: 0,
         lock: 0,
         debt: 0,
-        targetRatio: 450,
+        targetRatio: 400,
         currentRatio: 0,
       },
 
@@ -792,14 +792,14 @@ export default {
           this.inputData.amount = formatEtherToNumber(
             bnSub(allCanBuildLUSDAfterStakeAll, this.buildData.debtBN)
           );
-          this.inputData.ratio = 450;
+          this.inputData.ratio = 400;
 
           this.actionData.stake = this.buildData.LINABN;
           this.actionData.amount = bnSub(
             allCanBuildLUSDAfterStakeAll,
             this.buildData.debtBN
           );
-          this.actionData.ratio = n2bn("450");
+          this.actionData.ratio = n2bn("400");
 
           this.adjustMinStake();
         }
@@ -846,7 +846,7 @@ export default {
                 ),
                 DECIMAL_PRECISION
               ) - this.toleranceDifference; //增加容错
-            this.inputData.ratio = 450;
+            this.inputData.ratio = 400;
 
             this.actionData.stake = n2bn("0");
             this.actionData.amount = bnSub(
@@ -855,7 +855,7 @@ export default {
             ); //增加容错
 
             // console.log(this.actionData.amount,'this.actionData.amount ');
-            this.actionData.ratio = n2bn("450");
+            this.actionData.ratio = n2bn("400");
           } else if (
             this.buildData.currentRatioBN.lt(
               n2bn(this.buildData.targetRatio.toString())
@@ -893,11 +893,11 @@ export default {
 
             this.inputData.stake = formatEtherToNumber(newStakeAmount);
             this.inputData.amount = 0;
-            this.inputData.ratio = 450;
+            this.inputData.ratio = 400;
 
             this.actionData.stake = newStakeAmount;
             this.actionData.amount = n2bn("0");
-            this.actionData.ratio = n2bn("450");
+            this.actionData.ratio = n2bn("400");
           }
 
           this.adjustMinStake();

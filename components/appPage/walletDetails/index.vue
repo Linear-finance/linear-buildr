@@ -274,7 +274,7 @@
           </div>
           <div class="flag">
             <div class="item">Liquidate: 200</div>
-            <div class="item">Target: 450</div>
+            <div class="item">Target: 400</div>
           </div>
         </div>
       </div>
@@ -1301,7 +1301,7 @@ export default {
         }
 
         .scale500 {
-          left: 64.4%;
+          left: 57.2%;
         }
 
         .colorBlock {
@@ -1317,13 +1317,13 @@ export default {
           }
 
           .centerBlock {
-            width: 35.8%;
+            width: 28.8%;
             height: 16px;
             background-color: #ffc941;
           }
 
           .rightBlock {
-            width: 35.6%;
+            width: 42.6%;
             height: 16px;
             border-bottom-right-radius: 100px;
             border-top-right-radius: 100px;
@@ -1345,7 +1345,7 @@ export default {
               margin-left: 69px;
             }
             &:last-child {
-              margin-left: 77px;
+              margin-left: 62px;
             }
           }
         }

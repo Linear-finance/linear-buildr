@@ -267,7 +267,7 @@ export default {
             rewardEntry.periodId, // periodId
             BigNumber.from(rewardEntry.stakingReward), // stakingReward
             BigNumber.from(rewardEntry.feeReward), // feeReward
-            rewardEntry.signatures[0].signature,
+            rewardEntry.signatures.map((item) => item.signature),
             transactionSettings
           );
 
@@ -421,7 +421,7 @@ export default {
           rewardEntry.periodId, // periodId
           BigNumber.from(rewardEntry.stakingReward), // stakingReward
           BigNumber.from(rewardEntry.feeReward), // feeReward
-          rewardEntry.signatures[0].signature
+          rewardEntry.signatures.map((item) => item.signature)
         );
 
         return bufferGasLimit(gasEstimate);

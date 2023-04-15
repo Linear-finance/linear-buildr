@@ -92,18 +92,12 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "oldSigner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newSigner",
-        "type": "address"
+        "internalType": "address[]",
+        "name": "newSigners",
+        "type": "address[]"
       }
     ],
-    "name": "RewardSignerChanged",
+    "name": "RewardSignersChanged",
     "type": "event"
   },
   {
@@ -192,9 +186,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "address",
-        "name": "_rewardSigner",
-        "type": "address"
+        "internalType": "address[]",
+        "name": "_rewardSigners",
+        "type": "address[]"
       },
       {
         "internalType": "address",
@@ -273,9 +267,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "bytes",
-        "name": "signature",
-        "type": "bytes"
+        "internalType": "bytes[]",
+        "name": "signatures",
+        "type": "bytes[]"
       }
     ],
     "name": "claimReward",
@@ -306,9 +300,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "bytes",
-        "name": "signature",
-        "type": "bytes"
+        "internalType": "bytes[]",
+        "name": "signatures",
+        "type": "bytes[]"
       }
     ],
     "name": "claimRewardFor",
@@ -395,6 +389,19 @@
   },
   {
     "inputs": [],
+    "name": "getSignerCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "lusd",
     "outputs": [
       {
@@ -420,8 +427,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "rewardSigner",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "rewardSigners",
     "outputs": [
       {
         "internalType": "address",
@@ -461,12 +474,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_rewardSigner",
-        "type": "address"
+        "internalType": "address[]",
+        "name": "_rewardSigners",
+        "type": "address[]"
       }
     ],
-    "name": "setRewardSigner",
+    "name": "setRewardSigners",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -9,14 +9,19 @@
           </template>
         </span>
         <span class="editBtn" @click="gasEditorModal = true"
-          ><svg width="16px" height="16px" viewBox="0 0 16 16">
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <g>
               <path
-                d="M1.3334 0L2.6668 0C3.40322 0 4.0002 0.596984 4.0002 1.3334L4.0002 9.82349C4.0002 10.0555 3.93967 10.2835 3.82459 10.4849L2.579 12.6653C2.32307 13.1133 1.67713 13.1133 1.4212 12.6653L0.175608 10.4849C0.0605293 10.2835 0 10.0555 0 9.82349L0 1.3334C0 0.596984 0.596984 0 1.3334 0ZM3.3335 1.3334C3.3335 0.965192 3.03501 0.6667 2.6668 0.6667L1.3334 0.6667C0.965192 0.6667 0.6667 0.965192 0.6667 1.3334L0.6667 9.82349C0.6667 9.93949 0.696965 10.0535 0.754504 10.1542L2.0001 12.3346L3.2457 10.1542C3.30324 10.0535 3.3335 9.93949 3.3335 9.82349L3.3335 1.3334Z"
-                transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 11.182764 1.8231096)"
-                fill="#deddde"
                 fill-rule="evenodd"
-                stroke="none"
+                clip-rule="evenodd"
+                d="M13.0682 3.70788L12.1254 2.76507C11.6047 2.24438 10.7605 2.24438 10.2398 2.76507L4.23671 8.76817C4.07267 8.93221 3.95427 9.13621 3.89321 9.36001L3.23225 11.7824C3.09644 12.2801 3.55317 12.7369 4.05089 12.6011L6.4733 11.9401C6.6971 11.879 6.9011 11.7606 7.06514 11.5966L13.0682 5.5935C13.5889 5.0728 13.5889 4.22858 13.0682 3.70788ZM12.5968 4.17929C12.8572 4.43964 12.8572 4.86175 12.5968 5.1221L6.59373 11.1252C6.51171 11.2072 6.40971 11.2664 6.29781 11.2969L3.8754 11.9579L4.53636 9.5355C4.5669 9.4236 4.62609 9.3216 4.70811 9.23958L10.7112 3.23648C10.9716 2.97613 11.3937 2.97613 11.654 3.23648L12.5968 4.17929Z"
+                fill="#CBE1FF"
               />
             </g></svg
           >EDIT</span
@@ -386,20 +391,22 @@ export default {
         font-style: normal;
         line-height: 1.5;
         letter-spacing: normal;
-        color: #5a575c;
+        color: #99999a;
+
+        .app-dark & {
+          color: #99999a !important;
+        }
       }
 
       .editBtn {
         margin-left: 8px;
         width: 62px;
         height: 24px;
-        border-radius: 12px;
-        border: solid 1px #deddde;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        color: #1a38f8;
+        color: #a4cbff;
         text-transform: uppercase;
 
         font-family: Gilroy-Bold;
@@ -409,7 +416,6 @@ export default {
         font-style: normal;
         line-height: 1.6;
         letter-spacing: 1.25px;
-        color: #1a38f8;
 
         &,
         * {
@@ -449,7 +455,7 @@ export default {
       font-style: normal;
       line-height: 1.5;
       letter-spacing: normal;
-      color: #5a575c;
+      color: #99999a;
 
       .price {
         margin-right: 8px;
@@ -710,7 +716,7 @@ export default {
     .editInfo {
       .infoLeft {
         .editTitle {
-          font-size: 12px;
+          font-size: 14px;
         }
 
         .editBtn {

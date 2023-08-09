@@ -1,25 +1,51 @@
 import { BigNumber, utils } from "ethers";
 import { floor } from "lodash";
-import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 import { toNonExponential } from "./utils";
+import {
+  formatEtherToNumber,
+  getAssetObjectInfo,
+} from "@/assets/linearLibrary/linearTools/format";
 
 //最大小数长度
-export const MAX_DECIMAL_LENGTH = 18;
+export const MAX_DECIMAL_LENGTH = 27;
 //大数转换基数
 export const BIGNUMBER_BASENUMBER = (1e18).toString();
 //保留小数位
-export const DECIMAL_PRECISION = 2;
+export const DECIMAL_PRECISION = 4;
 
 //Number转bigNumber
 export const n2bn = (num) => {
-  if (num !== undefined) {
-    return utils.parseEther(num.toString());
+  const multiCollateralAsset = $nuxt.$store.state?.multiCollateralAsset;
+  let unit = undefined;
+  if (multiCollateralAsset) {
+    unit = getAssetObjectInfo(multiCollateralAsset).decimal;
+  } else {
+    getAssetObjectInfo(assetKey).decimal;
   }
+
+  if (unit == 18 || !unit) {
+    num = utils.parseEther(num.toString());
+  } else {
+    num = utils.parseUnits(num.toString(), unit);
+  }
+  return num;
+};
+
+export const n2bnForAsset = (num, assetKey = undefined) => {
+  let unit = 18;
+  if (assetKey != undefined) unit = getAssetObjectInfo(assetKey).decimal;
+  return utils.parseUnits(num.toString(), unit);
 };
 
 //bigNumber转Number
 // export const bn2n = num => Number(utils.formatEther(num.toString()));
-export const bn2n = (num) => formatEtherToNumber(num);
+export const bn2n = (num, unit = undefined) => formatEtherToNumber(num, unit);
+
+export const bn2nForAsset = (num, assetKey = "LINA") => {
+  let unit = 18;
+  unit = getAssetObjectInfo(assetKey).decimal;
+  return formatEtherToNumber(num, unit);
+};
 
 //数字字符串直接转bigNumber
 export const numberStrToBN = (num) => BigNumber.from(num.toString());

@@ -495,7 +495,12 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #transferWatingEnhance {
-    padding: 24px 32px;
+    padding: 0px 32px 150px;
+
+    .waitImg {
+      margin-top: 0;
+    }
+
     .waitTitle {
       text-align: left;
       font-size: 16px;
@@ -553,7 +558,7 @@ export default {
     .processBar {
       position: absolute;
       bottom: 0;
-      top: 288px;
+      top: 75%;
       height: 48px;
       width: calc(100% - 20px);
 
@@ -603,7 +608,7 @@ export default {
       padding: 0 32px;
       position: absolute;
       //bottom: 32px;
-      bottom: 60px;
+      bottom: 20px;
       width: 100%;
 
       .funcMobileBtn {

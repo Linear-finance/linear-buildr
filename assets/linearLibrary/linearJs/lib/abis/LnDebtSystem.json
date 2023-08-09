@@ -4,56 +4,31 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "oldAdmin",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
       }
     ],
-    "name": "AdminChanged",
+    "name": "Initialized",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "CachedAddressUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldCandidate",
+        "name": "previousOwner",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "newCandidate",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "CandidateChanged",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -79,25 +54,6 @@
       }
     ],
     "name": "PushDebtLog",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldAddr",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAddr",
-        "type": "address"
-      }
-    ],
-    "name": "UpdateAddressStorage",
     "type": "event"
   },
   {
@@ -139,25 +95,6 @@
         "type": "address"
       }
     ],
-    "name": "GetUserCurrentDebtProportion",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
     "name": "GetUserDebtBalanceInUsd",
     "outputs": [
       {
@@ -177,152 +114,27 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "GetUserDebtData",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "debtProportion",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "debtFactor",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LastSystemDebtFactor",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_DEL_PER_TIME",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_factor",
-        "type": "uint256"
-      }
-    ],
-    "name": "PushDebtFactor",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "SetLastCloseFeePeriodAt",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
+        "internalType": "contract IAccessControlUpgradeable",
+        "name": "_accessCtrl",
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "_debtProportion",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_factor",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdateDebt",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_debtProportion",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdateUserDebt",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_admin",
+        "internalType": "contract IAssetRegistry",
+        "name": "_assetSys",
         "type": "address"
       }
     ],
-    "name": "__LnAdminUpgradeable_init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_admin",
-        "type": "address"
-      }
-    ],
-    "name": "__LnDebtSystem_init",
+    "name": "__DebtSystem_init",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "admin",
+    "name": "accessCtrl",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract IAccessControlUpgradeable",
         "name": "",
         "type": "address"
       }
@@ -332,19 +144,25 @@
   },
   {
     "inputs": [],
-    "name": "becomeAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "assetSys",
+    "outputs": [
+      {
+        "internalType": "contract IAssetRegistry",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "candidate",
+    "name": "collateralDebtFactor",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint256",
         "name": "",
-        "type": "address"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -364,44 +182,52 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "debtDistribution",
+    "outputs": [
       {
-        "internalType": "address[]",
-        "name": "users",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "debtProportions",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "debtFactors",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "timestamps",
-        "type": "uint256[]"
+        "internalType": "contract IDebtDistribution",
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "importDebtData",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "decreaseDebt",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "lastCloseAt",
-    "outputs": [
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "increaseDebt",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -425,26 +251,20 @@
   },
   {
     "inputs": [],
-    "name": "lastDeletTo",
+    "name": "owner",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_candidate",
-        "type": "address"
-      }
-    ],
-    "name": "setCandidate",
+    "inputs": [],
+    "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -452,12 +272,25 @@
   {
     "inputs": [
       {
-        "internalType": "contract ILnAddressStorage",
-        "name": "_addressStorage",
+        "internalType": "contract IDebtDistribution",
+        "name": "_debtDistribution",
         "type": "address"
       }
     ],
-    "name": "updateAddressCache",
+    "name": "setDebtDistribution",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

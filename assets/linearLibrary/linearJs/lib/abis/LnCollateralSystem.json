@@ -5,63 +5,6 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "oldAdmin",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
-      }
-    ],
-    "name": "AdminChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "CachedAddressUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldCandidate",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newCandidate",
-        "type": "address"
-      }
-    ],
-    "name": "CandidateChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
         "name": "user",
         "type": "address"
       },
@@ -147,6 +90,38 @@
       }
     ],
     "name": "CollateralUnlockReward",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -263,32 +238,6 @@
   },
   {
     "inputs": [],
-    "name": "Currency_ETH",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "Currency_LINA",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "GetSystemTotalCollateralInUsd",
     "outputs": [
       {
@@ -319,30 +268,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "GetUserCollaterals",
-    "outputs": [
-      {
-        "internalType": "bytes32[]",
-        "name": "",
-        "type": "bytes32[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -387,19 +312,26 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "MaxRedeemableInUsd",
+    "inputs": [],
+    "name": "NATIVE_CURRENCY",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "",
-        "type": "uint256"
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "NATIVE_CURRENCY_DECIMALS",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -445,113 +377,37 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "_currency",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "_tokenAddr",
+        "internalType": "contract IOracleRouter",
+        "name": "_priceGetter",
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "_minCollateral",
-        "type": "uint256"
+        "internalType": "contract IDebtSystem",
+        "name": "_debtSystem",
+        "type": "address"
       },
       {
-        "internalType": "bool",
-        "name": "_close",
-        "type": "bool"
-      }
-    ],
-    "name": "UpdateTokenInfo",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32[]",
-        "name": "_symbols",
-        "type": "bytes32[]"
+        "internalType": "contract IConfig",
+        "name": "_mConfig",
+        "type": "address"
       },
       {
-        "internalType": "address[]",
-        "name": "_tokenAddrs",
-        "type": "address[]"
+        "internalType": "contract IRewardLocker",
+        "name": "_mRewardLocker",
+        "type": "address"
       },
       {
-        "internalType": "uint256[]",
-        "name": "_minCollateral",
-        "type": "uint256[]"
+        "internalType": "contract IBuildBurnSystem",
+        "name": "_buildBurnSystem",
+        "type": "address"
       },
-      {
-        "internalType": "bool[]",
-        "name": "_closes",
-        "type": "bool[]"
-      }
-    ],
-    "name": "UpdateTokenInfos",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "internalType": "address",
-        "name": "_admin",
+        "name": "_liquidation",
         "type": "address"
       }
     ],
-    "name": "__LnAdminUpgradeable_init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_admin",
-        "type": "address"
-      }
-    ],
-    "name": "__LnCollateralSystem_init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "admin",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "becomeAdmin",
+    "name": "__CollateralSystem_init",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -561,7 +417,7 @@
     "name": "buildBurnSystem",
     "outputs": [
       {
-        "internalType": "contract ILnBuildBurnSystem",
+        "internalType": "contract IBuildBurnSystem",
         "name": "",
         "type": "address"
       }
@@ -612,12 +468,25 @@
   },
   {
     "inputs": [],
-    "name": "candidate",
+    "name": "collateralCurrency",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "bytes32",
         "name": "",
-        "type": "address"
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collateralDecimals",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -656,7 +525,7 @@
     "name": "debtSystem",
     "outputs": [
       {
-        "internalType": "contract ILnDebtSystem",
+        "internalType": "contract IDebtSystem",
         "name": "",
         "type": "address"
       }
@@ -725,7 +594,7 @@
     "name": "mConfig",
     "outputs": [
       {
-        "internalType": "contract ILnConfig",
+        "internalType": "contract IConfig",
         "name": "",
         "type": "address"
       }
@@ -738,7 +607,7 @@
     "name": "mRewardLocker",
     "outputs": [
       {
-        "internalType": "contract ILnRewardLocker",
+        "internalType": "contract IRewardLocker",
         "name": "",
         "type": "address"
       }
@@ -763,35 +632,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_currency",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address[]",
-        "name": "_users",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_amounts",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "migrateCollateral",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -824,6 +664,19 @@
   },
   {
     "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "paused",
     "outputs": [
       {
@@ -840,7 +693,7 @@
     "name": "priceGetter",
     "outputs": [
       {
-        "internalType": "contract ILnPrices",
+        "internalType": "contract IOracleRouter",
         "name": "",
         "type": "address"
       }
@@ -849,14 +702,21 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "_candidate",
+        "name": "newAddress",
         "type": "address"
       }
     ],
-    "name": "setCandidate",
+    "name": "setLiquidationAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -870,6 +730,19 @@
       }
     ],
     "name": "setPaused",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IRewardLocker",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setRewardLockerAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -942,7 +815,7 @@
       },
       {
         "internalType": "bool",
-        "name": "bClose",
+        "name": "disabled",
         "type": "bool"
       }
     ],
@@ -952,44 +825,40 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    "name": "tokenSymbol",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "uniqueId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "contract ILnAddressStorage",
-        "name": "_addressStorage",
+        "internalType": "bytes32",
+        "name": "_currency",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenAddr",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minCollateral",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_disabled",
+        "type": "bool"
       }
     ],
-    "name": "updateAddressCache",
+    "name": "updateTokenInfo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

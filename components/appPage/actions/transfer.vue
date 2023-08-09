@@ -77,7 +77,7 @@
                 <div
                   class="dropdownItem"
                   v-for="(item, index) in currencyList"
-                  @click="selectCurrencyFun(index)"
+                  @click="selectCurrencyFun(index, item)"
                   :key="index"
                   :class="{
                     activity: index == selected,
@@ -167,6 +167,11 @@
                 {{ transactionErrMsg }}
               </div>
               <div v-else>Please input a valid address.</div>
+              <img
+                @click="closeErrorMobile"
+                class="closeIcon"
+                src="@/static/close_icon.svg"
+              />
             </div>
             <div
               class="from actionInputItem"
@@ -253,7 +258,7 @@
                 <div
                   class="dropdownItem"
                   v-for="(item, index) in currencyList"
-                  @click="selectCurrencyFun(index)"
+                  @click="selectCurrencyFun(index, item)"
                   :key="index"
                   :class="{
                     activity: index == selected,
@@ -326,7 +331,6 @@
 
 <script>
 import {
-  openBlockchainBrowser,
   findParents,
   removeClass,
   addClass,
@@ -347,13 +351,15 @@ import {
   isEthereumNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
 import currencies from "@/common/currency";
-
 import {
   abbreviateAddress,
+  floorBigNumber,
   formatNumber,
+  getAssetObjectInfo,
 } from "@/assets/linearLibrary/linearTools/format";
-import { bn2n, n2bn } from "@/common/bnCalc";
+import { bn2n, bn2nForAsset, n2bnForAsset, n2bn } from "@/common/bnCalc";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 
 export default {
   name: "transfer",
@@ -490,6 +496,11 @@ export default {
     });
   },
   methods: {
+    closeErrorMobile() {
+      this.errors.stakeMsg = "";
+      this.errors.amountMsg = "";
+      this.errors.ratioMsg = "";
+    },
     async selectCurrencyFun(index) {
       this.transactionErrMsg = "";
       this.selected = index;
@@ -500,8 +511,9 @@ export default {
     //初始化liquids列表
     async initLiquidsList() {
       this.processing = true;
+      const { multiCollateral } = lnrJSConnector;
       const [linaBalance, walletBalance, liquids] = await Promise.all([
-        lnrJSConnector.lnrJS.LinearFinance.balanceOf(this.walletAddress),
+        multiCollateral.LINA.LinearFinance.balanceOf(this.walletAddress),
         lnrJSConnector.provider.getBalance(this.walletAddress),
         getLiquids(this.walletAddress),
       ]);
@@ -516,16 +528,23 @@ export default {
         };
       });
 
+      const collateralList = await Promise.all(
+        collateralAssets.map(async (item) => {
+          let balance = await multiCollateral[item.key].LinearFinance.balanceOf(
+            this.walletAddress
+          );
+          return {
+            name: item.name,
+            key: item.key,
+            balance: _.floor(bn2nForAsset(balance, item.key), 4),
+            img: item.img,
+          };
+        })
+      );
+
       this.currencyList = [
-        {
-          name: "LINA",
-          key: "LINA",
-          img:
-            this.theme === "light"
-              ? require("@/static/LINA_logo.svg")
-              : require("@/static/dark-theme/LINA_logo.svg"),
-          balance: _.floor(bn2n(linaBalance), 4),
-        },
+        ...collateralList,
+        ...liquidsList,
         {
           name: this.isEthereumNetwork ? "ETH" : "BNB",
           key: this.isEthereumNetwork ? "ETH" : "BNB",
@@ -534,7 +553,6 @@ export default {
           }${this.isEthereumNetwork ? "ETH_logo" : "currency/lBNB"}.svg`),
           balance: _.floor(bn2n(walletBalance), 4),
         },
-        ...liquidsList,
       ];
 
       let index = _.findIndex(this.currencyList, [
@@ -612,7 +630,16 @@ export default {
             this.BUILD_PROCESS_SETUP.TRANSFER +
               (this.isEthereumNetwork ? "ETH" : "BSC")
           ) {
-            await this.onSend(n2bn(this.transferNumber));
+            const transferNumberFormatted =
+              this.currentSelectCurrency.key == "ETH" ||
+              this.currentSelectCurrency.key == "BNB" ||
+              this.currentSelectCurrency.key == "lUSD"
+                ? n2bn(this.transferNumber)
+                : n2bnForAsset(
+                    this.transferNumber,
+                    this.currentSelectCurrency.key
+                  );
+            await this.onSend(transferNumberFormatted);
           }
         } catch (error) {
           //自定义错误
@@ -637,9 +664,16 @@ export default {
       this.confirmTransactionNetworkId = this.walletNetworkId;
 
       //获取gas评估
+      const sendAmountFormatted =
+        this.currentSelectCurrency.key == "ETH" ||
+        this.currentSelectCurrency.key == "BNB" ||
+        this.currentSelectCurrency.key == "lUSD"
+          ? bn2n(sendAmount)
+          : bn2nForAsset(sendAmount, this.currentSelectCurrency.key);
+
       const gasLimit = await this.getGasEstimate(
         selectedAssetKind,
-        bn2n(sendAmount),
+        sendAmountFormatted,
         recieveAddress
       );
 
@@ -659,14 +693,24 @@ export default {
         this.confirmTransactionStatus = true;
         this.confirmTransactionHash = transaction.hash;
 
+        const displayValue =
+          this.currentSelectCurrency.key == "ETH" ||
+          this.currentSelectCurrency.key == "BNB" ||
+          this.currentSelectCurrency.key == "lUSD"
+            ? floorBigNumber(sendAmount)
+            : floorBigNumber(
+                sendAmount,
+                getAssetObjectInfo(this.currentSelectCurrency.key).decimal
+              );
+
         // 发起右下角通知
         this.$pub.publish("notificationQueue", {
           hash: this.confirmTransactionHash,
           type: "Transfer",
           networkId: this.walletNetworkId,
-          value: `${formatNumber(
-            lnrJSConnector.utils.formatEther(sendAmount)
-          )} ${this.currentSelectCurrency.name}`,
+          value: `${formatNumber(displayValue)} ${
+            this.currentSelectCurrency.name
+          }`,
         });
 
         //等待结果返回
@@ -685,13 +729,25 @@ export default {
         let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
         return LnProxy.transfer(destination, amount, settings);
       } else if (["ETH", "BNB"].includes(currency)) {
-        return lnrJSConnector.signer.sendTransaction({
-          value: amount,
-          to: destination,
-          ...settings,
-        });
-      } else {
+        if (currency == "ETH" && this.isEthereumNetwork == "ETH") {
+          return lnrJSConnector.signer.sendTransaction({
+            value: amount,
+            to: destination,
+            ...settings,
+          });
+        } else {
+          return lnrJSConnector.multiCollateral[
+            currency
+          ].LinearFinance.transfer(destination, amount, settings);
+        }
+      } else if (currency === "lUSD") {
         return lnrJSConnector.lnrJS[currency].transfer(
+          destination,
+          amount,
+          settings
+        );
+      } else {
+        return lnrJSConnector.multiCollateral[currency].LinearFinance.transfer(
           destination,
           amount,
           settings
@@ -710,7 +766,12 @@ export default {
 
         let gasEstimate;
 
-        const amountBN = n2bn(amount);
+        const amountBN =
+          this.currentSelectCurrency.key == "ETH" ||
+          this.currentSelectCurrency.key == "BNB" ||
+          this.currentSelectCurrency.key == "lUSD"
+            ? n2bn(amount)
+            : n2bnForAsset(amount, this.currentSelectCurrency.key);
 
         if (currency === "LINA") {
           let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
@@ -723,7 +784,10 @@ export default {
             destination,
             amountBN
           );
-        } else if (["ETH", "BNB"].includes(currency)) {
+        } else if (
+          (currency == "ETH" && this.isEthereumNetwork == "ETH") ||
+          currency == "GLMR"
+        ) {
           if (amount === this.selectedAssetMaxValue) {
             //不能转全部eth,需要留手续费
             throw new Error("input.error.balanceTooLow");
@@ -732,10 +796,14 @@ export default {
             data: amountBN,
             to: destination,
           });
-        } else {
+        } else if (currency == "lUSD") {
           gasEstimate = await lnrJSConnector.lnrJS[
             currency
           ].estimateGas.transfer(destination, amountBN);
+        } else {
+          gasEstimate = await lnrJSConnector.multiCollateral[
+            this.currentSelectCurrency.key
+          ].LinearFinance.estimateGas.transfer(destination, amountBN);
         }
 
         return bufferGasLimit(gasEstimate);
@@ -1014,7 +1082,7 @@ export default {
                   .unit {
                     width: 40px;
                     color: #5a575c;
-                    font-family: "PingFangHK-Regular";
+                    font-family: Gilroy;
                     font-size: 16px;
                     text-align: right;
                     display: flex;
@@ -1308,6 +1376,13 @@ export default {
 
                 img {
                   margin-right: 16px;
+                }
+
+                .closeIcon {
+                  position: absolute;
+                  right: 10%;
+                  cursor: pointer;
+                  margin-bottom: 20px;
                 }
               }
 

@@ -4,56 +4,31 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "oldAdmin",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
       }
     ],
-    "name": "AdminChanged",
+    "name": "Initialized",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "name",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "CachedAddressUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldCandidate",
+        "name": "previousOwner",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "newCandidate",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "CandidateChanged",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -80,25 +55,6 @@
       }
     ],
     "name": "Unpaused",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldAddr",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAddr",
-        "type": "address"
-      }
-    ],
-    "name": "UpdateLusdToken",
     "type": "event"
   },
   {
@@ -181,63 +137,37 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_address",
+        "internalType": "contract IAsset",
+        "name": "_lUSDToken",
         "type": "address"
-      }
-    ],
-    "name": "SetLusdTokenAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
-        "internalType": "address",
-        "name": "_admin",
+        "internalType": "contract IDebtSystem",
+        "name": "_debtSystem",
         "type": "address"
-      }
-    ],
-    "name": "__LnAdminUpgradeable_init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
-        "internalType": "address",
-        "name": "admin",
+        "internalType": "contract IOracleRouter",
+        "name": "_priceGetter",
+        "type": "address"
+      },
+      {
+        "internalType": "contract ICollateralSystem",
+        "name": "_collaterSys",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IConfig",
+        "name": "_mConfig",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_lUSDTokenAddr",
+        "name": "_liquidation",
         "type": "address"
       }
     ],
-    "name": "__LnBuildBurnSystem_init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "admin",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "becomeAdmin",
+    "name": "__BuildBurnSystem_init",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -316,7 +246,72 @@
   },
   {
     "inputs": [],
-    "name": "candidate",
+    "name": "collaterSys",
+    "outputs": [
+      {
+        "internalType": "contract ICollateralSystem",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "debtSystem",
+    "outputs": [
+      {
+        "internalType": "contract IDebtSystem",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lUSDToken",
+    "outputs": [
+      {
+        "internalType": "contract IAsset",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "liquidation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mConfig",
+    "outputs": [
+      {
+        "internalType": "contract IConfig",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
     "outputs": [
       {
         "internalType": "address",
@@ -341,14 +336,47 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "priceGetter",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "_candidate",
+        "internalType": "contract IOracleRouter",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "setCandidate",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ICollateralSystem",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setCollateralSystemAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setLiquidationAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -369,12 +397,12 @@
   {
     "inputs": [
       {
-        "internalType": "contract ILnAddressStorage",
-        "name": "_addressStorage",
+        "internalType": "address",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "updateAddressCache",
+    "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

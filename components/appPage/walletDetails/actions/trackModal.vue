@@ -19,7 +19,12 @@
       <div class="context" v-if="!isMobile">
         Track your debt over time, with charts
       </div>
-
+      <div :class="{ mobileDropDown: isMobile }">
+        <muticollateralSelector
+          :selectedCollateral="selectedCollateral"
+          :setSelectedCollateral="setSelectedCollateral"
+        />
+      </div>
       <div class="data">
         <div class="li_1">
           <div class="p_1">
@@ -36,27 +41,7 @@
         </div>
       </div>
 
-      <div class="mobileTabs" v-if="isMobile">
-        <div
-          class="debtChart"
-          :class="{ activated: currentMobileTabs == 1 }"
-          @click="mobileTabsClick(1)"
-        >
-          DEBT CHART
-        </div>
-        <div
-          class="debtList"
-          :class="{ activated: currentMobileTabs == 2 }"
-          @click="mobileTabsClick(2)"
-        >
-          DEBT LIST
-        </div>
-      </div>
-
-      <div
-        class="chart"
-        v-if="!isMobile || (isMobile && currentMobileTabs == 1)"
-      >
+      <div class="chart">
         <component
           :is="chartCompo"
           key="1"
@@ -65,7 +50,7 @@
           :color="{
             lineColor: '#fff',
             backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
-            areaColorTop: '#fff',
+            areaColorBottom: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
           }"
           :title="'Total Current Debt\n(ℓUSD)'"
         ></component>
@@ -81,8 +66,8 @@
           :color="{
             lineColor: '#1a38f8',
             backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
-            textColor: $store.getters.isDarkTheme ? '#F6F5F6' : '#99999a',
-            areaColorTop: '#fff',
+            textColor: $store.getters.isDarkTheme ? '#99999A' : '#99999A',
+            areaColorBottom: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
           }"
           :formatter="`ℓUSD : {c0}`"
           :title="
@@ -91,38 +76,6 @@
               : 'Total Current Debt (ℓUSD) / Date'
           "
         ></component>
-      </div>
-
-      <div
-        class="table"
-        v-if="!isMobile || (isMobile && currentMobileTabs == 2)"
-      >
-        <Table
-          v-if="trackTableData.length != 0"
-          :columns="trackTableColumn"
-          :data="trackTableData"
-          max-height="210"
-        >
-          <template slot-scope="{ row }" slot="name">
-            <img :src="currencies[row.name].icon" />
-            {{ currencies[row.name].name }}
-          </template>
-
-          <template slot-scope="{ row }" slot="balance">
-            {{ formatNumber(row.balance, row.decimal) }}
-          </template>
-
-          <template slot-scope="{ row }" slot="valueUSD">
-            $ {{ formatNumber(row.valueUSD, row.decimal) }} USD
-          </template>
-        </Table>
-        <div class="nothing" v-else>
-          <img src="@/static/line_charts.svg" />
-          <div class="text">
-            <span class="title">No Debts</span> <br />
-            <span class="subject">You don’t have any debts yet</span>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -146,24 +99,16 @@ import _ from "lodash";
 import trackchart from "@/components/echarts/trackchart";
 import closeSvg from "@/components/svg/close";
 import { format } from "date-fns";
-
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import bandPrice from "@/assets/linearLibrary/linearTools/request/linearData/bandPrice";
 import currencies from "@/common/currency";
-
 import {
   isEthereumNetwork,
   isBinanceNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
-
-import {
-  getExchangeRates,
-  getBalances,
-} from "@/assets/linearLibrary/linearTools/request";
-
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
-
 import { fetchTrackDebt } from "@/assets/linearLibrary/linearTools/request/trackDebt";
+import muticollateralSelector from "~/components/selector/muticollateralSelector.vue";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 
 export default {
   name: "trackModal",
@@ -216,15 +161,16 @@ export default {
       ],
 
       trackTableData: [],
-
       formatNumber,
-
       loading: false,
+      collateralAssets: collateralAssets,
+      selectedCollateral: undefined,
     };
   },
   components: {
     trackchart,
     closeSvg,
+    muticollateralSelector,
   },
   watch: {
     walletAddress() {},
@@ -239,11 +185,15 @@ export default {
         });
       });
     },
+    selectedCollateral() {
+      this.trackModalChange(true);
+    },
   },
   computed: {
     walletAddress() {
       return this.$store.state?.wallet?.address;
     },
+
     //移动端
     isMobile() {
       return this.$store.state?.isMobile;
@@ -269,6 +219,10 @@ export default {
     this.$pub.subscribe("trackModalChange", (msg, params) => {
       this.trackModal = params;
     });
+    this.selectedCollateral = this.collateralAssets[0];
+  },
+  destroyed() {
+    this.selectedCollateral = this.collateralAssets[0];
   },
   methods: {
     openSocial(slug) {
@@ -294,6 +248,7 @@ export default {
       try {
         this.debtData = { issuedDebt: 0, currentDebt: 0 };
         this.trackTableData = [];
+        this.trackData = this.emptyData;
 
         if (status) {
           this.loading = true;
@@ -316,7 +271,6 @@ export default {
 
               //表格数据
               this.trackTableData = res.tableData ?? [];
-
               this.debtData = res.debet;
             })
             .finally(() => {
@@ -333,32 +287,19 @@ export default {
 
     async getTrackData() {
       try {
-        const {
-          lnrJS: { lUSD, lBTC, lETH, lHB10 },
-        } = lnrJSConnector;
-
         let trackData = { issuedDebt: 0, currentDebt: [] };
 
         if (this.isBinanceNetwork) {
-          trackData = await fetchTrackDebt(this.walletAddress);
+          trackData = await fetchTrackDebt(
+            this.walletAddress,
+            this.selectedCollateral
+          );
         }
-
         let tableData = [];
-
-        if (this.$store.state?.walletDetails?.transferableAssets) {
-          tableData =
-            this.$store.state?.walletDetails?.transferableAssets.filter(
-              function (item) {
-                item.decimal = _.has(currencies, item.name) ? 4 : 2;
-                return !["LINA", "ETH", "BNB"].includes(item.name);
-              }
-            );
-        }
 
         const currentDebt = trackData.currentDebt.length
           ? trackData.currentDebt[trackData.currentDebt.length - 1][1]
           : [];
-
         return {
           chartData: trackData.currentDebt,
           tableData: tableData,
@@ -371,8 +312,8 @@ export default {
         console.error(e, "getTrackData err");
       }
     },
-    mobileTabsClick(mobileTabs) {
-      this.currentMobileTabs = mobileTabs;
+    setSelectedCollateral(item) {
+      this.selectedCollateral = item;
     },
   },
 };
@@ -388,7 +329,7 @@ export default {
       background: #ffffff;
       box-shadow: 0px 2px 6px #deddde;
       position: relative;
-      padding: 46px 143px 0;
+      padding: 60px 143px 0;
       height: 100%;
       overflow: hidden;
 
@@ -423,7 +364,7 @@ export default {
         }
 
         > .context {
-          margin-bottom: 32px;
+          margin-bottom: 48px;
           font-family: Gilroy-Regular;
           font-size: 14px;
           font-weight: normal;
@@ -441,10 +382,30 @@ export default {
           }
         }
 
+        .actionInputItem {
+          display: flex;
+          width: 400px;
+          height: 88px;
+          margin-bottom: 48px;
+          border-radius: 8px;
+          border: 1px solid #e5e5e5;
+          padding: 33px 24px;
+          justify-content: space-between;
+          align-items: center;
+          transition: $animete-time linear;
+          position: relative;
+
+          &:hover,
+          &.active {
+            border: 1px solid #1a38f8;
+            box-shadow: 0px 2px 12px #deddde;
+          }
+        }
+
         .data {
           width: 100%;
           display: flex;
-          margin-bottom: 40px;
+          margin-bottom: 48px;
           .li_1,
           .li_2 {
             flex: 1;
@@ -666,6 +627,14 @@ export default {
           #closeSvg {
             width: 26px;
           }
+        }
+
+        .mobileDropDown {
+          width: 80vw;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          margin: 65px 0 40px;
         }
 
         .data {

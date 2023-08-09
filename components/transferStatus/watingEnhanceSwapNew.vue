@@ -715,9 +715,6 @@ export default {
     theme() {
       return this.$store.state.theme;
     },
-    swapUnfreezeContinue() {
-      return this.$store.state?.swapUnfreezeContinue;
-    },
   },
   created() {
     this.$store.commit("setIsTransaction", true);
@@ -1394,10 +1391,10 @@ export default {
     async startStakingAndBuildContract(stakeAmountLINA) {
       this.confirmTransactionStatus = false;
 
-      const {
-        lnrJS: { LnCollateralSystem },
-        utils,
-      } = lnrJSConnector;
+      const { utils } = lnrJSConnector;
+      const LnCollateralSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnCollateralSystem;
 
       const transactionSettings = {
         gasPrice: this.targetGasPrice,
@@ -1446,11 +1443,10 @@ export default {
     //评估StakingAndBuild的gas
     async getGasEstimateFromStakingAndBuild(stakeAmountLINA) {
       try {
-        const {
-          lnrJS: { LnCollateralSystem },
-          utils,
-        } = lnrJSConnector;
-
+        const { utils } = lnrJSConnector;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
         if (
           stakeAmountLINA.isZero() ||
           stakeAmountLINA.lt("0") //小于等于0
@@ -2271,6 +2267,7 @@ export default {
             cursor: pointer;
             transition: $animete-time linear;
             position: relative;
+            bottom: 10px !important;
 
             &.disabled {
               cursor: not-allowed;

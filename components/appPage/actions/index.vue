@@ -93,7 +93,7 @@
           Burn ℓUSD to unlock staked LINA
         </div>
         <div class="context" v-if="currentAction == 3">
-          Claim rewards from staking LINA and building ℓUSD
+          Claim rewards from staking your assets and building ℓUSD
         </div>
         <div class="context" v-if="currentAction == 4">
           Transfer different currencies to specified wallet address

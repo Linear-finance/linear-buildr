@@ -6,68 +6,150 @@
           <div class="actionBody">
             <div class="actionTitle">Claim</div>
             <div class="actionDesc">
-              Claim rewards from staking LINA and building ℓUSD
+              Claim rewards from staking your assets and building ℓUSD
             </div>
 
-            <div
-              class="rewardsBox"
-              :class="{
-                rewardsBoxClosed: !feesAreClaimable,
-              }"
-            >
-              <div class="box">
+            <div class="rewardsBox">
+              <div
+                class="box"
+                :class="{ stakedAssetBox: staticStakingRewards.length > 0 }"
+              >
                 <div class="titleMobile">Staking Rewards</div>
-                <img v-if="feesAreClaimable" src="@/static/LINA_logo.svg" />
-                <img v-else src="@/static/LINA_gray_logo.svg" />
                 <div class="title">Staking Rewards</div>
-                <div class="amount">
-                  <span>{{ stakingRewards }}</span> LINA
+                <div class="rewardsContainer">
+                  <div class="rewardsContainerLeft">
+                    <img
+                      v-if="feesAreClaimable || totalStakingRewards != 0"
+                      src="@/static/LINA_logo.svg"
+                    />
+                    <img v-else src="@/static/LINA_gray_logo.svg" />
+                    <div
+                      class="amount"
+                      :class="{
+                        disabledRewards: !(
+                          feesAreClaimable || totalStakingRewards != 0
+                        ),
+                      }"
+                    >
+                      LINA
+                      <img
+                        v-if="isMobile"
+                        class="showInfoMobile"
+                        src="@/static/info_grey.svg"
+                        @click="showModal(1)"
+                      />
+                      <Tooltip
+                        v-else-if="!isMobile"
+                        max-width="275"
+                        placement="top"
+                        class="globalInfoStyle"
+                        content="To claim your full reward allocation, make sure all staked assets are above target P-ratio."
+                      >
+                        <img
+                          v-if="theme === 'light'"
+                          src="@/static/info_grey.svg"
+                        />
+                        <img v-else src="@/static/dark-theme/info_white.svg" />
+                      </Tooltip>
+                    </div>
+                  </div>
+                  <div
+                    class="rewardsContainerLeft value"
+                    :class="{
+                      disabledRewards: !(
+                        feesAreClaimable || totalStakingRewards != 0
+                      ),
+                    }"
+                  >
+                    {{ claimableReward
+                    }}<span class="">/{{ totalStakingRewards }}</span>
+                  </div>
+                </div>
+                <div
+                  class="multiCollateralContainer"
+                  v-if="staticStakingRewards.length > 0"
+                >
+                  <div class="stakedAssetContainer">
+                    <div>Staked Asset</div>
+                    <div>Reward</div>
+                  </div>
+                  <div
+                    class="assetsTable"
+                    :class="{ assetLocked: !item.available }"
+                    v-for="(item, index) in staticStakingRewards"
+                    :key="index"
+                  >
+                    <div>{{ item.asset }}</div>
+                    <div>{{ item.stakingReward }}</div>
+                  </div>
                 </div>
               </div>
-              <div class="box">
+              <div
+                class="box"
+                :class="{
+                  exchangeAssetBox: totalTradingRewards != 0,
+                }"
+              >
                 <div class="titleMobile">Exchange Rewards</div>
-                <img v-if="feesAreClaimable" src="@/static/currency/lUSD.svg" />
-                <img v-else src="@/static/LUSD_gray_logo.svg" />
                 <div class="title">Exchange Rewards</div>
-                <div class="amount">
-                  <span>{{ tradingRewards }}</span> ℓUSD
+                <div class="rewardsContainer">
+                  <div class="rewardsContainerLeft">
+                    <img
+                      v-if="feesAreClaimable || totalTradingRewards != 0"
+                      src="@/static/currency/lUSD.svg"
+                    />
+                    <img v-else src="@/static/LUSD_gray_logo.svg" />
+                    <div
+                      class="amount"
+                      :class="{
+                        disabledRewards: !(
+                          feesAreClaimable || totalStakingRewards != 0
+                        ),
+                      }"
+                    >
+                      ℓUSD
+                      <img
+                        v-if="isMobile"
+                        class="showInfoMobile"
+                        src="@/static/info_grey.svg"
+                        @click="showModal(2)"
+                      />
+                      <Tooltip
+                        v-else-if="!isMobile"
+                        placement="top"
+                        class="tip globalInfoStyle"
+                        content="Exchange rewards are only distributed to debt built with $LINA."
+                        offset="0 4"
+                      >
+                        <img
+                          v-if="theme === 'light'"
+                          src="@/static/info_grey.svg"
+                        />
+                        <img v-else src="@/static/dark-theme/info_white.svg" />
+                      </Tooltip>
+                    </div>
+                  </div>
+                  <div
+                    class="rewardsContainerLeft"
+                    :class="{
+                      assetLocked:
+                        (multiCollateralValuesRatios &&
+                          multiCollateralValuesRatios.LINA < 400) ||
+                        !(feesAreClaimable || totalStakingRewards != 0),
+                    }"
+                  >
+                    {{ totalTradingRewards }}
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="infoBox">
               <div class="statusBox">
-                <div class="title">
-                  Reward Status
-                  <Tooltip
-                    class="globalInfoStyle"
-                    max-width="275"
-                    content="Reward can only be claimed when target ratio is reached."
-                    placement="top"
-                  >
-                    <img
-                      v-if="theme === 'light'"
-                      src="@/static/info_white.svg"
-                    />
-                    <img v-else src="@/static/dark-theme/info_white.svg" />
-                  </Tooltip>
-
-                  <img
-                    v-if="theme === 'light'"
-                    class="showInfoMobile"
-                    src="@/static/info_white.svg"
-                    @click="showIntroductActionModal"
-                  />
-                  <img
-                    v-else
-                    class="showInfoMobile"
-                    src="@/static/dark-theme/info_white.svg"
-                    @click="showIntroductActionModal"
-                  />
-                </div>
+                <div class="title">Reward Status</div>
                 <div class="status" :class="{ open: feesAreClaimable }">
                   {{
-                    feesAreClaimable ? "Open" : hasClaim ? "Claimed" : "Closed"
+                    feesAreClaimable ? "OPEN" : hasClaim ? "CLAIMED" : "CLOSED"
                   }}
                 </div>
               </div>
@@ -125,7 +207,7 @@
     </Tabs>
 
     <Modal
-      v-model="introductActionModal"
+      v-model="modalPopup"
       :footer-hide="true"
       :closable="true"
       :transfer="false"
@@ -134,7 +216,7 @@
     >
       <div class="title">Reward Status</div>
       <div class="context">
-        Reward can only be claimed when target ratio is reached.
+        {{ this.modalText }}
       </div>
     </Modal>
   </div>
@@ -158,6 +240,8 @@ import {
 } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
+import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 
 export default {
   name: "claim",
@@ -169,17 +253,18 @@ export default {
       actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
       confirmTransactionStep: -1, //当前交易进度
       waitProcessArray: [], //等待交易进度组
-      introductActionModal: false,
-
+      modalPopup: false,
       closeIn: "", //多少天后可领取奖励
       feesAreClaimable: false, //是否可以领取奖励
-      tradingRewards: 0, //交易所手续费奖励
-      stakingRewards: 0, //通胀奖励
+      claimableReward: 0, // claimable staking reward cal by total staking rewards minus reward from collateral lower than target ratio
+      totalTradingRewards: 0, //交易所手续费奖励
+      totalStakingRewards: 0, //通胀奖励
+      staticStakingRewards: [],
       processing: false, //加载状态
       confirmTransactionHash: "", //交易hash
-      hasClaim: true, //有没有claim过
-      pendingRewardEntries: undefined,
-      currentRatioPercent: 0, //当前P ratio
+      hasClaim: false, //有没有claim过
+      claimableRewardEntries: undefined,
+      modalText: "",
     };
   },
   created() {
@@ -191,46 +276,63 @@ export default {
     walletNetworkId() {},
     isEthereumNetwork() {},
     isBinanceNetwork() {},
+    multiCollateralValuesRatios() {},
   },
   computed: {
+    isMobile() {
+      return this.$store.state.isMobile;
+    },
     isEthereumNetwork() {
       return isEthereumNetwork(this.walletNetworkId);
     },
-
     isBinanceNetwork() {
       return isBinanceNetwork(this.walletNetworkId);
     },
-
     isEthDevNetwork() {
       return isEthDevNetwork(this.walletNetworkId);
     },
-
     walletNetworkName() {
       return this.$store.state?.walletNetworkName;
     },
-
     walletAddress() {
       return this.$store.state?.wallet?.address;
     },
-
     //claim按钮禁止状态
     claimDisabled() {
       return (
         !this.feesAreClaimable ||
         this.processing ||
         (this.tradingRewards == 0 && this.stakingRewards == 0) ||
-        this.currentRatioPercent < 400
+        this.claimableReward < 0
       );
     },
-
     walletNetworkId() {
       return this.$store.state?.walletNetworkId;
     },
     theme() {
       return this.$store.state?.theme;
     },
+    multiCollateralValuesRatios() {
+      return this.$store.state?.multiCollateralValues.currentRatio;
+    },
   },
   methods: {
+    showModal(textNumber) {
+      this.modalPopup = true;
+      switch (textNumber) {
+        case 1:
+          this.modalText =
+            "Exchange rewards are only distributed to debt built with $LINA.";
+          break;
+        case 2:
+          this.modalText =
+            "Exchange rewards are only distributed to debt built with $LINA.";
+          break;
+        case 3:
+          this.modalText =
+            "Reward can only be claimed when target ratio is reached.";
+      }
+    },
     //点击 claim
     async clickClaim() {
       if (!this.claimDisabled) {
@@ -243,60 +345,24 @@ export default {
 
         this.waitProcessArray.push(BUILD_PROCESS_SETUP.CLAIM);
 
-        const transactionSettings = {
-          gasPrice: this.$store.state?.gasDetails?.price,
-          gasLimit: DEFAULT_GAS_LIMIT.claim,
-        };
-
-        //获取gas评估
-        transactionSettings.gasLimit = await this.getGasEstimate();
-
         try {
           this.actionTabs = "m1"; //进入等待页
-
-          let {
-            lnrJS: { LnRewardSystem },
-          } = lnrJSConnector;
-
-          const rewardEntry = this.pendingRewardEntries[0];
-          // const signature = utils.splitSignature(
-          //     rewardEntry.signatures[0].signature
-          // );
-
-          let transaction = await LnRewardSystem.claimReward(
-            rewardEntry.periodId, // periodId
-            BigNumber.from(rewardEntry.stakingReward), // stakingReward
-            BigNumber.from(rewardEntry.feeReward), // feeReward
-            rewardEntry.signatures.map((item) => item.signature),
-            transactionSettings
-          );
-
-          if (transaction) {
-            this.confirmTransactionHash = transaction.hash;
-
-            // 发起右下角通知
-            this.$pub.publish("notificationQueue", {
-              hash: this.confirmTransactionHash,
-              type: BUILD_PROCESS_SETUP.CLAIM,
-              networkId: this.walletNetworkId,
-              value: `Claiming ${this.confirmTransactionStep + 1} / ${
-                this.waitProcessArray.length
-              }`,
-            });
-
-            //等待结果返回
-            let status = await lnrJSConnector.utils.waitForTransaction(
-              transaction.hash
-            );
-
-            //判断成功还是错误子页
-            this.actionTabs = status ? "m2" : "m3";
-
-            //成功则更新数据
-            status && _.delay(async () => await storeDetailsData(), 5000);
-
-            this.confirmTransactionStep += 1;
+          const transactionArray = await this.claimMulticollateralRewards();
+          if (transactionArray.length === 0) {
+            this.actionTabs = "m3"; //进入错误页
+            return;
           }
+          const result = await Promise.all(transactionArray);
+
+          //等待结果返回, if one claiming tx fail, we direct user to fail page
+          let status = result.indexOf(false) === -1;
+          //判断成功还是错误子页
+          this.actionTabs = status ? "m2" : "m3";
+          //成功则更新数据
+          //成功则更新数据
+          status && _.delay(async () => await storeDetailsData(), 5000);
+
+          this.confirmTransactionStep += 1;
         } catch (e) {
           console.log(e);
           this.actionTabs = "m3"; //进入错误页
@@ -304,6 +370,56 @@ export default {
           this.processing = false;
         }
       }
+    },
+    async claimMulticollateralRewards() {
+      let transactionArray = [];
+      const generateTransactions = async () => {
+        const transactionSettings = {
+          gasPrice: this.$store.state?.gasDetails?.price,
+          gasLimit: DEFAULT_GAS_LIMIT.claim,
+        };
+        let { multiCollateral } = lnrJSConnector;
+        for (let i = 0; i < this.claimableRewardEntries.length; i++) {
+          try {
+            const entry = this.claimableRewardEntries[i];
+            const collateral = collateralAssets.find(
+              (collateral) => collateral.contractKey == entry.collateralCurrency
+            );
+            const multiCollateralRewardSystemContract =
+              multiCollateral[collateral.key].LnRewardSystem;
+            transactionSettings.gasLimit = await this.getGasEstimate(
+              entry,
+              multiCollateralRewardSystemContract
+            );
+            let transaction =
+              await multiCollateralRewardSystemContract.claimReward(
+                entry.periodId, // periodId
+                BigNumber.from(entry.stakingReward), // stakingReward
+                BigNumber.from(entry.feeReward), // feeReward
+                entry.signatures.map((signer) => signer.signature),
+                transactionSettings
+              );
+            if (transaction) {
+              transactionArray.push(
+                lnrJSConnector.utils.waitForTransaction(transaction.hash)
+              );
+              // 发起右下角通知;
+              this.$pub.publish("notificationQueue", {
+                hash: transaction.hash,
+                type: BUILD_PROCESS_SETUP.CLAIM,
+                networkId: this.walletNetworkId,
+                value: `Claiming ${collateral.name} ${
+                  this.confirmTransactionStep + 1
+                } / ${this.waitProcessArray.length}`,
+              });
+            }
+          } catch {
+            (err) => console.log(err);
+          }
+        }
+      };
+      await generateTransactions();
+      return transactionArray;
     },
 
     //计算距离申领奖励开始的时间？
@@ -337,91 +453,200 @@ export default {
       try {
         this.processing = true;
 
-        const {
-          lnrJS: { LnRewardSystem, LnCollateralSystem, LnDebtSystem },
-        } = lnrJSConnector;
+        this.staticStakingRewards = [];
+        const { multiCollateral } = lnrJSConnector;
 
         const apiUrl =
           REWARD_API_BASES[this.walletNetworkId] + "rewards/" + walletAddress;
 
         const [
-          firstPeriodStartTimeRes,
+          currentPeriodIdRes,
           lastClaimPeriodIdRes,
+          claimWindowPeriodCountRes,
           allRewardEntriesRes,
-
-          totalCollateralInUsd,
-          amountDebt,
         ] = await Promise.all([
-          LnRewardSystem.firstPeriodStartTime(),
-          LnRewardSystem.userLastClaimPeriodIds(walletAddress),
+          multiCollateral["LINA"].LnRewardSystem.getCurrentPeriodId(),
+          multiCollateral["LINA"].LnRewardSystem.userLastClaimPeriodIds(
+            walletAddress
+          ),
+          multiCollateral["LINA"].LnRewardSystem.CLAIM_WINDOW_PERIOD_COUNT(),
           fetch(apiUrl),
-
-          //p ratio
-          LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress),
-          LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress),
         ]);
 
-        //当前P Ratio
-        this.currentRatioPercent =
-          totalCollateralInUsd != 0 && amountDebt[0] != 0
-            ? (totalCollateralInUsd / amountDebt[0]) * 100
-            : 0;
-
-        const firstPeriodStartTime = firstPeriodStartTimeRes.toNumber();
+        const currentPeriodId = currentPeriodIdRes.toNumber();
         const lastClaimPeriodId = lastClaimPeriodIdRes.toNumber();
+        const claimWindowPeriodCount = claimWindowPeriodCountRes.toNumber();
         const allRewardEntries = await allRewardEntriesRes.json();
 
-        const pendingRewardEntries = allRewardEntries.filter(
-          (entry) => entry.periodId > lastClaimPeriodId
+        const minClaimPeriod =
+          currentPeriodId < claimWindowPeriodCount
+            ? 1
+            : currentPeriodId - claimWindowPeriodCount;
+        const claimedReward = await lnr.feesClaimed(
+          this.walletAddress,
+          this.walletNetworkId,
+          minClaimPeriod
         );
+        const pendingRewardEntries = [];
+        allRewardEntries.map((entry) => {
+          // entry must between claimable period
+          if (
+            entry.periodId >= minClaimPeriod &&
+            entry.periodId < currentPeriodId
+          ) {
+            // check is reward already been claimed
+            const isRewardCLaimed = claimedReward.find(
+              (claim) =>
+                claim.collateralCurrency === entry.collateralCurrency &&
+                claim.periodId === entry.periodId
+            );
+            if (isRewardCLaimed === undefined) {
+              pendingRewardEntries.push(entry);
+            }
+          }
+        });
 
-        this.hasClaim = pendingRewardEntries.length === 0;
-        this.feesAreClaimable = pendingRewardEntries.length > 0;
-        this.pendingRewardEntries = pendingRewardEntries;
+        if (lastClaimPeriodId >= minClaimPeriod) {
+          this.hasClaim = true;
+        }
 
-        if (pendingRewardEntries.length > 0) {
+        const {
+          tempStakingReward,
+          tempTradingReward,
+          tempClaimableReward,
+          claimableRewardEntries,
+        } = await this.calCollateralRewards(
+          pendingRewardEntries,
+          this.walletAddress
+        );
+        this.totalStakingRewards = formatNumber(tempStakingReward / 1e18);
+        this.totalTradingRewards = formatNumber(tempTradingReward / 1e18);
+        this.claimableReward = formatNumber(tempClaimableReward / 1e18);
+        this.claimableRewardEntries = claimableRewardEntries;
+        if (tempStakingReward > 0) {
           this.closeIn = "Now";
-          this.stakingRewards = formatNumber(
-            pendingRewardEntries.reduce(
-              (prev, curr) => prev.add(BigNumber.from(curr.stakingReward)),
-              BigNumber.from(0)
-            ) / 1e18
-          );
-          this.tradingRewards = formatNumber(
-            pendingRewardEntries.reduce(
-              (prev, curr) => prev.add(BigNumber.from(curr.feeReward)),
-              BigNumber.from(0)
-            ) / 1e18
-          );
+          if (tempClaimableReward > 0) {
+            this.feesAreClaimable = true;
+          }
         } else {
           this.closeIn = "N/A";
-          this.stakingRewards = 0;
-          this.tradingRewards = 0;
         }
+
+        // this.feesAreClaimable = true;
+        // this.claimableReward = 1111000000;
+        // this.totalTradingRewards = 10000;
+        // this.totalStakingRewards = 11110000;
+        // this.staticStakingRewards = [
+        //   {
+        //     asset: "BNB",
+        //     stakingReward: 1,
+        //     tradingRewards: 1,
+        //     available: false,
+        //   },
+        //   {
+        //     asset: "LINA",
+        //     stakingReward: 1,
+        //     tradingRewards: 1,
+        //     available: true,
+        //   },
+        //   {
+        //     asset: "ETH",
+        //     stakingReward: 1,
+        //     tradingRewards: 1,
+        //     available: true,
+        //   },
+        //   {
+        //     asset: "WBTC",
+        //     stakingReward: 1,
+        //     tradingRewards: 1,
+        //     available: true,
+        //   },
+        // ];
       } catch (e) {
         console.log(e);
       } finally {
         this.processing = false;
       }
     },
+    async calCollateralRewards(pendingRewardEntries, walletAddress) {
+      let tempStakingReward = BigNumber.from(0);
+      let tempTradingReward = BigNumber.from(0);
+      let tempClaimableReward = BigNumber.from(0);
+      let claimableRewardEntries = [];
+      const { multiCollateral } = lnrJSConnector;
+      const waitCalCollateralRewards = async () => {
+        for (let i = 0; i < collateralAssets.length; i++) {
+          const collateralAsset = collateralAssets[i];
+          const collateralPendingEntries = pendingRewardEntries.filter(
+            (entry) => entry.collateralCurrency === collateralAsset.contractKey
+          );
+          if (collateralPendingEntries.length > 0) {
+            const [totalCollateralInUsd, amountDebt] = await Promise.all([
+              multiCollateral[
+                collateralAsset.key
+              ].LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress),
+              multiCollateral[
+                collateralAsset.key
+              ].LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress),
+            ]);
+
+            //当前P Ratio
+            let currentRatioPercent =
+              totalCollateralInUsd != 0 && amountDebt[0] != 0
+                ? totalCollateralInUsd.mul(100).div(amountDebt[0])
+                : BigNumber.from(0);
+
+            const stakingReward = collateralPendingEntries.reduce(
+              (prev, curr) => prev.add(BigNumber.from(curr.stakingReward)),
+              BigNumber.from(0)
+            );
+
+            const tradingRewards = collateralPendingEntries.reduce(
+              (prev, curr) => prev.add(BigNumber.from(curr.feeReward)),
+              BigNumber.from(0)
+            );
+            const isClaimable = currentRatioPercent.gte(
+              BigNumber.from(collateralAsset.targetRatio * 100)
+            );
+            if (isClaimable) {
+              claimableRewardEntries = claimableRewardEntries.concat(
+                collateralPendingEntries
+              );
+            }
+            tempStakingReward = tempStakingReward.add(stakingReward);
+            tempTradingReward = tempTradingReward.add(tradingRewards);
+            if (isClaimable) {
+              tempClaimableReward = tempClaimableReward.add(stakingReward);
+            }
+
+            this.staticStakingRewards.push({
+              asset: collateralAsset.branch
+                ? collateralAsset.name + collateralAsset.branch
+                : collateralAsset.name,
+              stakingReward: formatNumber(stakingReward / 1e18),
+              tradingRewards: formatNumber(tradingRewards / 1e18),
+              available: isClaimable,
+            });
+          }
+        }
+      };
+      await waitCalCollateralRewards();
+      return {
+        tempStakingReward,
+        tempTradingReward,
+        tempClaimableReward,
+        claimableRewardEntries,
+      };
+    },
 
     //评估gas
-    async getGasEstimate() {
+    async getGasEstimate(entry, contract) {
       try {
-        const {
-          lnrJS: { LnRewardSystem },
-        } = lnrJSConnector;
-
-        const rewardEntry = this.pendingRewardEntries[0];
-        // const signature = utils.splitSignature(
-        //     rewardEntry.signatures[0].signature
-        // );
-
-        let gasEstimate = await LnRewardSystem.estimateGas.claimReward(
-          rewardEntry.periodId, // periodId
-          BigNumber.from(rewardEntry.stakingReward), // stakingReward
-          BigNumber.from(rewardEntry.feeReward), // feeReward
-          rewardEntry.signatures.map((item) => item.signature)
+        let gasEstimate = await contract.estimateGas.claimReward(
+          entry.periodId, // periodId
+          BigNumber.from(entry.stakingReward), // stakingReward
+          BigNumber.from(entry.feeReward), // feeReward
+          entry.signatures.map((signer) => signer.signature)
         );
 
         return bufferGasLimit(gasEstimate);
@@ -432,10 +657,6 @@ export default {
 
         return bufferGasLimit(DEFAULT_GAS_LIMIT.claim);
       }
-    },
-
-    showIntroductActionModal() {
-      this.introductActionModal = true;
     },
 
     //到 etherscan 查看交易记录详情
@@ -519,45 +740,90 @@ export default {
               letter-spacing: normal;
               text-align: center;
               color: #99999a;
+              margin: 8px 0 40px 0;
             }
 
             .rewardsBox {
               display: flex;
+              flex-direction: column;
               justify-content: center;
               margin-bottom: 64px;
+              margin-bottom: 40px;
 
               .box {
-                width: 188px;
-                height: 300px;
+                width: 400px;
+                min-height: 120px;
+                height: auto;
                 border-radius: 8px;
-                background: rgba(#7eb5ff, 0.1);
-                text-align: center;
+                background: $darkFontColorLight;
+
+                .app-dark & {
+                  background: #23376a !important;
+                }
 
                 .titleMobile {
                   display: none;
                 }
 
                 img {
-                  width: 56px;
-                  margin: 74px 0 24px 0;
+                  width: 40px;
                 }
 
                 .title {
                   color: #5a575c;
                   font-family: Gilroy-Bold;
-                  font-size: 16px;
-                  font-weight: bold;
-                  font-stretch: normal;
+                  font-size: 24px;
                   font-style: normal;
-                  line-height: 1.5;
-                  letter-spacing: normal;
-                  text-align: center;
+                  font-weight: 700;
+                  line-height: 32px;
+                  /* 133.333% */
+                  text-align: left;
+                  margin: 20px 20px 10px;
+
+                  .app-dark & {
+                    color: #e5e5e5;
+                  }
                 }
 
-                .amount {
+                .rewardsContainer {
                   display: flex;
                   align-items: center;
-                  justify-content: center;
+                  justify-content: space-between;
+                  margin: 0px 20px;
+
+                  .rewardsContainerLeft {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    &.value {
+                      display: flex;
+                      flex-wrap: wrap;
+                      text-align: right;
+                      justify-content: end;
+                      max-width: 200px;
+                    }
+
+                    &.assetLocked {
+                      color: #bababa;
+
+                      .app-dark & {
+                        color: #5a575c;
+                      }
+                    }
+
+                    &.disabledRewards {
+                      .assetLocked {
+                        color: #99999a;
+
+                        .app-dark & {
+                          color: #5a575c;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                .multiCollateralContainer {
                   color: #5a575c;
                   font-family: Gilroy-Regular;
                   font-size: 16px;
@@ -565,40 +831,102 @@ export default {
                   font-style: normal;
                   line-height: 1.25;
                   letter-spacing: normal;
+                  margin: 0 10px;
 
-                  span {
-                    color: #5a575c;
-                    font-family: Gilroy-Bold;
-                    font-size: 32px;
-                    font-weight: bold;
-                    margin-right: 6px;
+                  .rewardsContainerLeft {
+                    display: flex;
+                    align-items: center;
+                    /* Align Items Vertically */
+                    justify-content: space-between;
                   }
                 }
 
-                &:nth-child(1) {
-                  margin-right: 12px;
+                .multiCollateralContainer {
+                  font-family: Gilroy;
+
+                  .assetsTable,
+                  .stakedAssetContainer {
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 5px 20px;
+                    color: #5a575c;
+                    font-size: 14px;
+
+                    .app-dark & {
+                      color: #e5e5e5;
+                    }
+
+                    &.assetLocked {
+                      color: #bababa;
+
+                      .app-dark & {
+                        color: #5a575c;
+                      }
+                    }
+                  }
+
+                  .stakedAssetContainer {
+                    border-bottom: 1px solid #e5e5e5;
+                    margin: 10px 20px;
+                    color: #99999a;
+                    padding-bottom: 10px;
+                  }
+
+                  .assetLocked {
+                    color: #5a575c;
+                  }
                 }
 
-                &:nth-child(2) {
-                  margin-left: 12px;
-                }
-              }
-            }
+                .rewardsContainerLeft,
+                .amount {
+                  color: #5a575c;
+                  font-family: Gilroy-Bold;
+                  font-style: normal;
+                  font-weight: 700;
+                  font-size: 24px;
+                  line-height: 32px;
 
-            .rewardsBoxClosed {
-              .box {
-                background: #f6f5f6;
+                  .app-dark & {
+                    color: #e5e5e5;
+                  }
 
-                .title {
-                  color: #99999a;
+                  &.disabledRewards {
+                    color: #99999a !important;
+                    .app-dark & {
+                      color: #5a575c !important;
+                    }
+                  }
+
+                  .globalInfoStyle {
+                    img {
+                      margin: 0 10px 5px 0;
+                    }
+                  }
                 }
 
                 .amount {
-                  color: #99999a;
+                  padding-left: 10px;
+                }
 
-                  span {
-                    color: #99999a;
-                  }
+                &:nth-child(1) {
+                  margin-bottom: 20px;
+                }
+              }
+
+              .stakedAssetBox {
+                height: auto;
+                background-color: #f2f7ff !important;
+
+                .app-dark & {
+                  background-color: #050d20 !important;
+                }
+              }
+
+              .exchangeAssetBox {
+                background-color: #f2f7ff !important;
+
+                .app-dark & {
+                  background-color: #050d20 !important;
                 }
               }
             }
@@ -619,21 +947,17 @@ export default {
                   font-style: normal;
                   line-height: 1.5;
                   letter-spacing: normal;
-                  color: #5a575c;
+                  color: #99999a;
 
-                  .globalInfoStyle {
-                  }
-
-                  .showInfoMobile {
-                    display: none;
+                  .app-dark & {
+                    color: #99999a !important;
                   }
                 }
 
                 .status {
-                  padding: 4px 16px;
                   text-align: center;
-                  border-radius: 12px;
                   background: #f6f5f6;
+                  border-radius: 12px;
                   font-family: Gilroy-Medium;
                   font-size: 12px;
                   font-weight: 500;
@@ -641,12 +965,12 @@ export default {
                   font-style: normal;
                   line-height: 1.33;
                   letter-spacing: normal;
-                  color: #5a575c;
+                  color: #99999a;
+                  padding: 5px;
                 }
 
                 .open {
-                  color: #1a38f8;
-                  background: rgba($color: #7eb5ff, $alpha: 0.1);
+                  color: #4e66ff !important;
                 }
 
                 .days {
@@ -657,7 +981,7 @@ export default {
                   font-style: normal;
                   line-height: 1.5;
                   letter-spacing: normal;
-                  color: #5a575c;
+                  color: #99999a;
                 }
               }
             }
@@ -687,7 +1011,7 @@ export default {
 
             &:hover {
               &:not(.disabled) {
-                background-color: #7eb5ff;
+                background-color: $darkFontColorLight;
               }
             }
 
@@ -712,6 +1036,7 @@ export default {
               cursor: not-allowed;
               background-color: #eff6ff;
               text-transform: none;
+
               &:hover {
                 &:not(.disabled) {
                   background-color: #eff6ff;
@@ -756,172 +1081,6 @@ export default {
           .claimBox {
             position: relative;
 
-            .actionBody {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              padding: 0;
-
-              .actionTitle {
-                display: none;
-              }
-
-              .actionDesc {
-                display: none;
-              }
-
-              .rewardsBox {
-                width: 74.4vw;
-                height: 80vw;
-                display: flex;
-                justify-content: space-between;
-                margin: 39px 0 24px;
-
-                .box {
-                  flex: 1;
-                  width: unset;
-                  height: unset;
-                  border-radius: 8px;
-                  background: rgba(#7eb5ff, 0.1);
-                  text-align: center;
-
-                  .titleMobile {
-                    margin: 57px 0 39px;
-                    display: block;
-                    padding: 0 15px;
-                    color: #99999a;
-                    font-family: Gilroy-Bold;
-                    font-size: 14px;
-                    font-weight: bold;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.5;
-                    letter-spacing: normal;
-                    text-align: center;
-                  }
-
-                  img {
-                    width: 56px;
-                    margin: 0px 0 16px 0;
-                  }
-
-                  .title {
-                    display: none;
-                  }
-
-                  .amount {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    color: #99999a;
-                    font-family: Gilroy-Regular;
-                    font-size: 12px;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.25;
-                    letter-spacing: normal;
-
-                    span {
-                      color: #99999a;
-                      font-family: Gilroy-Bold;
-                      font-size: 16px;
-                      font-weight: bold;
-                      margin-right: 0;
-                    }
-                  }
-
-                  &:nth-child(1) {
-                    margin-right: 8px;
-                  }
-
-                  &:nth-child(2) {
-                    margin-left: 8px;
-                  }
-                }
-              }
-
-              .rewardsBoxClosed {
-                .box {
-                  background: #f6f5f6;
-
-                  .title {
-                    color: #99999a;
-                  }
-
-                  .amount {
-                    color: #99999a;
-
-                    span {
-                      color: #99999a;
-                    }
-                  }
-                }
-              }
-
-              .infoBox {
-                .statusBox,
-                .periodBox {
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  margin-bottom: 14px;
-
-                  .title {
-                    display: flex;
-                    font-family: Gilroy-Regular;
-                    font-size: 12px;
-                    font-weight: normal;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.5;
-                    letter-spacing: normal;
-                    color: #5a575c;
-
-                    .globalInfoStyle {
-                      display: none;
-                    }
-
-                    .showInfoMobile {
-                      display: block;
-                      margin-left: 4px;
-                    }
-                  }
-
-                  .status {
-                    padding: 0;
-                    text-align: center;
-                    border-radius: 12px;
-                    background: unset;
-                    font-family: Gilroy-Medium;
-                    font-size: 12px;
-                    font-weight: 500;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.33;
-                    letter-spacing: normal;
-                    color: #5a575c;
-                  }
-
-                  .open {
-                    color: #1a38f8;
-                    background: rgba($color: #7eb5ff, $alpha: 0.1);
-                  }
-
-                  .days {
-                    font-family: Gilroy-Regular;
-                    font-size: 12px;
-                    font-weight: normal;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.5;
-                    letter-spacing: normal;
-                    color: #5a575c;
-                  }
-                }
-              }
-            }
-
             .claimBtn {
               width: 100%;
               height: 12.8vw !important;
@@ -946,7 +1105,7 @@ export default {
 
               &:hover {
                 &:not(.disabled) {
-                  background-color: #7eb5ff;
+                  background-color: $darkFontColorLight;
                 }
               }
 
@@ -959,44 +1118,189 @@ export default {
                 opacity: unset;
               }
             }
+
+            .actionBody {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              padding: 0;
+
+              .actionTitle {
+                display: none;
+              }
+
+              .actionDesc {
+                display: none;
+              }
+
+              .rewardsBox {
+                width: 80vw;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                margin: 20px;
+
+                .box {
+                  width: unset;
+                  border-radius: 8px;
+                  text-align: center;
+                  padding-bottom: 15px;
+                  height: auto;
+
+                  .titleMobile {
+                    display: block;
+                    padding: 15px;
+                    color: #5a575c;
+                    font-family: Gilroy-Bold;
+                    font-size: 24px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.5;
+                    letter-spacing: normal;
+                    text-align: left;
+
+                    .app-dark & {
+                      color: #e5e5e5;
+                    }
+                  }
+
+                  .rewardsContainer {
+                    .rewardsContainerLeft {
+                      &.value {
+                        display: flex;
+                        flex-wrap: wrap;
+                        text-align: right;
+                        justify-content: end;
+                      }
+                    }
+                  }
+
+                  img {
+                    width: 24px;
+                  }
+
+                  .title {
+                    display: none;
+                  }
+
+                  .amount {
+                    display: flex;
+
+                    .showInfoMobile {
+                      display: block;
+                      margin: 4px;
+                      height: 20px;
+                    }
+
+                    .globalInfoStyle {
+                      img {
+                        margin: 0 5px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            .infoBox {
+              .statusBox,
+              .periodBox {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 14px;
+
+                .title {
+                  display: flex;
+                  font-family: Gilroy-Regular;
+                  font-size: 14px !important;
+                  font-weight: normal;
+                  font-stretch: normal;
+                  font-style: normal;
+                  line-height: 1.5;
+                  letter-spacing: normal;
+                  color: #5a575c;
+
+                  .globalInfoStyle {
+                    display: none;
+                  }
+
+                  .showInfoMobile {
+                    display: block;
+                    margin-left: 4px;
+                  }
+                }
+
+                .status {
+                  padding: 0 !important;
+                  text-align: center;
+                  border-radius: 12px;
+                  background: unset;
+                  font-family: Gilroy-Bold;
+                  font-size: 12px;
+                  font-weight: 700;
+                  font-stretch: normal;
+                  font-style: normal;
+                  line-height: 1.33;
+                  letter-spacing: normal;
+                  color: #99999a;
+                }
+
+                .open {
+                  color: #1a38f8;
+                }
+
+                .days {
+                  font-family: Gilroy-Regular;
+                  font-size: 12px;
+                  font-weight: normal;
+                  font-stretch: normal;
+                  font-style: normal;
+                  line-height: 1.5;
+                  letter-spacing: normal;
+                  color: #5a575c;
+                }
+              }
+            }
           }
         }
       }
     }
+  }
 
-    .introductActionModal {
-      .ivu-modal-mask {
-        z-index: 10000 !important;
-      }
+  .introductActionModal {
+    .ivu-modal-mask {
+      z-index: 10000 !important;
+    }
 
-      .ivu-modal-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000 !important;
+    .ivu-modal-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000 !important;
 
-        .ivu-modal {
-          width: 74.66vw !important;
-          height: 36.8vw;
-          top: 0 !important;
+      .ivu-modal {
+        width: 74.66vw !important;
+        height: 36.8vw;
+        top: 0 !important;
 
-          .ivu-modal-content {
+        .ivu-modal-content {
+          height: 100%;
+
+          .ivu-modal-body {
             height: 100%;
+            padding: 24px;
 
-            .ivu-modal-body {
-              height: 100%;
-              padding: 24px;
+            .title {
+              font-family: Gilroy-Bold;
+              font-size: 16px;
+              margin-bottom: 9px;
+            }
 
-              .title {
-                font-family: Gilroy-Bold;
-                font-size: 16px;
-                margin-bottom: 9px;
-              }
-
-              .context {
-                font-family: Gilroy;
-                font-size: 14px;
-              }
+            .context {
+              font-family: Gilroy;
+              font-size: 14px;
             }
           }
         }

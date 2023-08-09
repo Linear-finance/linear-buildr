@@ -15,10 +15,27 @@
                 /></span>
                 .
               </template>
-              <template v-else> Burn ℓUSD to unlock staked LINA </template>
+              <template v-else>
+                Burn ℓUSD to unlock your staked assets
+              </template>
             </div>
+            <muticollateralSelector
+              :selectedCollateral="selectedCollateral"
+              :setSelectedCollateral="setSelectedCollateral"
+            />
             <div class="actionRate" v-if="isBinanceNetwork">
-              1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
+              {{
+                selectedCollateral !== undefined
+                  ? "1 " + selectedCollateral.name
+                  : "-"
+              }}
+              =
+              {{
+                selectedCollateral !== undefined
+                  ? formatNumberFromBigNumber(burnData.LINA2USDBN, 4)
+                  : "-"
+              }}
+              ℓUSD
             </div>
             <div
               class="actionInputItem"
@@ -29,17 +46,36 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
-                  <img v-else src="@/static/dark-theme/LINA_logo.svg" />
+                  <img
+                    v-if="this.selectedCollateral == undefined"
+                    :src="
+                      theme == 'light'
+                        ? require('@/static/LINA_logo.svg')
+                        : require('@/static/LINA_logo_dark.svg')
+                    "
+                  />
+                  <img
+                    v-else-if="theme == 'dark'"
+                    :src="require(`@/static/${selectedCollateral.darkimg}`)"
+                  />
+                  <img
+                    v-else
+                    :src="require(`@/static/${selectedCollateral.img}`)"
+                  />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">
-                    Unstake LINA
+                    Unstake
+                    {{
+                      selectedCollateral !== undefined
+                        ? selectedCollateral.name
+                        : ""
+                    }}
                     <Tooltip
                       max-width="305"
                       placement="top"
                       class="tip globalInfoStyle"
-                      content="Amount of LINA unstaked may vary due to block times and price fluctuations in pledge tokens."
+                      content="Amount of Assets unstaked may vary due to block times and price fluctuations in pledge tokens."
                       offset="0 4"
                     >
                       <img
@@ -51,7 +87,10 @@
                   </div>
                   <div
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 0 }"
+                    :class="{
+                      active: activeItemBtn == 0,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
                     v-if="isMobile"
                     @click="clickUnstakeMax"
                   >
@@ -73,6 +112,7 @@
                     @on-focus="inputFocus(0)"
                     @on-blur="inputBlur(0)"
                     :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
                   />
                 </div>
               </div>
@@ -105,7 +145,10 @@
                   <div class="itemTypeTitle">Burn</div>
                   <div
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 1 }"
+                    :class="{
+                      active: activeItemBtn == 1,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
                     @click="clickBurnMax"
                   >
                     Max
@@ -126,6 +169,7 @@
                     @on-blur="inputBlur(1)"
                     placeholder="0"
                     :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
                   />
                 </div>
               </div>
@@ -153,7 +197,10 @@
                   <div class="itemTypeTitle">P Ratio</div>
                   <div
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 2 }"
+                    :class="{
+                      active: activeItemBtn == 2,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
                     @click="clickTargetRatio"
                   >
                     Target ratio
@@ -174,6 +221,7 @@
                     @on-blur="inputBlur(2)"
                     :placeholder="inputData.ratio == 0 ? '0' : 'N/A'"
                     :formatter="(value) => formatterInput(value, 0)"
+                    :disabled="this.selectedCollateral == undefined"
                   />
                 </div>
               </div>
@@ -190,7 +238,13 @@
             <gasEditor v-if="!isMobile && isBinanceNetwork"></gasEditor>
           </div>
 
-          <div class="actionBodyMobile">
+          <div
+            class="actionBodyMobile"
+            :class="{
+              allowScroll:
+                errors.unStakeMsg || errors.ratioMsg || errors.amountMsg,
+            }"
+          >
             <div
               class="errMsg"
               :style="{
@@ -204,46 +258,94 @@
               {{ errors.unStakeMsg }}
               {{ errors.ratioMsg }}
               {{ errors.amountMsg }}
+              <img
+                @click="closeErrorMobile"
+                class="closeIcon"
+                src="@/static/close_icon.svg"
+              />
             </div>
+            <muticollateralSelector
+              :selectedCollateral="selectedCollateral"
+              :setSelectedCollateral="setSelectedCollateral"
+            />
             <div class="actionRate">
-              1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
+              {{
+                selectedCollateral == undefined
+                  ? "-"
+                  : "1 " + selectedCollateral.name
+              }}
+              =
+              {{
+                selectedCollateral == undefined
+                  ? "-"
+                  : formatNumberFromBigNumber(burnData.LINA2USDBN, 4)
+              }}
+              ℓUSD
             </div>
 
-            <div class="inputGroupBox">
-              <div
-                class="actionInputItem"
-                :class="{
-                  error: errors.unStakeMsg,
-                }"
-                @click="changeFocusItem(0)"
-              >
-                <div class="inputBox">
+            <div
+              class="actionInputItem"
+              :class="{
+                error: errors.unStakeMsg,
+              }"
+              @click="changeFocusItem(3)"
+            >
+              <div class="itemLeft">
+                <div class="itemIcon">
                   <img
-                    v-if="theme === 'light'"
-                    class="showInfo"
-                    src="@/static/info_white.svg"
-                    @click="showIntroductActionModal"
+                    v-if="this.selectedCollateral == undefined"
+                    :src="
+                      theme == 'light'
+                        ? require('@/static/LINA_logo.svg')
+                        : require('@/static/LINA_logo_dark.svg')
+                    "
+                  />
+                  <img
+                    v-else-if="theme == 'dark'"
+                    :src="require(`@/static/${selectedCollateral.darkimg}`)"
                   />
                   <img
                     v-else
-                    class="showInfo"
-                    src="@/static/dark-theme/info_white.svg"
-                    @click="showIntroductActionModal"
+                    :src="require(`@/static/${selectedCollateral.img}`)"
                   />
-
-                  <img
-                    v-if="theme === 'light'"
-                    class="logo"
-                    src="@/static/LINA_logo.svg"
-                  />
-                  <img
-                    v-else
-                    class="logo"
-                    src="@/static/dark-theme/LINA_logo.svg"
-                  />
-
-                  <div class="itemTypeTitle">Unstake LINA</div>
-
+                </div>
+                <div class="itemType">
+                  <div class="itemTypeTitle">
+                    Unstake
+                    {{
+                      selectedCollateral !== undefined
+                        ? selectedCollateral.name
+                        : ""
+                    }}
+                    <Tooltip
+                      max-width="305"
+                      placement="top"
+                      class="tip globalInfoStyle"
+                      content="Amount of Assets unstaked may vary due to block times and price fluctuations in pledge tokens."
+                      offset="0 4"
+                    >
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_white.svg"
+                      />
+                      <img v-else src="@/static/dark-theme/info_white.svg" />
+                    </Tooltip>
+                  </div>
+                  <div
+                    class="itemTypeBtn"
+                    :class="{
+                      active: activeItemBtn == 3,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    v-if="isMobile"
+                    @click="clickUnstakeMax"
+                  >
+                    Max
+                  </div>
+                </div>
+              </div>
+              <div class="itemRight">
+                <div class="inputRect">
                   <InputNumber
                     class="input"
                     ref="itemInput3"
@@ -255,41 +357,53 @@
                     @on-change="changeUnStake"
                     @on-focus="inputFocus(3)"
                     @on-blur="inputBlur(3)"
-                    :formatter="(value) => floor(value, DECIMAL_PRECISION)"
+                    :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
                   />
+                </div>
+              </div>
 
+              <!-- <div
+                class="itemErrMsg"
+                :style="{
+                  opacity: errors.unStakeMsg ? '1' : '0',
+                }"
+              >
+                {{ errors.unStakeMsg }}
+              </div> -->
+            </div>
+
+            <div
+              class="actionInputItem"
+              :class="{
+                error: errors.amountMsg,
+              }"
+              @click="changeFocusItem(4)"
+            >
+              <div class="itemLeft">
+                <div class="itemIcon">
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
+                </div>
+                <div class="itemType">
+                  <div class="itemTypeTitle">Burn</div>
                   <div
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 3 }"
-                    v-if="isMobile"
-                    @click="clickUnstakeMax"
+                    :class="{
+                      active: activeItemBtn == 4,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    @click="clickBurnMax"
                   >
                     Max
                   </div>
                 </div>
               </div>
-
-              <div
-                class="actionInputItem"
-                :class="{
-                  error: errors.amountMsg,
-                }"
-                @click="changeFocusItem(1)"
-              >
-                <div class="inputBox">
-                  <img
-                    v-if="theme === 'light'"
-                    class="logo"
-                    src="@/static/currency/lUSD.svg"
-                  />
-                  <img
-                    v-else
-                    class="logo"
-                    src="@/static/dark-theme/currency/lUSD.svg"
-                  />
-
-                  <div class="itemTypeTitle">Burn ℓUSD</div>
-
+              <div class="itemRight">
+                <div class="inputRect">
                   <InputNumber
                     class="input"
                     ref="itemInput4"
@@ -301,18 +415,19 @@
                     @on-focus="inputFocus(4)"
                     @on-blur="inputBlur(4)"
                     placeholder="0"
-                    :formatter="(value) => floor(value, DECIMAL_PRECISION)"
+                    :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
                   />
-
-                  <div
-                    class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 4 }"
-                    @click="clickBurnMax"
-                  >
-                    Max
-                  </div>
                 </div>
               </div>
+              <!-- <div
+                class="itemErrMsg"
+                :style="{
+                  opacity: errors.amountMsg ? '1' : '0',
+                }"
+              >
+                {{ errors.amountMsg }}
+              </div> -->
             </div>
 
             <div
@@ -320,10 +435,29 @@
               :class="{
                 error: errors.ratioMsg,
               }"
+              @click="changeFocusItem(5)"
             >
-              <div class="ratioInputBox">
-                <div class="box">
+              <div class="itemLeft">
+                <div class="itemIcon">
+                  <img v-if="theme === 'light'" src="@/static/percentage.svg" />
+                  <img v-else src="@/static/dark-theme/percentage.svg" />
+                </div>
+                <div class="itemType">
                   <div class="itemTypeTitle">P Ratio</div>
+                  <div
+                    class="itemTypeBtn"
+                    :class="{
+                      active: activeItemBtn == 5,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    @click="clickTargetRatio"
+                  >
+                    Target ratio
+                  </div>
+                </div>
+              </div>
+              <div class="itemRight">
+                <div class="inputRect">
                   <InputNumber
                     class="input"
                     ref="itemInput5"
@@ -335,18 +469,19 @@
                     @on-focus="inputFocus(5)"
                     @on-blur="inputBlur(5)"
                     :placeholder="inputData.ratio == 0 ? '0' : 'N/A'"
-                    :formatter="(value) => floor(value, 0)"
+                    :formatter="(value) => formatterInput(value, 0)"
+                    :disabled="this.selectedCollateral == undefined"
                   />
                 </div>
-
-                <div
-                  class="itemTypeBtn"
-                  :class="{ active: activeItemBtn == 5 }"
-                  @click="clickTargetRatio"
-                >
-                  Target ratio
-                </div>
               </div>
+              <!-- <div
+                class="itemErrMsg"
+                :style="{
+                  opacity: errors.ratioMsg ? '1' : '0',
+                }"
+              >
+                {{ errors.ratioMsg }}
+              </div> -->
             </div>
 
             <gasEditor v-if="isMobile && isBinanceNetwork"></gasEditor>
@@ -392,9 +527,9 @@
       :mask="true"
       class="introductActionModal"
     >
-      <div class="title">Unstake LINA</div>
+      <div class="title">Unstake Assets</div>
       <div class="context">
-        Amount of LINA unstaked may vary due to block times and price
+        Amount of Assets unstaked may vary due to block times and price
         fluctuations in pledge tokens.
       </div>
     </Modal>
@@ -421,8 +556,13 @@ import {
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
+  formatByStoreCollateral,
   formatEtherToNumber,
   formatNumber,
+  getAssetObjectInfo,
+  parseUnitAndReformat,
+  formatNumberFromBigNumber,
+  replaceWaitProcessString,
 } from "@/assets/linearLibrary/linearTools/format";
 
 import { BigNumber, utils } from "ethers";
@@ -439,6 +579,7 @@ import {
   MAX_DECIMAL_LENGTH,
   n2bn,
   bn2n,
+  n2bnForAsset,
 } from "@/common/bnCalc";
 
 import {
@@ -447,17 +588,20 @@ import {
   // getPriceRatesFromApi,
   getBuildRatio,
 } from "@/assets/linearLibrary/linearTools/request";
+import muticollateralSelector from "../../selector/muticollateralSelector.vue";
 
 import {
   BUILD_PROCESS_SETUP,
   DECIMAL_PRECISION,
 } from "@/assets/linearLibrary/linearTools/constants/process";
+import { LINA } from "~/assets/linearLibrary/linearTools/constants/currency";
 
 export default {
   name: "burn",
   data() {
     return {
       DECIMAL_PRECISION,
+      formatNumberFromBigNumber,
       formatEtherToNumber,
       floor: _.floor, //向下取整
       actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误) Subpages(m0 default, m1 waiting)
@@ -508,10 +652,12 @@ export default {
 
       formatterInput,
       chainChangeFromSubscribe: "",
+      selectedCollateral: undefined,
     };
   },
   components: {
     gasEditor,
+    muticollateralSelector,
   },
 
   watch: {
@@ -520,6 +666,9 @@ export default {
     isBinanceNetwork() {},
     walletNetworkId() {},
     isMobile() {},
+    selectedCollateral() {
+      this.getBurnData();
+    },
   },
   computed: {
     //burn按钮禁止状态
@@ -581,46 +730,70 @@ export default {
     }
   },
   methods: {
+    closeErrorMobile() {
+      this.errors.stakeMsg = "";
+      this.errors.amountMsg = "";
+      this.errors.ratioMsg = "";
+    },
     //获取数据
     async getBurnData(walletAddress) {
       try {
         this.processing = true;
 
-        let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-        // if (this.isEthereumNetwork) {
-        //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-        // } else if (this.isBinanceNetwork) {
-        //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-        // }
+        this.processing = true;
+        const walletAddress = this.walletAddress;
+
+        if (walletAddress === undefined) return;
+        if (this.selectedCollateral === undefined) return;
 
         const {
-          lnrJS: { LnCollateralSystem, lUSD, LnDebtSystem, LnRewardLocker },
+          lnrJS: { lUSD, LnRewardLocker },
           utils,
         } = lnrJSConnector;
 
-        const LINABytes = utils.formatBytes32String("LINA");
+        const LnDebtSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnDebtSystem;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
+        const LINABytes = utils.formatBytes32String(
+          this.selectedCollateral.contractKey
+        );
+        const LinearFinance =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LinearFinance;
 
         const results = await Promise.all([
-          LnCollateralSystem.userCollateralData(walletAddress, LINABytes), //LINA抵押数量
+          LnCollateralSystem.userCollateralData(walletAddress, LINABytes), //ATH抵押数量
           LnRewardLocker.balanceOf(walletAddress),
           lUSD.balanceOf(walletAddress), //lUSD余额
-          LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress), //个人全部抵押物兑lUSD,用于计算pratio
-          getBuildRatio(), //目标抵押率
-          LnProxy.balanceOf(walletAddress), //LINA余额
+          LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress),
+          getBuildRatio(this.selectedCollateral.key), //目标抵押率
+          LinearFinance.balanceOf(walletAddress), //Collateral余额
           LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress), //总债务
         ]);
 
         const [
           stakingLina,
           lockLina,
-          amountlUSD,
+          amountlUSDForColl,
           totalCollateralInUsd,
-          buildRatio,
+          buildRatioForCurrentPercent,
           avaliableLINA,
-          amountDebt,
-        ] = results.map(formatEtherToNumber);
+          amountDebtUnformat,
+        ] = results.map(formatByStoreCollateral);
+
+        const amountDebt = formatEtherToNumber(
+          await LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
+        );
+
+        const amountlUSD = formatEtherToNumber(
+          await lUSD.balanceOf(walletAddress)
+        );
 
         let currentRatioPercent = n2bn("0");
+        const buildRatio = await getBuildRatio(this.selectedCollateral.key);
 
         if (results[3].gt("0") && results[6][0].gt("0")) {
           currentRatioPercent = bnMul(
@@ -629,38 +802,53 @@ export default {
           );
         }
 
-        const targetRatioPercent = 100 / buildRatio; //目标抵押率
+        const targetRatioPercent =
+          this.selectedCollateral.key == LINA
+            ? 100 / formatEtherToNumber(buildRatio)
+            : 100 * buildRatio;
 
-        const priceRates = await getPriceRates(["LINA", "lUSD"]);
+        const priceRateKey = this.selectedCollateral.contractKey;
+        const priceRates = await getPriceRates([priceRateKey, "lUSD"]);
         // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
-        const LINAPrice = priceRates.LINA / priceRates.lUSD;
-        const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
+        const LINAPrice = priceRates[priceRateKey] / priceRates.lUSD;
+        const LINAPriceBN = bnDiv(priceRates[priceRateKey], priceRates.lUSD);
 
-        this.burnData.LINA = _.floor(avaliableLINA, 2);
+        this.burnData.LINA = _.floor(avaliableLINA, 4);
         this.burnData.LINABN = results[5];
 
         this.burnData.LINA2USD = _.floor(LINAPrice, 4);
         this.burnData.LINA2USDBN = LINAPriceBN;
 
-        this.burnData.staked = _.floor(stakingLina, 2);
+        this.burnData.staked = _.floor(stakingLina, 4);
         this.burnData.stakedBN = results[0];
 
-        this.burnData.lock = _.floor(lockLina, 2);
-        this.burnData.lockBN = results[1];
+        this.burnData.lock = _.floor(lockLina, 4);
 
-        this.burnData.lUSD = _.floor(amountlUSD, 2);
+        if (this.selectedCollateral.key == LINA) {
+          this.burnData.lockBN = results[1];
+        } else {
+          this.burnData.lockBN = n2bnForAsset("0");
+        }
+
+        this.burnData.lUSD = _.floor(amountlUSD, 4);
         this.burnData.lUSDBN = results[2];
 
-        this.burnData.debt = _.floor(amountDebt[0], 2);
+        this.burnData.debt = _.floor(amountDebt[0], 4);
         this.burnData.debtBN = results[6][0];
 
         this.burnData.targetRatio = targetRatioPercent;
-        this.burnData.currentRatio = formatEtherToNumber(currentRatioPercent);
+        this.burnData.currentRatio =
+          formatByStoreCollateral(currentRatioPercent);
         this.burnData.currentRatioBN = currentRatioPercent;
 
         //获取当前抵押率
         this.inputData.ratio = this.burnData.currentRatio;
+        this.inputData.unstake = null;
+        this.inputData.amount = null;
+        this.errors.unStakeMsg = "";
+        this.errors.amountMsg = "";
+        this.errors.ratioMsg = "";
       } catch (e) {
         console.log(e, "getBurnData err");
       } finally {
@@ -670,6 +858,10 @@ export default {
 
     //点击 burn
     async clickBurn() {
+      const minCollateral = getAssetObjectInfo(
+        this.selectedCollateral.key
+      ).minCollateral;
+
       if (!this.burnDisabled) {
         try {
           if (this.isEthereumNetwork) {
@@ -682,21 +874,51 @@ export default {
             this.waitProcessArray = [];
 
             if (
-              this.actionDatas.amount.gte(n2bn("0.01")) &&
+              this.actionDatas.amount.gte(n2bn(minCollateral)) &&
               this.actionDatas.unStake.gte(n2bn("0.01"))
             ) {
+              if (
+                BUILD_PROCESS_SETUP.BURN_UNSTAKING.includes(
+                  "[REPLACE_CURRENCY]"
+                )
+              ) {
+                BUILD_PROCESS_SETUP.BURN_UNSTAKING = _.replace(
+                  BUILD_PROCESS_SETUP.BURN_UNSTAKING,
+                  "[REPLACE_CURRENCY]",
+                  this.selectedCollateral.name
+                );
+              } else {
+                BUILD_PROCESS_SETUP.BURN_UNSTAKING = replaceWaitProcessString(
+                  BUILD_PROCESS_SETUP.BURN_UNSTAKING,
+                  this.selectedCollateral.name
+                );
+              }
               this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN_UNSTAKING);
             } else {
               if (this.actionDatas.amount.gte(n2bn("0.01"))) {
                 //需要先burn
+
                 this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN);
               }
 
               if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
+                if (
+                  BUILD_PROCESS_SETUP.UNSTAKING.includes("[REPLACE_CURRENCY]")
+                ) {
+                  BUILD_PROCESS_SETUP.UNSTAKING = _.replace(
+                    BUILD_PROCESS_SETUP.UNSTAKING,
+                    "[REPLACE_CURRENCY]",
+                    this.selectedCollateral.name
+                  );
+                } else {
+                  BUILD_PROCESS_SETUP.UNSTAKING = replaceWaitProcessString(
+                    BUILD_PROCESS_SETUP.UNSTAKING,
+                    this.selectedCollateral.name
+                  );
+                }
                 this.waitProcessArray.push(BUILD_PROCESS_SETUP.UNSTAKING);
               }
             }
-
             this.confirmTransactionStep = 0;
             this.actionTabs = "m1"; //进入等待页
 
@@ -764,27 +986,25 @@ export default {
       this.confirmTransactionNetworkId = this.walletNetworkId;
 
       //burn多一点点,防止unstake出错
-      let tempBurnAmount = n2bn(_.ceil(bn2n(burnAmount), 2));
+      let tempBurnAmount = n2bnForAsset(_.ceil(bn2n(burnAmount), 2));
       if (tempBurnAmount.lte(this.burnData.lUSDBN)) {
         burnAmount = tempBurnAmount;
       }
-
       //unstake少一点,防止出错
-      unstakeAmount = n2bn(_.floor(bn2n(unstakeAmount), 2));
+      unstakeAmount = n2bnForAsset(_.floor(bn2n(unstakeAmount), 4));
 
-      const {
-        lnrJS: { LnCollateralSystem },
-        utils,
-      } = lnrJSConnector;
+      const { utils } = lnrJSConnector;
 
+      const LnCollateralSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnCollateralSystem;
       const burnGasLimit = await this.getBurnAndUnstakeGasEstimateMax(
         burnAmount,
         unstakeAmount
       );
-
       let transaction = await LnCollateralSystem.burnAndUnstakeMax(
         burnAmount,
-        utils.formatBytes32String("LINA"),
+        utils.formatBytes32String(this.selectedCollateral.contractKey),
         {
           gasPrice: this.$store.state?.gasDetails?.price,
           gasLimit: burnGasLimit,
@@ -824,16 +1044,15 @@ export default {
       this.confirmTransactionStatus = false;
       this.confirmTransactionNetworkId = this.walletNetworkId;
 
-      let tempBurnAmount = n2bn(_.ceil(bn2n(burnAmount), 2));
+      let tempBurnAmount = n2bnForAsset(_.ceil(bn2n(burnAmount), 2));
       if (tempBurnAmount.lte(this.burnData.lUSDBN)) {
         burnAmount = tempBurnAmount;
       }
 
-      const {
-        lnrJS: { LnBuildBurnSystem },
-        utils,
-      } = lnrJSConnector;
-
+      const { utils } = lnrJSConnector;
+      const LnBuildBurnSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnBuildBurnSystem;
       const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
       let transaction = await LnBuildBurnSystem.BurnAsset(burnAmount, {
@@ -875,17 +1094,19 @@ export default {
       this.confirmTransactionNetworkId = this.walletNetworkId;
 
       //unstake少一点,防止出错
-      unstakeAmount = n2bn(_.floor(bn2n(unstakeAmount), 2));
+      unstakeAmount = n2bn(_.floor(bn2n(unstakeAmount), 4));
 
-      const {
-        lnrJS: { LnCollateralSystem },
-        utils,
-      } = lnrJSConnector;
+      unstakeAmount = n2bn(_.floor(bn2n(unstakeAmount), 4));
 
+      const { utils } = lnrJSConnector;
       const unstakeGasLimit = await this.getUnstakeGasEstimate(unstakeAmount);
 
+      const LnCollateralSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnCollateralSystem;
+
       let transaction = await LnCollateralSystem.Redeem(
-        utils.formatBytes32String("LINA"),
+        utils.formatBytes32String(this.selectedCollateral.contractKey),
         unstakeAmount,
         {
           gasPrice: this.$store.state?.gasDetails?.price,
@@ -926,10 +1147,10 @@ export default {
     //评估 二合一 gas
     async getBurnAndUnstakeGasEstimateMax(burnAmount, unstakeAmount) {
       try {
-        const {
-          lnrJS: { LnCollateralSystem },
-          utils,
-        } = lnrJSConnector;
+        const { utils } = lnrJSConnector;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
 
         if (
           burnAmount.lte("0") &&
@@ -937,16 +1158,13 @@ export default {
         ) {
           throw new Error("invalid input");
         }
-
         let gasEstimate =
           await LnCollateralSystem.estimateGas.burnAndUnstakeMax(
             burnAmount,
-            utils.formatBytes32String("LINA")
+            utils.formatBytes32String(this.selectedCollateral.contractKey)
           );
-
         return bufferGasLimit(gasEstimate);
       } catch (e) {
-        // console.log(e);
         return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
       }
     },
@@ -954,11 +1172,9 @@ export default {
     //评估 burn gas
     async getBurnGasEstimate(burnAmount) {
       try {
-        const {
-          lnrJS: { LnBuildBurnSystem },
-          utils,
-        } = lnrJSConnector;
-
+        const LnBuildBurnSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnBuildBurnSystem;
         let gasEstimate = await LnBuildBurnSystem.estimateGas.BurnAsset(
           burnAmount
         );
@@ -972,13 +1188,13 @@ export default {
     //评估 unstake gas
     async getUnstakeGasEstimate(unstakeAmount) {
       try {
-        const {
-          lnrJS: { LnCollateralSystem },
-          utils,
-        } = lnrJSConnector;
+        const { utils } = lnrJSConnector;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
 
         let gasEstimate = await LnCollateralSystem.estimateGas.Redeem(
-          utils.formatBytes32String("LINA"),
+          utils.formatBytes32String(this.selectedCollateral.contractKey),
           unstakeAmount
         );
 
@@ -1070,7 +1286,7 @@ export default {
           this.resetInputData();
 
           if (this.burnData.stakedBN.eq("0")) {
-            this.errors.unStakeMsg = "There is no LINA staked on the contract.";
+            this.errors.unStakeMsg = ` There is no ${this.selectedCollateral.name} staked on the contract.`;
             return;
           }
 
@@ -1106,7 +1322,7 @@ export default {
 
             let lockLINAToBuildLUSDBN = this.burnData.lockBN
               .mul(this.burnData.LINA2USDBN)
-              .div(n2bn((this.burnData.targetRatio / 100).toString()));
+              .div(n2bnForAsset((this.burnData.targetRatio / 100).toString()));
             if (this.burnData.debtBN.lte(lockLINAToBuildLUSDBN)) {
               //债务 <= lockLINAToLUSDBN 时，则可以直接解锁所有stake lina
 
@@ -1126,7 +1342,7 @@ export default {
                 this.actionDatas.ratio = n2bn(0);
               } else {
                 //有债务
-                this.inputData.ratio = formatEtherToNumber(
+                this.inputData.ratio = formatByStoreCollateral(
                   bnDiv(lockLINAToLUSDBN, this.burnData.debtBN)
                 );
                 this.actionDatas.ratio = bnDiv(
@@ -1175,7 +1391,7 @@ export default {
           this.resetInputData();
 
           if (this.burnData.stakedBN.eq("0") && this.burnData.lockBN.eq("0")) {
-            this.errors.amountMsg = "There is no LINA staked on the contract.";
+            this.errors.unStakeMsg = ` There is no ${this.selectedCollateral.name} staked on the contract.`;
             return;
           }
 
@@ -1186,13 +1402,15 @@ export default {
 
           if (this.burnData.lUSDBN.gte(this.burnData.debtBN)) {
             //lUSD >= debt
-            this.inputData.unStake = formatEtherToNumber(
+            this.inputData.unStake = formatByStoreCollateral(
               this.burnData.stakedBN
             );
             this.inputData.amount = formatEtherToNumber(this.burnData.debtBN);
             this.inputData.ratio = null;
 
-            this.actionDatas.unStake = this.burnData.stakedBN;
+            this.actionDatas.unStake = n2bnForAsset(
+              formatByStoreCollateral(this.burnData.stakedBN)
+            );
             this.actionDatas.amount = this.burnData.debtBN;
             this.actionDatas.ratio = null;
           } else {
@@ -1200,28 +1418,39 @@ export default {
             this.inputData.amount = formatEtherToNumber(this.burnData.lUSDBN);
             this.actionDatas.amount = this.burnData.lUSDBN;
 
-            let ratioAfterBurn = n2bn("0");
+            let ratioAfterBurn = n2bnForAsset("0");
 
             //lUSD不足还清所有债务，则计算销毁所有lUSD后的抵押率，大于目标则解锁大于部分，小于等于则不解锁LINA
             ratioAfterBurn = bnMul(
               bnDiv(
                 bnMul(
-                  bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                  this.burnData.LINA2USDBN
+                  bnAdd(
+                    parseUnitAndReformat(this.burnData.stakedBN),
+                    parseUnitAndReformat(this.burnData.lockBN)
+                  ),
+                  // this.burnData.LINA2USDBN
+                  parseUnitAndReformat(this.burnData.LINA2USDBN, false)
                 ),
-                bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
+                bnSub(
+                  parseUnitAndReformat(this.burnData.debtBN),
+                  parseUnitAndReformat(this.burnData.lUSDBN)
+                )
               ),
-              n2bn("100")
+              n2bnForAsset("100")
             );
 
             if (ratioAfterBurn.gt(n2bn(this.burnData.targetRatio.toString()))) {
               //销毁后大于 target ratio
               let allCanUnstakeAfterBurn = bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                n2bnForAsset(
+                  formatByStoreCollateral(
+                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN)
+                  )
+                ),
                 bnDiv(
                   bnSub(
                     ratioAfterBurn,
-                    n2bn(this.burnData.targetRatio.toString())
+                    n2bnForAsset(this.burnData.targetRatio.toString())
                   ),
                   ratioAfterBurn
                 )
@@ -1243,7 +1472,7 @@ export default {
             } else {
               //销毁后小于等于 target ratio
               this.inputData.unStake = 0;
-              this.actionDatas.unStake = n2bn("0");
+              this.actionDatas.unStake = n2bnForAsset("0");
             }
             // let pratioAfterBurnAndStake = bnMul(
             //                                 bnDiv(
@@ -1269,7 +1498,9 @@ export default {
             // this.actionDatas.ratio = pratioAfterBurnAndStake;
 
             this.inputData.ratio = this.burnData.targetRatio;
-            this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
+            this.actionDatas.ratio = n2bnForAsset(
+              this.burnData.targetRatio.toString()
+            );
           }
         }
       } catch (error) {}
@@ -1297,17 +1528,24 @@ export default {
           ) {
             //下调抵押率，当前抵押率大于目标抵押率，销毁LINA到抵押率刚好
             let needUnstake = bnMul(
-              bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+              bnAdd(
+                parseUnitAndReformat(this.burnData.stakedBN),
+                parseUnitAndReformat(this.burnData.lockBN)
+              ),
               bnDiv(
                 bnSub(
-                  this.burnData.currentRatioBN,
-                  n2bn(this.burnData.targetRatio.toString())
+                  parseUnitAndReformat(this.burnData.currentRatioBN),
+                  n2bnForAsset(this.burnData.targetRatio.toString())
                 ),
-                this.burnData.currentRatioBN
+                parseUnitAndReformat(this.burnData.currentRatioBN)
               )
             );
 
-            if (needUnstake.lte(this.burnData.stakedBN)) {
+            if (
+              parseUnitAndReformat(needUnstake, false).lte(
+                parseUnitAndReformat(this.burnData.stakedBN)
+              )
+            ) {
               // <= stake
               this.inputData.unStake = formatEtherToNumber(needUnstake);
               this.actionDatas.unStake = needUnstake;
@@ -1318,7 +1556,6 @@ export default {
               );
               this.actionDatas.unStake = this.burnData.stakedBN;
             }
-
             this.inputData.amount = formatEtherToNumber(0);
             this.inputData.ratio = this.burnData.targetRatio;
 
@@ -1335,10 +1572,13 @@ export default {
 
             retainlUSD = bnDiv(
               bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                this.burnData.LINA2USDBN
+                bnAdd(
+                  parseUnitAndReformat(this.burnData.stakedBN),
+                  parseUnitAndReformat(this.burnData.lockBN)
+                ),
+                parseUnitAndReformat(this.burnData.LINA2USDBN, false)
               ),
-              n2bn((this.burnData.targetRatio / 100).toString())
+              n2bnForAsset((this.burnData.targetRatio / 100).toString())
             );
 
             burnlUSD = bnSub(this.burnData.debtBN, retainlUSD);
@@ -1353,7 +1593,9 @@ export default {
 
             this.actionDatas.unStake = n2bn("0");
             this.actionDatas.amount = burnlUSD;
-            this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
+            this.actionDatas.ratio = n2bnForAsset(
+              this.burnData.targetRatio.toString()
+            );
           } else {
             //抵押率刚好则不动
             this.inputData.unStake = 0;
@@ -1369,16 +1611,14 @@ export default {
       try {
         if (this.isBinanceNetwork) {
           this.resetErrorsMsg();
-          // this.resetInputData();
-
           if (this.burnData.stakedBN.eq("0")) {
-            this.errors.unStakeMsg = "There is no LINA staked on the contract.";
+            this.errors.unStakeMsg = ` There is no ${this.selectedCollateral.name} staked on the contract.`;
             return;
           }
 
           if (!unstakedAmount) {
             this.errors.unStakeMsg =
-              "You can't unstake the amount of LINA above.";
+              this.errors.unStakeMsg = `You can't unstake the amount of ${this.selectedCollateral.name} above.`;
             return;
           } else {
             this.errors.unStakeMsg = "";
@@ -1387,8 +1627,7 @@ export default {
           //一个LINA都解锁不了
           if (n2bn(unstakedAmount.toString()).gt(this.burnData.stakedBN)) {
             this.inputData.unStake = unstakedAmount;
-            this.errors.unStakeMsg =
-              "You can't unstake the amount of LINA above.";
+            this.errors.unStakeMsg = `You can't unstake the amount of ${this.selectedCollateral.name} above.`;
             return;
           }
 
@@ -1415,8 +1654,11 @@ export default {
 
           //当前价格的lock lina能生成多少lusd
           let lockLINAToBuildLUSDBN = bnDiv(
-            bnMul(this.burnData.lockBN, this.burnData.LINA2USDBN),
-            n2bn((this.burnData.targetRatio / 100).toString())
+            bnMul(
+              parseUnitAndReformat(this.burnData.lockBN),
+              parseUnitAndReformat(this.burnData.LINA2USDBN, false)
+            ),
+            n2bnForAsset((this.burnData.targetRatio / 100).toString())
           );
           //取回所有stake所需还的债务
           let stakeDebt = bnSub(this.burnData.debtBN, lockLINAToBuildLUSDBN);
@@ -1432,12 +1674,21 @@ export default {
             let ratioAfterBurn = bnMul(
               bnDiv(
                 bnMul(
-                  bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                  this.burnData.LINA2USDBN
+                  parseUnitAndReformat(
+                    bnAdd(
+                      parseUnitAndReformat(this.burnData.stakedBN),
+                      parseUnitAndReformat(this.burnData.lockBN)
+                    )
+                  ),
+                  // this.burnData.LINA2USDBN
+                  parseUnitAndReformat(this.burnData.LINA2USDBN, false)
                 ),
-                bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
+                bnSub(
+                  parseUnitAndReformat(this.burnData.debtBN),
+                  parseUnitAndReformat(this.burnData.lUSDBN)
+                )
               ),
-              n2bn("100")
+              n2bnForAsset("100")
             );
 
             //销毁所有lUSD后抵押率不超过目标抵押率，则不能解锁LINA
@@ -1451,11 +1702,14 @@ export default {
 
             //用销毁所有lUSD后超额的抵押率算
             allCanUnstakeAfterBurn = bnMul(
-              bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+              bnAdd(
+                parseUnitAndReformat(this.burnData.stakedBN),
+                parseUnitAndReformat(this.burnData.lockBN)
+              ),
               bnDiv(
                 bnSub(
                   ratioAfterBurn,
-                  n2bn(this.burnData.targetRatio.toString())
+                  n2bnForAsset(this.burnData.targetRatio.toString())
                 ),
                 ratioAfterBurn
               )
@@ -1469,11 +1723,16 @@ export default {
           }
 
           let overStaked = bnMul(
-            bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+            parseUnitAndReformat(
+              bnAdd(
+                parseUnitAndReformat(this.burnData.stakedBN),
+                parseUnitAndReformat(this.burnData.lockBN)
+              )
+            ),
             bnDiv(
               bnSub(
                 this.burnData.currentRatioBN,
-                n2bn(this.burnData.targetRatio.toString())
+                n2bnForAsset(this.burnData.targetRatio.toString())
               ),
               this.burnData.currentRatioBN
             )
@@ -1492,10 +1751,13 @@ export default {
           ) {
             let retainlUSD = bnDiv(
               bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                this.burnData.LINA2USDBN
+                parseUnitAndReformat(
+                  bnAdd(this.burnData.stakedBN, this.burnData.lockBN)
+                ),
+                // this.burnData.LINA2USDBN
+                parseUnitAndReformat(this.burnData.LINA2USDBN, false)
               ),
-              n2bn((this.burnData.targetRatio / 100).toString())
+              n2bnForAsset((this.burnData.targetRatio / 100).toString())
             );
 
             needFixRatio = bnSub(this.burnData.debtBN, retainlUSD);
@@ -1506,16 +1768,18 @@ export default {
           if (n2bn(unstakedAmount.toString()).gt(overStaked)) {
             needBurnAmount = bnDiv(
               bnMul(
-                bnSub(n2bn(unstakedAmount.toString()), overStaked),
-                this.burnData.LINA2USDBN
+                parseUnitAndReformat(
+                  bnSub(n2bn(unstakedAmount.toString()), overStaked)
+                ),
+                // this.burnData.LINA2USDBN
+                parseUnitAndReformat(this.burnData.LINA2USDBN, false)
               ),
-              n2bn((this.burnData.targetRatio / 100).toString())
+              n2bnForAsset((this.burnData.targetRatio / 100).toString())
             );
           }
 
           this.inputData.unStake = unstakedAmount;
-          this.actionDatas.unStake = n2bn(unstakedAmount.toString());
-
+          this.actionDatas.unStake = n2bnForAsset(unstakedAmount.toString());
           this.inputData.amount = formatEtherToNumber(
             bnAdd(needBurnAmount, needFixRatio)
           );
@@ -1529,19 +1793,25 @@ export default {
               bnDiv(
                 bnMul(
                   bnSub(
-                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                    bnAdd(
+                      parseUnitAndReformat(this.burnData.stakedBN),
+                      parseUnitAndReformat(this.burnData.lockBN)
+                    ),
                     this.actionDatas.unStake
                   ),
-                  this.burnData.LINA2USDBN
+                  parseUnitAndReformat(this.burnData.LINA2USDBN, false)
                 ),
                 bnSub(this.burnData.debtBN, this.actionDatas.amount)
               ),
-              n2bn("100")
+              n2bnForAsset("100")
             );
 
             //修复除不尽的显示错误
-            if (ratioAfterAction.lt(n2bn("400"))) {
-              ratioAfterAction = n2bn("400");
+            const targetRatio =
+              getAssetObjectInfo(this.selectedCollateral.key).targetRatio * 100;
+            //修复除不尽的显示错误
+            if (ratioAfterAction.lt(n2bnForAsset(targetRatio))) {
+              ratioAfterAction = n2bnForAsset(targetRatio);
             }
 
             this.inputData.ratio = formatEtherToNumber(ratioAfterAction);
@@ -1552,6 +1822,7 @@ export default {
           }
         }
       } catch (error) {
+        console.error(error);
         this.errors.unStakeMsg = "Invalid number";
       }
     },
@@ -1573,7 +1844,7 @@ export default {
             return;
           }
 
-          if (n2bn(burnAmount.toString()).gt(this.burnData.debtBN)) {
+          if (n2bnForAsset(burnAmount.toString()).gt(this.burnData.debtBN)) {
             this.inputData.amount = burnAmount;
             this.errors.amountMsg =
               "The amount of ℓUSD is larger than your debt.";
@@ -1581,28 +1852,47 @@ export default {
             return;
           }
 
-          if (n2bn(burnAmount.toString()).gt(this.burnData.lUSDBN)) {
+          if (n2bnForAsset(burnAmount.toString()).gt(this.burnData.lUSDBN)) {
             this.inputData.amount = burnAmount;
             this.errors.amountMsg = "You don't have enough amount of ℓUSD.";
             this.inputData.ratio = null;
             return;
           }
 
-          let ratioAfterBurnInputAmount = bnMul(
-            bnDiv(
-              bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                this.burnData.LINA2USDBN
+          let ratioAfterBurnInputAmount = n2bn("0");
+          // below code added for if input amount is same as debt
+          if (n2bnForAsset(burnAmount.toString()).eq(this.burnData.debtBN)) {
+            ratioAfterBurnInputAmount = null;
+            this.inputData.ratio = null;
+            this.actionDatas.ratio = null;
+            this.inputData.unStake = formatByStoreCollateral(
+              this.burnData.stakedBN
+            );
+            this.actionDatas.unStake = n2bnForAsset(
+              formatByStoreCollateral(this.burnData.stakedBN)
+            );
+            this.actionDatas.amount = this.burnData.debtBN;
+            this.inputData.amount = formatEtherToNumber(this.burnData.debtBN);
+            return;
+          } else {
+            ratioAfterBurnInputAmount = bnMul(
+              bnDiv(
+                bnMul(
+                  bnAdd(
+                    parseUnitAndReformat(this.burnData.stakedBN),
+                    parseUnitAndReformat(this.burnData.lockBN)
+                  ),
+                  parseUnitAndReformat(this.burnData.LINA2USDBN, false)
+                ),
+                bnSub(this.burnData.debtBN, n2bnForAsset(burnAmount.toString()))
               ),
-              bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
-            ),
-            n2bn("100")
-          );
-
+              n2bnForAsset("100")
+            );
+          }
           ////用输入的lUSD销毁后超额的抵押率算，不超过目标抵押率，则不能解锁LINA
           if (
             ratioAfterBurnInputAmount.lte(
-              n2bn(this.burnData.targetRatio.toString())
+              n2bnForAsset(this.burnData.targetRatio.toString())
             )
           ) {
             this.inputData.unStake = 0;
@@ -1612,7 +1902,7 @@ export default {
             );
 
             this.actionDatas.unStake = n2bn("0");
-            this.actionDatas.amount = n2bn(burnAmount.toString());
+            this.actionDatas.amount = n2bnForAsset(burnAmount.toString());
             this.actionDatas.ratio = ratioAfterBurnInputAmount;
             return;
           }
@@ -1623,7 +1913,7 @@ export default {
             bnDiv(
               bnSub(
                 ratioAfterBurnInputAmount,
-                n2bn(this.burnData.targetRatio.toString())
+                n2bnForAsset(this.burnData.targetRatio.toString())
               ),
               ratioAfterBurnInputAmount
             )
@@ -1633,34 +1923,20 @@ export default {
             allCanUnstakedLINAAfterBurn = this.burnData.stakedBN;
           }
 
-          // let pratioAfterBurnAndStake = bnMul(
-          //     bnDiv(
-          //         bnMul(
-          //             bnSub(
-          //                 bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-          //                 allCanUnstakedLINAAfterBurn
-          //             ),
-          //             this.burnData.LINA2USDBN
-          //         ),
-          //         bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
-          //     ),
-          //     n2bn("100")
-          // );
-
-          this.inputData.unStake = formatEtherToNumber(
+          this.inputData.unStake = formatByStoreCollateral(
             allCanUnstakedLINAAfterBurn
           );
           this.actionDatas.unStake = allCanUnstakedLINAAfterBurn;
-
           this.inputData.amount = burnAmount;
-          this.actionDatas.amount = n2bn(burnAmount.toString());
+          this.actionDatas.amount = n2bnForAsset(burnAmount.toString());
 
-          //this.inputData.ratio = formatEtherToNumber(pratioAfterBurnAndStake);
-          //this.actionDatas.ratio = pratioAfterBurnAndStake;
           this.inputData.ratio = this.burnData.targetRatio;
-          this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
+          this.actionDatas.ratio = n2bnForAsset(
+            this.burnData.targetRatio.toString()
+          );
         }
       } catch (error) {
+        console.error(error);
         this.errors.amountMsg = "Invalid number";
       }
     },
@@ -1727,8 +2003,7 @@ export default {
             !maxRatioAfterBurnMax.eq("0") &&
             n2bn(ratioAmount.toString()).gt(maxRatioAfterBurnMax)
           ) {
-            this.errors.ratioMsg =
-              "The P-Ratio can't be larger than your staking amount of LINA.";
+            this.errors.ratioMsg = `The P-Ratio can't be larger than your staking amount of ${this.selectedCollateral.name}.`;
             return;
           }
 
@@ -1770,7 +2045,11 @@ export default {
               this.burnData.stakedBN.gt("0")
             ) {
               let overStaked = bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                n2bn(
+                  formatByStoreCollateral(
+                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN)
+                  )
+                ),
                 bnDiv(
                   bnSub(
                     this.burnData.currentRatioBN,
@@ -1787,7 +2066,11 @@ export default {
               let pratioMinAfterUnstake = bnDiv(
                 bnMul(
                   bnSub(
-                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                    n2bn(
+                      formatByStoreCollateral(
+                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN)
+                      )
+                    ),
                     overStaked
                   ),
                   this.burnData.LINA2USDBN
@@ -1821,7 +2104,7 @@ export default {
               retainStake
             );
 
-            this.inputData.unStake = formatEtherToNumber(unStake);
+            this.inputData.unStake = formatByStoreCollateral(unStake);
             this.actionDatas.unStake = unStake;
 
             this.inputData.amount = 0;
@@ -1832,6 +2115,7 @@ export default {
           }
         }
       } catch (error) {
+        console.error(error);
         this.errors.ratioMsg = "Invalid number";
       }
     },
@@ -1858,6 +2142,9 @@ export default {
     //重试
     tryAgain() {
       this.actionTabs = "m0";
+    },
+    setSelectedCollateral(item) {
+      this.selectedCollateral = item;
     },
 
     //跳转到设置
@@ -1966,16 +2253,17 @@ export default {
               margin-bottom: 24px;
               border-radius: 8px;
               border: solid 1px #deddde;
-              padding: 39px 24px;
+              padding: 33px 24px;
               display: flex;
               justify-content: space-between;
               width: 100%;
               transition: $animete-time linear;
               position: relative;
+              height: 88px;
 
               &:hover,
               &.active {
-                border-color: white;
+                border-color: #1a38f8 !important;
                 box-shadow: 0px 2px 12px #deddde;
               }
 
@@ -2027,7 +2315,6 @@ export default {
                     transition: $animete-time linear;
                     cursor: pointer;
                     display: flex;
-                    opacity: 0.2;
                     text-transform: uppercase;
                     font-family: Gilroy-Bold;
                     font-size: 12px;
@@ -2037,7 +2324,20 @@ export default {
                     line-height: 1.33;
                     letter-spacing: 1.5px;
                     text-align: center;
-                    color: #1a38f8;
+                    color: #e5e5e5;
+
+                    .app-dark & {
+                      color: #3c3a3e !important;
+                    }
+
+                    &.selectedAsset {
+                      color: #a4cbff !important;
+                      &:hover {
+                        &:not(.default) {
+                          color: #1a38f8 !important;
+                        }
+                      }
+                    }
 
                     img {
                       margin-left: 6px;
@@ -2045,12 +2345,10 @@ export default {
 
                     &:hover {
                       &:not(.default) {
-                        opacity: 1;
                       }
                     }
 
                     &.active {
-                      opacity: 1;
                     }
 
                     &.default {
@@ -2068,6 +2366,13 @@ export default {
                   display: flex;
                   align-items: center;
                   justify-content: flex-end;
+
+                  .ivu-input-number-input[disabled],
+                  .ivu-input-number-disabled {
+                    background-color: #fff !important;
+                    cursor: not-allowed;
+                  }
+
                   // margin-bottom: 8px;
                   .input {
                     width: 100%;
@@ -2172,7 +2477,6 @@ export default {
 
             &.disabled {
               cursor: not-allowed;
-              opacity: 0.1;
             }
 
             &.switchToBSC {
@@ -2214,7 +2518,6 @@ export default {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
       min-height: 550px;
-
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       }
@@ -2230,7 +2533,7 @@ export default {
           width: 100%;
           height: 88vh !important;
           min-height: 550px;
-          background: white;
+          background: #fff;
 
           .burnBox,
           .waitingBox,
@@ -2263,22 +2566,31 @@ export default {
                 margin-top: 24px;
                 border-radius: 8px;
                 background-color: rgba(223, 67, 76, 0.05);
-                font-size: 12px;
                 color: #df434c;
+                line-break: auto;
+                word-break: break-word;
 
                 img {
-                  margin-right: 16px;
+                  margin-right: 8px;
+                }
+
+                .closeIcon {
+                  position: absolute;
+                  right: 10%;
+                  cursor: pointer;
+                  margin-bottom: 20px;
                 }
               }
 
               .actionRate {
                 width: 74.4vw;
-                margin: 32px 0 28px;
+                margin: 10px 0 15px;
                 border-radius: 12px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 padding: 4px 16px;
+                text-align: center;
                 font-family: Gilroy-Medium;
                 font-size: 12px;
                 font-weight: 500;
@@ -2291,135 +2603,139 @@ export default {
                 color: #1a38f8;
               }
 
-              .inputGroupBox {
-                width: 74.4vw;
+              .actionInputItem {
+                margin-bottom: 12px;
+                padding: 15px 15px 10px;
+                border-radius: 8px;
+                border: solid 1px #deddde;
+                padding: 33px 24px;
                 display: flex;
                 justify-content: space-between;
+                width: 90%;
+                transition: $animete-time linear;
+                position: relative;
+                height: 88px;
 
-                .actionInputItem {
-                  position: relative;
-                  margin-bottom: 24px;
-                  border-radius: 8px;
-                  border: solid 1px #deddde;
-                  transition: $animete-time linear;
+                &:hover,
+                &.active {
+                  border-color: #1a38f8 !important;
+                  box-shadow: 0px 2px 12px #deddde;
+                }
 
-                  &.active {
-                    border-color: white;
-                    box-shadow: 0px 2px 12px #deddde;
+                .itemLeft {
+                  display: flex;
+                  margin-right: 16px;
+                  align-items: center;
+
+                  .itemIcon {
+                    margin-right: 16px;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    .app-dark & {
+                      background: none;
+                    }
+
+                    img {
+                      width: 100%;
+                      height: 100%;
+                    }
                   }
 
-                  .inputBox {
-                    height: 52.1vw;
-                    width: 35.2vw;
-                    position: relative;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-
-                    .showInfo {
-                      position: absolute;
-                      top: 8px;
-                      right: 8px;
-                    }
-
-                    .logo {
-                      width: 40px;
-                      margin: 24px 0 16px;
-                    }
-
+                  .itemType {
                     .itemTypeTitle {
-                      margin: 0 0 4px;
-                      font-family: Gilroy;
-                      font-size: 12px;
-                      font-weight: 500;
-                      text-align: center;
-                      color: #99999a;
-                    }
+                      font-family: Gilroy-Bold;
+                      font-size: 16px;
+                      font-weight: bold;
+                      font-stretch: normal;
+                      font-style: normal;
+                      line-height: 1.5;
+                      letter-spacing: normal;
+                      color: #5a575c;
 
-                    .input {
-                      width: 100%;
-                      height: 24px;
-                      border: none;
-                      box-shadow: none;
+                      .tip {
+                        margin-left: 8px;
 
-                      .ivu-input-number-handler-wrap {
-                        display: none;
-                      }
-
-                      .ivu-input-number-input {
-                        text-align: center;
-                        font-family: Gilroy-Bold;
-                        font-size: 16px;
-                        font-weight: bold;
-                        font-stretch: normal;
-                        font-style: normal;
-                        line-height: 1.25;
-                        letter-spacing: normal;
-
-                        &::placeholder {
-                          color: #99999a;
+                        img {
+                          margin-top: -3px;
                         }
                       }
                     }
 
                     .itemTypeBtn {
-                      height: 32px;
-                      width: 100%;
+                      transition: $animete-time linear;
+                      cursor: pointer;
+                      display: flex;
                       text-transform: uppercase;
-                      position: absolute;
-                      bottom: 0;
-                      border-top: solid 1px #e5e5e5;
-                      font-family: Gilroy;
-                      text-align: center;
-                      font-size: 10px;
-                      line-height: 32px;
-                      font-weight: bold;
-                      color: #1a38f8;
-                    }
-                  }
-
-                  &.error {
-                    border-color: #df434c;
-                  }
-                }
-              }
-
-              .actionInputItem {
-                margin-bottom: 24px;
-                border-radius: 8px;
-                border: solid 1px #deddde;
-                transition: $animete-time linear;
-
-                &.active {
-                  border-color: white;
-                  box-shadow: 0px 2px 12px #deddde;
-                }
-
-                .ratioInputBox {
-                  width: 74.4vw;
-                  position: relative;
-
-                  .box {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0 16px;
-                    height: 21.6vw;
-
-                    .itemTypeTitle {
-                      font-family: Gilroy;
+                      font-family: Gilroy-Bold;
                       font-size: 12px;
-                      font-weight: 500;
+                      font-weight: bold;
+                      font-stretch: normal;
+                      font-style: normal;
+                      line-height: 1.33;
+                      letter-spacing: 1.5px;
                       text-align: center;
-                      color: #99999a;
+                      color: #e5e5e5;
+
+                      .app-dark & {
+                        color: #3c3a3e !important;
+                      }
+
+                      &.selectedAsset {
+                        color: #a4cbff !important;
+                        &:hover {
+                          &:not(.default) {
+                            color: #1a38f8 !important;
+                          }
+                        }
+                      }
+                      img {
+                        margin-left: 6px;
+                      }
+
+                      &:hover {
+                        &:not(.default) {
+                        }
+                      }
+
+                      &.active {
+                      }
+
+                      &.default {
+                        cursor: default;
+                      }
+                    }
+                  }
+                }
+
+                .itemRight {
+                  flex: 1;
+                  display: flex;
+
+                  .inputRect {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+
+                    .ivu-input-number-input[disabled],
+                    .ivu-input-number-disabled {
+                      background-color: #fff !important;
+                      cursor: not-allowed;
+
+                      .app-dark & {
+                        background-color: transparent !important;
+                      }
                     }
 
+                    // margin-bottom: 8px;
                     .input {
-                      width: 53.33vw;
-                      height: 32px;
+                      width: 100%;
                       border: none;
                       box-shadow: none;
-                      padding: 0;
 
                       .ivu-input-number-handler-wrap {
                         display: none;
@@ -2428,7 +2744,7 @@ export default {
                       .ivu-input-number-input {
                         text-align: right;
                         font-family: Gilroy-Bold;
-                        font-size: 16px;
+                        font-size: 32px;
                         font-weight: bold;
                         font-stretch: normal;
                         font-style: normal;
@@ -2440,22 +2756,40 @@ export default {
                         }
                       }
                     }
+
+                    .unit {
+                      color: #5a575c;
+                      font-family: Gilroy-Regular;
+                      font-size: 16px;
+                      font-weight: 400;
+                      line-height: 24px;
+                      text-transform: uppercase;
+                    }
                   }
 
-                  .itemTypeBtn {
-                    height: 32px;
-                    width: 100%;
-                    position: relative;
-                    text-transform: uppercase;
-                    bottom: 0;
-                    border-top: solid 1px #e5e5e5;
+                  .avaliable {
+                    color: #c6c4c7;
                     font-family: Gilroy;
-                    text-align: center;
-                    font-size: 10px;
-                    line-height: 32px;
-                    font-weight: bold;
-                    color: #1a38f8;
+                    font-size: 12px;
+                    font-weight: 500;
+                    line-height: 16px;
+                    text-align: right;
                   }
+                }
+
+                .itemErrMsg {
+                  transition: opacity $animete-time linear;
+                  position: absolute;
+                  left: 0;
+                  bottom: -20px;
+                  height: 16px;
+                  color: #df434c;
+                  font-family: Gilroy;
+                  font-size: 10px;
+                  font-weight: 700;
+                  line-height: 16px;
+                  text-transform: uppercase;
+                  letter-spacing: 1.25px;
                 }
 
                 &.error {
@@ -2493,7 +2827,6 @@ export default {
 
               &.disabled {
                 cursor: not-allowed;
-                opacity: 0.1;
               }
             }
           }

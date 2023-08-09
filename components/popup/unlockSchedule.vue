@@ -87,7 +87,7 @@ export default {
     },
     //当前分页的数据
     currentPageData() {
-      if (this.tableData.length) {
+      if (this.tableData.length > 0) {
         return this.tableData.slice(
           (this.currentPage - 1) * this.defaultPageSize,
           this.currentPage * this.defaultPageSize,
@@ -113,6 +113,7 @@ export default {
         networkId: this.walletNetworkId,
         walletAddress: this.walletAddress,
       });
+      if (!rewardEntries) return;
       const groupedRewardEntriesByDate = rewardEntries.reduce((acc, curr) => {
         var key = `${curr.unlockTime}`;
         if (!(key in acc)) acc[key] = Object.assign({}, curr);

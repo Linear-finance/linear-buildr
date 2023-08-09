@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 
 export const state = () => ({
   locale: "en", //默认语言
@@ -46,6 +47,9 @@ export const state = () => ({
   autoConnect: false, //自动连接钱包
   setupModal: false, //nework setup 窗口
   isUnlockScheduleShow: false, //user lock lina unlock schedule popup
+  multiCollateralAsset: collateralAssets[0].key,
+  portfolioAsset: collateralAssets[0].key,
+  multiCollateralValues: {},
 });
 
 export const getters = {
@@ -176,6 +180,18 @@ export const mutations = {
   setIsUnlockScheduleShow(state, status) {
     state.isUnlockScheduleShow = status;
   },
+
+  setMultiCollateralAsset(state, asset) {
+    state.multiCollateralAsset = asset;
+  },
+
+  setPortfolioAsset(state, asset) {
+    state.portfolioAsset = asset;
+  },
+
+  setMultiCollateralValues(state, values) {
+    state.multiCollateralValues = values;
+  },
 };
 
 export const actions = {
@@ -183,7 +199,6 @@ export const actions = {
   // async nuxtServerInit({ commit }, { req }) {}
   nuxtClientInit(_store) {
     const theme = Cookies.get("theme");
-    console.log({ theme });
     if (theme === undefined) {
       _store.dispatch("themeInit");
     } else {

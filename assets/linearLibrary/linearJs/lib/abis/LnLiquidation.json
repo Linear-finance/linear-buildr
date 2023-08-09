@@ -4,37 +4,31 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "oldAdmin",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
       }
     ],
-    "name": "AdminChanged",
+    "name": "Initialized",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "oldCandidate",
+        "name": "previousOwner",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "newCandidate",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "CandidateChanged",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -131,132 +125,49 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "BUILD_RATIO_KEY",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LIQUIDATION_DELAY_KEY",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LIQUIDATION_LIQUIDATOR_REWARD_KEY",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LIQUIDATION_MARKER_REWARD_KEY",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LIQUIDATION_RATIO_KEY",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_admin",
+        "internalType": "contract IBuildBurnSystem",
+        "name": "_buildBurnSystem",
+        "type": "address"
+      },
+      {
+        "internalType": "contract ICollateralSystem",
+        "name": "_collateralSystem",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IConfig",
+        "name": "_config",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IDebtSystem",
+        "name": "_debtSystem",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IOracleRouter",
+        "name": "_oracleRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IRewardLocker",
+        "name": "_rewardLocker",
         "type": "address"
       }
     ],
-    "name": "__LnAdminUpgradeable_init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract ILnBuildBurnSystem",
-        "name": "_lnBuildBurnSystem",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILnCollateralSystem",
-        "name": "_lnCollateralSystem",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILnConfig",
-        "name": "_lnConfig",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILnDebtSystem",
-        "name": "_lnDebtSystem",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILnPrices",
-        "name": "_lnPrices",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILnRewardLocker",
-        "name": "_lnRewardLocker",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_admin",
-        "type": "address"
-      }
-    ],
-    "name": "__LnLiquidation_init",
+    "name": "__Liquidation_init",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "admin",
+    "name": "buildBurnSystem",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract IBuildBurnSystem",
         "name": "",
         "type": "address"
       }
@@ -266,17 +177,36 @@
   },
   {
     "inputs": [],
-    "name": "becomeAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "collateralSystem",
+    "outputs": [
+      {
+        "internalType": "contract ICollateralSystem",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "candidate",
+    "name": "config",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract IConfig",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "debtSystem",
+    "outputs": [
+      {
+        "internalType": "contract IDebtSystem",
         "name": "",
         "type": "address"
       }
@@ -383,84 +313,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "lnBuildBurnSystem",
-    "outputs": [
-      {
-        "internalType": "contract ILnBuildBurnSystem",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lnCollateralSystem",
-    "outputs": [
-      {
-        "internalType": "contract ILnCollateralSystem",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lnConfig",
-    "outputs": [
-      {
-        "internalType": "contract ILnConfig",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lnDebtSystem",
-    "outputs": [
-      {
-        "internalType": "contract ILnDebtSystem",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lnPrices",
-    "outputs": [
-      {
-        "internalType": "contract ILnPrices",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lnRewardLocker",
-    "outputs": [
-      {
-        "internalType": "contract ILnRewardLocker",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -471,6 +323,32 @@
     "name": "markPositionAsUndercollateralized",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "oracleRouter",
+    "outputs": [
+      {
+        "internalType": "contract IOracleRouter",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -487,14 +365,34 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rewardLocker",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "_candidate",
+        "internalType": "contract IRewardLocker",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "setCandidate",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IOracleRouter",
+        "name": "newOracleRouter",
+        "type": "address"
+      }
+    ],
+    "name": "setOracleRouter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -502,12 +400,12 @@
   {
     "inputs": [
       {
-        "internalType": "contract ILnPrices",
-        "name": "newLnPrices",
+        "internalType": "address",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "setLnPrices",
+    "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

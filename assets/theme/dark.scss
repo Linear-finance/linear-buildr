@@ -135,6 +135,17 @@ body.dark-theme {
       }
     }
   }
+
+  #walletDetails {
+    .leftAsset {
+      color: #e5e5e5;
+    }
+    .portfolioBox {
+      .left {
+        color: #e5e5e5;
+      }
+    }
+  }
   // Pagination
   .ivu-page.mini {
     .ivu-page-prev,
@@ -196,8 +207,6 @@ body.dark-theme {
   .ivu-collapse-header,
   //.ivu-collapse-content-box,
   .actionRate,
-  .editTitle,
-  .infoRight,
   .tableBody .tr .td,
   .itemNumBox,
   .itemTime,
@@ -214,7 +223,6 @@ body.dark-theme {
   .actionInputItem .p_1,
   .transferMain .text .descript,
   .descTopMobile,
-  .statusBox .status,
   .refreshBtn {
     color: $darkFontColorSecondary !important;
   }
@@ -248,7 +256,7 @@ body.dark-theme {
     .selections
     .selectionItem
     .itemSpeed,
-  #gasEditor .editInfo .infoLeft .editTitle,
+  #gasEditor .editInfo .infoLeft,
   .ivu-input-number-input,
   #homePage .actionsBox .boxItem .boxContext,
   #homePage .context,
@@ -606,7 +614,6 @@ body.dark-theme {
     .itemLeft
     .itemType
     .itemTypeBtn {
-    color: $darkButtonColor2 !important;
   }
 
   #build
@@ -619,6 +626,16 @@ body.dark-theme {
     &:active {
       border-color: $darkButtonColor !important;
       box-shadow: 0 4px 50px rgba(0, 0, 0, 0.5) !important;
+    }
+    .itemRight {
+      .inputRect {
+        .ivu-input-number-input[disabled],
+        .ivu-input-number-disabled {
+          background-color: $darkBackgroundDeepColor !important;
+          opacity: 0.72;
+          cursor: not-allowed;
+        }
+      }
     }
   }
 
@@ -659,8 +676,18 @@ body.dark-theme {
       .itemLeft
       .itemType
       .itemTypeBtn {
-      color: #1a38f8 !important;
+      color: #5a575c;
+      &.selectedAsset {
+        color: #a4cbff;
+      }
+      &:hover {
+        &:not(.default) {
+          opacity: 1;
+          color: #1a38f8;
+        }
+      }
     }
+
     .actionTabs
       .ivu-tabs-content
       .ivu-tabs-tabpane
@@ -687,6 +714,16 @@ body.dark-theme {
         border: 1px solid #3851f0 !important;
         box-sizing: border-box !important;
         box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      .itemRight {
+        .inputRect {
+          .ivu-input-number-input[disabled],
+          .ivu-input-number-disabled {
+            background-color: $darkBackgroundDeepColor !important;
+            opacity: 0.72;
+            cursor: not-allowed;
+          }
+        }
       }
     }
   }
@@ -821,7 +858,7 @@ body.dark-theme {
 
     #gasEditor .editInfo .infoLeft,
     #gasEditor .editInfo .infoRight {
-      color: #ffffff !important;
+      color: #99999a !important;
     }
 
     .actionTabs
@@ -850,15 +887,9 @@ body.dark-theme {
       .actionBody
       .rewardsBox
       .box {
-      background-color: #bababa !important;
-
-      .title {
-        font-family: Gilroy-Regular;
-        font-weight: normal !important;
-        color: #99999a !important;
-      }
+      .titleMobile,
+      .rewardsContainerLeft,
       .amount {
-        color: #99999a !important;
       }
     }
   }
@@ -918,7 +949,8 @@ body.dark-theme {
         .buildBox
         .actionBodyMobile
         .errMsg {
-        background-color: $darkFontColorSecondary !important;
+        background-color: $darkBackgroundDeepColor !important;
+        border: 1px solid #df434c;
       }
       .actionTabs
         .ivu-tabs-content
@@ -1061,7 +1093,8 @@ body.dark-theme {
         .burnBox
         .actionBodyMobile
         .errMsg {
-        background-color: $darkFontColorSecondary !important;
+        background-color: $darkBackgroundDeepColor !important;
+        border: 1px solid #df434c;
       }
       .actionTabs
         .ivu-tabs-content
@@ -1189,7 +1222,8 @@ body.dark-theme {
         .transferBox
         .transferMainMobile
         .errMsg {
-        background-color: #f6f5f6 !important;
+        background-color: $darkBackgroundDeepColor !important;
+        border: 1px solid #df434c;
         color: #df434c !important;
       }
       .actionTabs
@@ -1515,19 +1549,19 @@ span.ivu-date-picker-cells-cell-disabled:hover {
 
   // tooltip
   .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-inner {
-    background: #ffffff !important;
+    background: #050d20 !important;
     border: 1px solid #3851f0 !important;
     box-sizing: border-box !important;
     box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
     border-radius: 8px !important;
-    color: #333333 !important;
+    color: #ffffff !important;
   }
   .globalInfoStyle.ivu-tooltip
     .ivu-tooltip-popper[x-placement="top"]
     .ivu-tooltip-arrow {
-    border-color: #ffffff !important;
+    border-color: #1a38f8 !important;
   }
   .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-arrow {
-    background-color: #ffffff !important;
+    background-color: #050d20 !important;
   }
 }

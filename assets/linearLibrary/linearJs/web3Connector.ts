@@ -13,11 +13,11 @@ export interface ChainConfig {
   name: string;
   networkId: number;
   wormholeNetworkId: number;
-  networkType: string;
   chainType: string;
-  rpcUrl: string;
+  networkType: string;
   isLiquidationEnable: boolean;
   isRewardable: boolean;
+  rpcUrl: string;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
   rewardApiBase: string;
@@ -35,40 +35,46 @@ export enum NetworkType {
   MAINNET = "mainnet",
 }
 
+interface MultiCollateralSystem {
+  [k: string]: {
+    LinearFinance: ethers.Contract;
+    LnDebtSystem: ethers.Contract;
+    LnCollateralSystem: ethers.Contract;
+    LnBuildBurnSystem: ethers.Contract;
+    LnLiquidation: ethers.Contract;
+    LnRewardSystem: ethers.Contract;
+  };
+}
+
 export interface ChainAddresses {
-  LinearFinance: string;
-  LnAssetSystem: string;
-  LnErc20Bridge: string;
-  LnBuildBurnSystem?: string;
-  LnConfig?: string;
-  LnOracleRouter?: string;
-  LnDebtSystem?: string;
-  LnCollateralSystem?: string;
-  LnRewardLocker?: string;
-  LnRewardSystem?: string;
-  lUSD: string;
-  lBTC: string;
-  lETH: string;
-  lLINK: string;
-  lTRX: string;
-  lDOT: string;
-  lYFI: string;
-  lBNB: string;
-  lADA: string;
-  lXLM: string;
-  lXAU: string;
-  lXAG: string;
-  lJPY: string;
-  lXLCI: string;
-  lXBCI: string;
-  lVET: string;
-  lEUR: string;
-  lUNI: string;
-  lDEFI: string;
-  lCAKE: string;
-  lMATIC: string;
-  lSOL: string;
-  lPLAY: string;
+  system: {
+    LinearFinance: string;
+    LnAssetSystem: string;
+    LnConfig: string;
+    LnAccessControl: string;
+    LnOracleRouter: string;
+    LnRewardLocker: string;
+    LnErc20Bridge: string;
+    LnExchangeSystem: string;
+    LnPerpExchange: string;
+    LnPerpPositionToken: string;
+  };
+  asset: {
+    [k: string]: string;
+  };
+  perpetual?: {
+    [k: string]: string;
+  };
+  collateral?: {
+    [k: string]: {
+      LinearFinance: string;
+      LnDebtSystem: string;
+      LnCollateralSystem: string;
+      LnBuildBurnSystem: string;
+      LnLiquidation: string;
+      LnRewardSystem: string;
+    };
+  };
 }
 
 export interface NetworksMap {
@@ -111,6 +117,8 @@ const assetUpgradeableSubcontract = [
   "lMATIC",
   "lSOL",
   "lPLAY",
+  "lX30",
+  "lWTI",
 ];
 
 const perpetualSubcontract = ["LnPerpetual_lBTC", "LnPerpetual_lETH"];
@@ -123,6 +131,7 @@ export default class Web3Connector {
   signer: ethers.Signer | undefined;
   addressList: ChainAddresses;
   contracts: Contracts;
+  multiCollateral: MultiCollateralSystem | undefined;
   utils: any;
   isEthereumNetwork: boolean;
   isBinanceNetwork: boolean;
@@ -182,40 +191,105 @@ export default class Web3Connector {
       contractAddress: { [index: string]: any } = {},
       signerOrProvider: providers.BaseProvider | ethers.Signer
     ) {
-      return Object.keys(contractAddress).reduce(function (
-        result: Contracts,
-        key
-      ) {
-        const factoryKey = `${key}__factory`;
-        if (assetUpgradeableSubcontract.includes(key)) {
+      const perpetualContracts = contractAddress.perpetual
+        ? Object.keys(contractAddress.perpetual).reduce(function (
+            result: Contracts,
+            key
+          ) {
+            result[key] = contracts.LnPerpetual__factory.connect(
+              contractAddress.perpetual[key],
+              signerOrProvider
+            );
+            return result;
+          },
+          {})
+        : undefined;
+
+      const assetsContracts = Object.keys(contractAddress.asset).reduce(
+        function (result: Contracts, key) {
           result[key] = contracts.LnAssetUpgradeable__factory.connect(
-            contractAddress[key],
+            contractAddress.asset[key],
             signerOrProvider
           );
-        } else if (perpetualSubcontract.includes(key)) {
-          result[key] = contracts.LnPerpetual__factory.connect(
-            contractAddress[key],
-            signerOrProvider
-          );
-        } else {
+          return result;
+        },
+        {}
+      );
+      const systemContracts = Object.keys(contractAddress.system).reduce(
+        function (result: Contracts, key) {
+          const factoryKey = `${key}__factory`;
           if (Contracts[factoryKey] === undefined) {
             console.log(key);
           }
           result[key] = Contracts[factoryKey].connect(
-            contractAddress[key],
+            contractAddress.system[key],
             signerOrProvider
           );
-        }
+          return result;
+        },
+        {}
+      );
 
-        return result;
-      },
-      {});
+      const multicollateral = contractAddress.collateral
+        ? Object.keys(contractAddress.collateral).reduce(function (
+            result: MultiCollateralSystem,
+            key
+          ) {
+            result[key] = {
+              // Collateral token contract, keep nameing as "LinearFinance" for backward compatibility
+              LinearFinance: contracts["Erc20__factory"].connect(
+                contractAddress.collateral[key].LinearFinance,
+                signerOrProvider
+              ),
+              LnDebtSystem: contracts["LnDebtSystem__factory"].connect(
+                contractAddress.collateral[key].LnDebtSystem,
+                signerOrProvider
+              ),
+              LnCollateralSystem: contracts[
+                "LnCollateralSystem__factory"
+              ].connect(
+                contractAddress.collateral[key].LnCollateralSystem,
+                signerOrProvider
+              ),
+              LnBuildBurnSystem: contracts[
+                `LnBuildBurnSystem__factory`
+              ].connect(
+                contractAddress.collateral[key].LnBuildBurnSystem,
+                signerOrProvider
+              ),
+              LnLiquidation: contracts[`LnLiquidation__factory`].connect(
+                contractAddress.collateral[key].LnLiquidation,
+                signerOrProvider
+              ),
+              LnRewardSystem: contracts[`LnRewardSystem__factory`].connect(
+                contractAddress.collateral[key].LnRewardSystem,
+                signerOrProvider
+              ),
+            };
+            return result;
+          },
+          {})
+        : undefined;
+
+      return {
+        generalContracts: {
+          ...perpetualContracts,
+          ...assetsContracts,
+          ...systemContracts,
+        },
+        multiCollateral: multicollateral,
+      };
     }
     // is a signer is not passed, init readable contracts only
     if (signer) {
-      this.contracts = initContracts(addresses, signer);
+      const constracts = initContracts(addresses, signer);
+      this.contracts = constracts.generalContracts;
+      this.multiCollateral = constracts.multiCollateral;
     } else {
-      this.contracts = initContracts(addresses, this.provider);
+      const constracts = initContracts(addresses, this.provider);
+
+      this.contracts = constracts.generalContracts;
+      this.multiCollateral = constracts.multiCollateral;
     }
   }
 }

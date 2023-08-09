@@ -100,7 +100,6 @@ for (let i = 0; i < typedConfigs.length; i++) {
     RPC_URL[id] = object.rpcUrl;
   }
 
-  BRIDGE_ADDRESSES[id] = object.addresses.LnErc20Bridge;
   WORMHOLE_NETWORK_IDS[id] = object.wormholeNetworkId;
 }
 

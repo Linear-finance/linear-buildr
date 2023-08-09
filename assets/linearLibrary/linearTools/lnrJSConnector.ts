@@ -27,6 +27,7 @@ let lnrJSConnector: any = {
   setContractSettings: function (networkId: number, signer?: ethers.Signer) {
     this.Web3 = new Web3Connector(networkId, signer);
     this.lnrJS = this.Web3.contracts;
+    this.multiCollateral = this.Web3.multiCollateral;
     this.signer = this.Web3.signer;
     this.provider = this.Web3.provider;
     this.utils = this.Web3.utils;

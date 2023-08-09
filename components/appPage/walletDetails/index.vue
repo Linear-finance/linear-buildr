@@ -49,7 +49,16 @@
           </svg>
         </Tooltip>
 
-        <div class="disconnect" @click.stop="disconnect">Disconnect</div>
+        <img
+          v-if="isMobile"
+          class="disconnectMobile"
+          src="@/static/disconnectMobile.svg"
+          alt="disconnect"
+          @click.stop="disconnect"
+        />
+        <div v-else-if="!isMobile" class="disconnect" @click.stop="disconnect">
+          Disconnect
+        </div>
       </div>
       <theme-switch :variant="variant" />
       <!-- <div class="chainChange" :class="{ chainChanging }">
@@ -144,6 +153,13 @@
               </g>
             </svg>
           </Tooltip>
+          <img
+            v-if="isMobile"
+            class="disconnectMobile"
+            src="@/static/disconnectMobile.svg"
+            alt="disconnect"
+            @click.stop="disconnect"
+          />
         </div>
         <img
           @click="mShowWallet = false"
@@ -227,172 +243,360 @@
           </div>
         </div>
       </div>
-      <div class="ratioBox">
-        <div
-          class="currentRatio"
-          :class="{ inLiquidation: liquidationStatus.status }"
-        >
-          {{
-            walletDetails.amountDebtBeforeFormat < 0.01
-              ? 0
-              : walletDetails.currentRatioPercent || 0
-          }}
-        </div>
-        <div class="countDown" v-if="liquidationStatus.status">
-          Liquidating in {{ liquidationCountDown }}
-        </div>
-        <div class="context">
-          My Current Pledge Ratio
-          <Tooltip
-            max-width="200"
-            class="globalInfoStyle"
-            content="Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral."
-            placement="bottom"
-            offset="0 6"
-          >
-            <img v-if="theme === 'light'" src="@/static/info_white.svg" />
-            <img v-else src="@/static/dark-theme/info_white.svg" />
-          </Tooltip>
-        </div>
-        <div class="percentBox">
-          <div class="cursorBox">
-            <div
-              class="cursor"
-              :style="{
-                left: cursorPosition + '%!important',
-                marginLeft:
-                  cursorPosition > 2 ? '-6px!important' : '0px!important',
-              }"
-            ></div>
-          </div>
-          <div class="scale200"></div>
-          <div class="scale500"></div>
-          <div class="colorBlock">
-            <div class="leftBlock"></div>
-            <div class="centerBlock"></div>
-            <div class="rightBlock"></div>
-          </div>
-          <div class="flag">
-            <div class="item">Liquidate: 200</div>
-            <div class="item">Target: 400</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- <div class="ratioBox">
-                <div class="title">
-                    Pledge Ratio
-                    <Tooltip
-                        max-width="200"
-                        class="globalInfoStyle"
-                        content="Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral."
-                        placement="bottom"
-                        offset="0 6"
-                    >
-                        <img src="@/static/info_white.svg" />
-                    </Tooltip>
-                </div>
-                <div class="ratio">
-                    <div class="box">
-                        <div class="value">
-                            <template v-if="!isEthereumNetwork">
-                                {{
-                                    walletDetails.amountDebtBeforeFormat < 0.01
-                                        ? 0
-                                        : walletDetails.currentRatioPercent || 0
-                                }}
-                            </template>
-                            <template v-if="isEthereumNetwork">
-                                N/A
-                            </template>
-                        </div>
-                        <div class="context">Current</div>
-                    </div>
-                    <div class="box">
-                        <div class="value">
-                            {{ walletDetails.targetRatioPercent || 0 }}
-                        </div>
-                        <div class="context">Target</div>
-                    </div>
-                </div>
-                <Progress
-                    stroke-color="#f6f5f6"
-                    :percent="100"
-                    :success-percent="currentRatio"
-                    :stroke-width="8"
-                    hide-info
-                />
-            </div> -->
       <div class="walletInfo">
-        <div class="title">Wallet Balance</div>
+        <div class="portfolioSection">
+          <div class="portfolioBox">
+            <div class="box">
+              <div class="tokenItems obtrusive singer">
+                <div class="left portfolio">Portfolio</div>
+              </div>
+            </div>
+            <div class="allAssets">
+              <div
+                v-for="(item, index) in multiCollateralValuesRatios"
+                :key="index"
+                class="portfolioTabsContainer"
+                :class="{
+                  assetSelected:
+                    selectedAsset ==
+                    collateralAssets.filter((asset) => asset.key === index)[0],
+                }"
+                @click="onAssetSelect(index)"
+              >
+                <div class="assetTabLeft">
+                  <div class="icon">
+                    <img
+                      v-if="
+                        selectedAsset ==
+                        collateralAssets.filter(
+                          (asset) => asset.key === index
+                        )[0]
+                      "
+                      :src="
+                        theme == 'light'
+                          ? require(`@/static/${
+                              collateralAssets.filter(
+                                (asset) => asset.key == index
+                              )[0].img
+                            }`)
+                          : require(`@/static/${
+                              collateralAssets.filter(
+                                (asset) => asset.key == index
+                              )[0].darkimg
+                            }`)
+                      "
+                    />
+                    <img
+                      v-else
+                      :src="
+                        require(`@/static/${
+                          collateralAssets.filter(
+                            (asset) => asset.key == index
+                          )[0].inactive
+                        }`)
+                      "
+                      alt="inactiveLogo"
+                    />
+                  </div>
+                  <div class="assetName">
+                    {{ displayKey(index) }}
+                  </div>
+                </div>
+                <!-- <div class="assetTabRight"> -->
+                <div
+                  class="assetTabRight"
+                  :class="[
+                    multiCollateralValuesRatios[index] == 0
+                      ? 'noPRatioBal'
+                      : multiCollateralValuesRatios[index] <= 200
+                      ? 'lowAssetBal'
+                      : multiCollateralValuesRatios[index] >=
+                        getAssetTargetRatio(index)
+                      ? 'highAssetBal'
+                      : 'midAssetBal',
+                  ]"
+                >
+                  {{ multiCollateralValuesRatios[index] }}
+                </div>
+              </div>
+              <!-- <div class="dissolve"></div> -->
+            </div>
+          </div>
+          <div class="loadingImg" v-if="loading">
+            <div class="loading-page"><Spin size="large"></Spin></div>
+          </div>
+          <div class="loadingImg" v-else>
+            <div class="ratioBox">
+              <div class="context">
+                <div class="pRatioTitle">
+                  <img
+                    :src="
+                      theme == 'light'
+                        ? require(`@/static/${this.selectedAsset.img}`)
+                        : require(`@/static/${this.selectedAsset.darkimg}`)
+                    "
+                  />
+                  {{ this.selectedAsset.name.toUpperCase() }} Pledge Ratio
+                  <img
+                    v-if="isMobile"
+                    class="showInfoMobile"
+                    src="@/static/info_grey.svg"
+                    @click="showModal(1)"
+                  />
+
+                  <Tooltip
+                    v-else-if="!isMobile"
+                    max-width="200"
+                    class="globalInfoStyle"
+                    content="Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral."
+                    placement="bottom"
+                    offset="0 6"
+                  >
+                    <img
+                      v-if="theme === 'light'"
+                      src="@/static/info_grey.svg"
+                    />
+                    <img v-else src="@/static/info_grey.svg" />
+                  </Tooltip>
+                </div>
+
+                <!-- <div class="currentRatio"> -->
+                <div
+                  class="currentRatio"
+                  :class="[
+                    multiCollateralValuesRatios &&
+                    multiCollateralValuesRatios[this.selectedAsset.key] == 0
+                      ? 'noPRatioBal'
+                      : multiCollateralValuesRatios &&
+                        multiCollateralValuesRatios[this.selectedAsset.key] <=
+                          200
+                      ? 'lowAssetBal'
+                      : multiCollateralValuesRatios &&
+                        multiCollateralValuesRatios[this.selectedAsset.key] >=
+                          getAssetTargetRatio(this.selectedAsset.key)
+                      ? 'highAssetBal'
+                      : 'midAssetBal',
+                  ]"
+                >
+                  {{
+                    walletDetails.amountDebtBeforeFormat < 0.01
+                      ? 0
+                      : multiCollateralValuesRatios
+                      ? multiCollateralValuesRatios[this.selectedAsset.key]
+                      : 0
+                  }}
+                </div>
+              </div>
+              <div class="percentBox">
+                <div class="cursorBox">
+                  <div
+                    class="cursor"
+                    :style="{
+                      left: cursorPosition + '%!important',
+                      marginLeft:
+                        cursorPosition > 2 ? '-6px!important' : '0px!important',
+                    }"
+                  ></div>
+                </div>
+                <div class="scale200"></div>
+                <div class="scale500"></div>
+                <div class="colorBlock">
+                  <div class="leftBlock"></div>
+                  <div class="centerBlock"></div>
+                  <div class="rightBlock"></div>
+                </div>
+                <div class="flag">
+                  <div class="item">Liquidate: 200</div>
+                  <div class="item">
+                    Target:
+                    {{
+                      this.selectedAsset.targetRatio
+                        ? this.selectedAsset.targetRatio * 100
+                        : "500"
+                    }}
+                  </div>
+                </div>
+                <div
+                  class="countDown"
+                  v-if="
+                    multiCollateralValuesRatios &&
+                    multiCollateralValuesRatios[this.selectedAsset.key] < 200 &&
+                    liquidationStatus &&
+                    liquidationStatus.status &&
+                    liquidationStatus.collateralCurrency ==
+                      this.selectedAsset.contractKey
+                  "
+                >
+                  Liquidating in {{ liquidationCountDown }}
+                </div>
+                <div class="countDown" v-else></div>
+              </div>
+            </div>
+            <div class="tokenBox">
+              <div class="box">
+                <div class="tokenItems obtrusive">
+                  <div class="leftAsset">
+                    {{
+                      isEthereumNetwork
+                        ? walletDetails.avaliableLINA || 0
+                        : walletDetails.amountLINA || 0
+                    }}
+                    {{ this.selectedAsset.name.toUpperCase() }}
+                  </div>
+                  <div class="tokenItemTop">
+                    <div class="right">
+                      ≈ ${{
+                        isEthereumNetwork
+                          ? walletDetails.avaliableLINA2USD || 0
+                          : walletDetails.amountLINA2USD || 0
+                      }}
+                      USD
+                    </div>
+                    <div class="right">
+                      1 {{ this.selectedAsset.name }} = ${{
+                        walletDetails.LINA2USDRate || 0
+                      }}
+                      USD
+                    </div>
+                  </div>
+                </div>
+                <div class="tokenItems unobtrusive">
+                  <div class="left">Available</div>
+                  <div class="right">
+                    {{ walletDetails.avaliableLINA || 0 }}
+                    {{ this.selectedAsset.name }}
+                  </div>
+                </div>
+                <div class="tokenItems unobtrusive">
+                  <div class="left">Staked</div>
+                  <div class="right">
+                    <template v-if="isEthereumNetwork"> N/A </template>
+                    <template v-else>
+                      {{ walletDetails.stakedLINA || 0 }}
+                      {{ this.selectedAsset.name }}
+                    </template>
+                  </div>
+                </div>
+
+                <div
+                  class="tokenItems unobtrusive"
+                  v-if="this.selectedAsset.key === 'LINA'"
+                >
+                  <div class="left">
+                    Locked
+                    <span
+                      v-show="walletDetails.lockLINA"
+                      @click="openUnlockSchedule"
+                      class="unlockScheduleButton"
+                    >
+                      <expandMoreSvg></expandMoreSvg>
+                    </span>
+                  </div>
+                  <div class="right">
+                    <template v-if="isEthereumNetwork"> N/A </template>
+                    <template v-else>
+                      {{ walletDetails.lockLINA || 0 }}
+                      {{ this.selectedAsset.name }}
+                    </template>
+                  </div>
+                </div>
+                <div class="tokenItems unobtrusive" v-else>
+                  <div class="left"></div>
+                  <div class="right">
+                    <template v-if="isEthereumNetwork"></template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="portfolioBox">
+              <div class="box">
+                <div class="tokenItems obtrusive singer">
+                  <div class="left">
+                    Debt
+                    <img
+                      v-if="isMobile"
+                      class="showInfoMobile"
+                      src="@/static/info_grey.svg"
+                      @click="showModal(2)"
+                    />
+
+                    <Tooltip
+                      v-else-if="!isMobile"
+                      max-width="200"
+                      class="globalInfoStyle"
+                      content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
+                      placement="bottom"
+                      offset="0 6"
+                    >
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_grey.svg"
+                      />
+                      <img v-else src="@/static/info_grey.svg" />
+                    </Tooltip>
+                  </div>
+                  <div class="right">
+                    <div
+                      class="top"
+                      :style="{
+                        marginTop: isEthereumNetwork ? '9px' : '0px',
+                      }"
+                    >
+                      <template v-if="!isEthereumNetwork">
+                        <b>{{ walletDetails.amountDebt || 0 }}</b>
+                        ℓUSD
+                      </template>
+                      <template v-if="isEthereumNetwork"> N/A </template>
+                    </div>
+                    <div class="bottom" v-if="!isEthereumNetwork">
+                      ≈ ${{ walletDetails.amountDebt2USD || 0 }}
+                      USD
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tokenBox">
           <img
             v-if="theme === 'light'"
             class="tokenIcon"
-            src="@/static/LINA_logo.svg"
+            src="@/static/collateral.svg"
           />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/LINA_logo.svg"
-          />
+          <img v-else class="tokenIcon" src="@/static/collateral_dark.svg" />
           <div class="box">
             <div class="tokenItems obtrusive">
-              <div class="left">LINA</div>
-              <div class="right">
-                <b>{{
-                  isEthereumNetwork
-                    ? walletDetails.avaliableLINA || 0
-                    : walletDetails.amountLINA || 0
-                }}</b>
-                LINA
-              </div>
+              <div class="left">Collateral</div>
+              <div class="rightCollateral">${{ sumOfTotalCollateral }} USD</div>
             </div>
-            <div class="tokenItems">
-              <div class="left">
-                1 LINA = ${{ walletDetails.LINA2USDRate || 0 }}
-                USD
-              </div>
-              <div class="right">
-                ≈ ${{
-                  isEthereumNetwork
-                    ? walletDetails.avaliableLINA2USD || 0
-                    : walletDetails.amountLINA2USD || 0
-                }}
-                USD
-              </div>
-            </div>
-            <div class="tokenItems unobtrusive">
-              <div class="left">Available</div>
-              <div class="right">
-                {{ walletDetails.avaliableLINA || 0 }} LINA
-              </div>
-            </div>
-            <div class="tokenItems unobtrusive">
-              <div class="left">Staked</div>
-              <div class="right">
-                <template v-if="isEthereumNetwork"> N/A </template>
-                <template v-else>
-                  {{ walletDetails.stakedLINA || 0 }} LINA
-                </template>
-              </div>
-            </div>
-            <div class="tokenItems unobtrusive">
-              <div class="left">
-                Locked
-                <span
-                  v-show="walletDetails.lockLINA"
-                  @click="openUnlockSchedule"
-                  class="unlockScheduleButton"
+            <div
+              class="expandIcon"
+              @click="toggleShowCollateral"
+              v-if="sumOfTotalCollateral != 0"
+            >
+              <img src="@/static/arrow_down_blue.svg" v-if="!showCollaterals" />
+
+              <div v-if="showCollaterals">
+                <div
+                  v-for="(item, index) in multiCollateralValuesTotalCollateral"
+                  :key="index"
+                  class="collateralsContainer"
                 >
-                  <expandMoreSvg></expandMoreSvg>
-                </span>
-              </div>
-              <div class="right">
-                <template v-if="isEthereumNetwork"> N/A </template>
-                <template v-else>
-                  {{ walletDetails.lockLINA || 0 }} LINA
-                </template>
+                  <div>
+                    {{ getCollateralName(index) }}
+                  </div>
+                  <div>
+                    {{
+                      formatCollateral(
+                        multiCollateralValuesTotalCollateral[index]
+                      )
+                    }}
+                    USD
+                  </div>
+                </div>
+                <img src="@/static/arrow_up_blue.svg" />
               </div>
             </div>
           </div>
@@ -411,12 +615,12 @@
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">ℓUSD</div>
-              <div class="right">
-                <b>{{ walletDetails.amountlUSD || 0 }}</b> ℓUSD
+              <div class="rightCollateral">
+                <b>{{ walletDetails.amountlUSD || 0 }} ℓUSD</b>
               </div>
             </div>
             <div class="tokenItems">
-              <div class="left">
+              <div class="right">
                 1 ℓUSD = ${{ walletDetails.lUSD2USDRate || 1 }}
                 USD
               </div>
@@ -427,139 +631,40 @@
           </div>
         </div>
         <div class="tokenBox">
-          <template v-if="isEthereumNetwork">
-            <img
-              v-if="theme === 'light'"
-              class="tokenIcon"
-              src="@/static/ETH_logo.svg"
-            />
-            <img
-              v-else
-              class="tokenIcon"
-              src="@/static/dark-theme/ETH_logo.svg"
-            />
-            <div class="box">
-              <div class="tokenItems obtrusive">
-                <div class="left">ETH</div>
-                <div class="right">
-                  <b>{{ walletDetails.amountETH || 0 }}</b>
-                  ETH
-                </div>
-              </div>
-              <div class="tokenItems">
-                <div class="left">
-                  1 ETH = ${{ walletDetails.ETH2USDRate || 0 }}
-                  USD
-                </div>
-                <div class="right">
-                  ≈ ${{ walletDetails.amountETH2USD || 0 }}
-                  USD
-                </div>
-              </div>
-            </div>
-          </template>
-          <template v-else-if="isBinanceNetwork">
-            <img class="tokenIcon bsc" src="@/static/currency/lBNB.svg" />
-            <div class="box">
-              <div class="tokenItems obtrusive">
-                <div class="left">BNB</div>
-                <div class="right">
-                  <b>{{ walletDetails.amountETH || 0 }}</b>
-                  BNB
-                </div>
-              </div>
-              <div class="tokenItems">
-                <div class="left">
-                  1 BNB = ${{ walletDetails.ETH2USDRate || 0 }}
-                  USD
-                </div>
-                <div class="right">
-                  ≈ ${{ walletDetails.amountETH2USD || 0 }}
-                  USD
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
-        <div class="tokenBox">
           <img
             v-if="theme === 'light'"
             class="tokenIcon"
-            src="@/static/currency/lUSD.svg"
+            src="@/static/LINA_logo.svg"
           />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/currency/lUSD.svg"
-          />
+          <img v-else class="tokenIcon" src="@/static/LINA_logo_dark.svg" />
           <div class="box">
             <div class="tokenItems obtrusive singer">
-              <div class="left">
+              <div class="left liquidsLeft">
                 Liquids
+                <img
+                  v-if="isMobile"
+                  class="showInfoMobile"
+                  src="@/static/info_grey.svg"
+                  @click="showModal(3)"
+                />
                 <Tooltip
+                  v-else-if="!isMobile"
                   max-width="200"
                   class="globalInfoStyle"
                   content="Total value of synthetic exposure created using Linear.Exchange."
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
-                  <img v-else src="@/static/dark-theme/info_white.svg" />
+                  <img v-if="theme === 'light'" src="@/static/info_grey.svg" />
+                  <img v-else src="@/static/info_grey.svg" />
                 </Tooltip>
               </div>
               <div class="right">
-                <div class="top">
-                  <b>{{ walletDetails.liquids || 0 }}</b> ℓUSD
+                <div class="rightCollateral">
+                  {{ walletDetails.liquids || 0 }} ℓUSD
                 </div>
                 <div class="bottom">
                   ≈ ${{ walletDetails.liquids2USD || 0 }} USD
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tokenBox">
-          <img
-            v-if="theme === 'light'"
-            class="tokenIcon"
-            src="@/static/currency/lUSD.svg"
-          />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/currency/lUSD.svg"
-          />
-          <div class="box">
-            <div class="tokenItems obtrusive singer">
-              <div class="left">
-                Debt
-                <Tooltip
-                  max-width="200"
-                  class="globalInfoStyle"
-                  content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
-                  placement="bottom"
-                  offset="0 6"
-                >
-                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
-                  <img v-else src="@/static/dark-theme/info_white.svg" />
-                </Tooltip>
-              </div>
-              <div class="right">
-                <div
-                  class="top"
-                  :style="{
-                    marginTop: isEthereumNetwork ? '9px' : '0px',
-                  }"
-                >
-                  <template v-if="!isEthereumNetwork">
-                    <b>{{ walletDetails.amountDebt || 0 }}</b>
-                    ℓUSD
-                  </template>
-                  <template v-if="isEthereumNetwork"> N/A </template>
-                </div>
-                <div class="bottom" v-if="!isEthereumNetwork">
-                  ≈ ${{ walletDetails.amountDebt2USD || 0 }}
-                  USD
                 </div>
               </div>
             </div>
@@ -569,9 +674,7 @@
       <div class="totalBalanceToUSD">
         <div class="box">
           <div class="title">Total Crypto Balance in USD</div>
-          <div class="amount">
-            ${{ walletDetails.totalCryptoBalanceInUSD || 0 }}
-          </div>
+          <div class="amount">${{ walletDetails.totalBalanceInUsd || 0 }}</div>
         </div>
 
         <svg
@@ -611,6 +714,19 @@
         </svg>
       </div>
     </div>
+    <Modal
+      v-model="modalPopup"
+      :footer-hide="true"
+      :closable="true"
+      :transfer="false"
+      :mask="true"
+      class="introductActionModal"
+    >
+      <div class="title">Build ℓUSD</div>
+      <div class="context">
+        {{ this.modalText }}
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -631,9 +747,16 @@ import lnrJSConnector, {
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 import expandMoreSvg from "@/components/svg/more";
-import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
+import {
+  abbreviateAddress,
+  abbreviateAddressMobile,
+  getAssetObjectInfo,
+  formatNumber,
+} from "@/assets/linearLibrary/linearTools/format";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import ThemeSwitch from "~/components/themeSwitch.vue";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
+import { LINA } from "~/common/currency";
 
 export default {
   name: "walletDetails",
@@ -665,6 +788,16 @@ export default {
       //移动端 显示钱包状态
       mShowWallet: false,
       variant: "desktop",
+      loading: false,
+      ratioObj: {},
+      selectedAsset: collateralAssets[0],
+      showCollaterals: false,
+      collateralAssets: collateralAssets,
+      perAssetCurrentRatio: {},
+      perAssetTotalCollateral: {},
+      onDrag: false,
+      modalPopup: false,
+      modalText: "",
     };
   },
   components: {
@@ -683,6 +816,9 @@ export default {
     isBinanceNetwork() {},
     walletNetworkId() {},
     walletType() {},
+    sumOfTotalCollateral() {},
+    multiCollateralValuesRatios() {},
+    multiCollateralValuesTotalCollateral() {},
     isMobile: {
       handler(mobile) {
         if (mobile === true) {
@@ -698,15 +834,12 @@ export default {
     isMobile() {
       return this.$store.state.isMobile;
     },
-
     isEthereumNetwork() {
       return isEthereumNetwork(this.walletNetworkId);
     },
-
     isBinanceNetwork() {
       return isBinanceNetwork(this.walletNetworkId);
     },
-
     walletNetworkId() {
       return this.$store.state?.walletNetworkId;
     },
@@ -726,7 +859,30 @@ export default {
       return this.$store.state?.liquidationStatus;
     },
     abbreviateAddress() {
-      return abbreviateAddress(this.walletAddress);
+      if (this.$store.state.isMobile) {
+        return abbreviateAddressMobile(this.walletAddress);
+      } else {
+        return abbreviateAddress(this.walletAddress);
+      }
+    },
+    multiCollateralAsset() {
+      return this.$store.state?.multiCollateralAsset;
+    },
+    portfolioAsset() {
+      return this.$store.state?.portfolioAsset;
+    },
+    multiCollateralValuesRatios() {
+      return this.$store.state?.multiCollateralValues.currentRatio;
+    },
+    multiCollateralValuesTotalCollateral() {
+      return this.$store.state?.multiCollateralValues.totalCollateralValueInUsd;
+    },
+    sumOfTotalCollateral() {
+      let collateralValue = this.$store.state?.multiCollateralValues
+        .totalCollateralValueInUsd || [0];
+      return formatNumber(
+        Object.values(collateralValue).reduce((a, b) => a + b)
+      );
     },
     walletDetails() {
       if (this.$store.state?.walletDetails.currentRatioPercent > 700) {
@@ -753,6 +909,39 @@ export default {
     },
     theme() {
       return this.$store.state.theme;
+    },
+    walletDetails() {
+      const asset = this.$store.state?.portfolioAsset;
+      const maxRatio = getAssetObjectInfo(asset).maxTotalPRatio;
+      const targetRatio = getAssetObjectInfo(asset).targetRatio * 100;
+      const currentRatio = this.$store.state?.walletDetails.currentRatioPercent;
+      const yellowRatio = targetRatio - 200;
+      const liquidatedRatio = 200;
+      const assetArr = ["ETH", "BTCB"];
+
+      if (asset == LINA || asset == "WBNB") {
+        currentRatio > 600
+          ? (this.cursorPosition = 98)
+          : (this.cursorPosition = (currentRatio / 600) * 100);
+      } else if (assetArr.includes(asset)) {
+        if (currentRatio > maxRatio || currentRatio < 50) {
+          currentRatio < 50
+            ? (this.cursorPosition = 0)
+            : (this.cursorPosition = 98);
+        } else if (currentRatio <= 200) {
+          const pxAway = (200 - currentRatio) / (150 / 33.3);
+          this.cursorPosition = 33.3 - pxAway;
+        } else if (currentRatio >= targetRatio) {
+          const pxAway = (maxRatio - currentRatio) / (150 / 33.3);
+          this.cursorPosition = 100 - pxAway;
+        } else {
+          this.cursorPosition =
+            33.3 + 33.3 * ((currentRatio - liquidatedRatio) / yellowRatio);
+        }
+      } else {
+        console.error("unsupported asset");
+      }
+      return _.clone(this.$store.state?.walletDetails);
     },
   },
   created() {
@@ -801,6 +990,51 @@ export default {
     }
   },
   methods: {
+    displayKey(key) {
+      return getAssetObjectInfo(key).name;
+    },
+    showModal(textNumber) {
+      this.modalPopup = true;
+      switch (textNumber) {
+        case 1:
+          this.modalText =
+            "Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral.";
+          break;
+        case 2:
+          this.modalText =
+            "Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity.";
+          break;
+        case 3:
+          this.modalText =
+            "Total value of synthetic exposure created using Athos.Exchange.";
+      }
+    },
+    toggleShowCollateral() {
+      this.showCollaterals = !this.showCollaterals;
+    },
+    getCollateralName(asset) {
+      return getAssetObjectInfo(asset).name;
+    },
+    getAssetTargetRatio(assetKey) {
+      return getAssetObjectInfo(assetKey).targetRatio * 100;
+    },
+    formatCollateral(value) {
+      return formatNumber(value);
+    },
+    async onAssetSelect(item) {
+      if (this.onDrag) return;
+      const assetObj = collateralAssets.filter((asset) => asset.key == item)[0];
+      this.loading = true;
+      // this.$store.commit("setMultiCollateralAsset", item);
+      this.$store.commit("setPortfolioAsset", item);
+      await this.getdata();
+      this.selectedAsset = assetObj;
+      await this.checkLiquidation();
+      this.loading = false;
+    },
+    async getdata() {
+      await storeDetailsData();
+    },
     async checkLiquidation() {
       try {
         clearInterval(this.liquidationCountDownId);
@@ -834,6 +1068,17 @@ export default {
       } catch (e) {
         console.log(e, "wallet details check liquidation err");
       }
+    },
+    async onAssetSelect(item) {
+      if (this.onDrag) return;
+      const assetObj = collateralAssets.filter((asset) => asset.key == item)[0];
+      this.loading = true;
+      // this.$store.commit("setMultiCollateralAsset", item);
+      this.$store.commit("setPortfolioAsset", item);
+      await this.getdata();
+      this.selectedAsset = assetObj;
+      await this.checkLiquidation();
+      this.loading = false;
     },
 
     //liquidated清算倒计时
@@ -1227,11 +1472,41 @@ export default {
       }
     }
 
+    .loadingImg {
+      height: 330px;
+    }
+    .loading-page {
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @-moz-keyframes spin {
+      100% {
+        -moz-transform: rotate(360deg);
+      }
+    }
+    @-webkit-keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+    @keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
     .ratioBox {
-      margin: 16px 0 24px;
       border-top: solid 1px #e5e5e5;
       border-bottom: solid 1px #e5e5e5;
-      padding: 24px 0;
+      padding: 12px 0;
 
       .currentRatio {
         font-family: Gilroy-Bold;
@@ -1243,7 +1518,24 @@ export default {
           color: $darkFontColorLight;
         }
 
-        &.inLiquidation {
+        &.noPRatioBal {
+          color: #5a575c;
+
+          .app-dark & {
+            color: #e5e5e5;
+          }
+        }
+        &.highAssetBal {
+          color: #3ecb87;
+        }
+        &.midAssetBal {
+          color: #f2c94c;
+
+          .app-dark & {
+            color: #e5e5e5;
+          }
+        }
+        &.lowAssetBal {
           color: #df434c;
         }
       }
@@ -1253,13 +1545,34 @@ export default {
         font-size: 12px;
         text-align: center;
         color: #df434c;
+        height: 14px;
       }
 
       .context {
+        display: flex;
+        justify-content: space-between;
         font-family: Gilroy-Bold;
-        font-size: 14px;
+        font-size: 16px;
         text-align: center;
         color: #5a575c;
+        line-height: 24px;
+        align-items: center;
+
+        .pRatioTitle {
+          margin: 10px 0;
+          font-family: Gilroy-Bold;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 20px;
+        }
+
+        .globalInfoStyle {
+          img {
+            height: 16px;
+            width: 16px;
+          }
+        }
 
         .app-dark & {
           color: $darkFontColorLight;
@@ -1267,6 +1580,12 @@ export default {
 
         img {
           margin-top: -3px;
+          margin-left: 2px;
+          height: 40px;
+          width: 40px;
+        }
+        .showInfoMobile {
+          margin-left: 4px;
         }
       }
 
@@ -1281,6 +1600,10 @@ export default {
             margin-bottom: -3px;
             border: 6px solid;
             border-color: black transparent transparent;
+
+            .app-dark & {
+              border-color: white transparent transparent;
+            }
           }
         }
 
@@ -1297,11 +1620,11 @@ export default {
         }
 
         .scale200 {
-          left: 28.6%;
+          left: 33.3%;
         }
 
         .scale500 {
-          left: 57.2%;
+          left: 66.7%;
         }
 
         .colorBlock {
@@ -1309,7 +1632,7 @@ export default {
           display: flex;
 
           .leftBlock {
-            width: 28.6%;
+            width: 33.3%;
             height: 16px;
             border-bottom-left-radius: 100px;
             border-top-left-radius: 100px;
@@ -1317,13 +1640,13 @@ export default {
           }
 
           .centerBlock {
-            width: 28.8%;
+            width: 33.4%;
             height: 16px;
             background-color: #ffc941;
           }
 
           .rightBlock {
-            width: 42.6%;
+            width: 33.3%;
             height: 16px;
             border-bottom-right-radius: 100px;
             border-top-right-radius: 100px;
@@ -1337,8 +1660,10 @@ export default {
 
           .item {
             font-family: Gilroy;
-            font-size: 10px;
-            text-align: center;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 16px;
             color: #99999a;
 
             &:first-child {
@@ -1352,84 +1677,14 @@ export default {
       }
     }
 
-    /*.ratioBox {
-            margin: 16px 0 24px;
-            border-top: solid 1px #e5e5e5;
-            border-bottom: solid 1px #e5e5e5;
-            padding: 24px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .title {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                margin-bottom: 27px;
-                font-family: Gilroy-bold;
-                font-size: 14px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #5a575c;
-
-                .ivu-tooltip {
-                    margin-left: 8px;
-                }
-            }
-
-            .ratio {
-                display: flex;
-                width: 100%;
-
-                .box {
-                    flex: 1;
-                    font-family: Gilroy-bold;
-                    font-size: 32px;
-                    font-weight: bold;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.25;
-                    letter-spacing: normal;
-                    text-align: center;
-                    color: #5a575c;
-
-                    .context {
-                        font-size: 14px;
-                        font-family: Gilroy-Regular;
-                        line-height: 1.29;
-                    }
-
-                    &:nth-child(1) {
-                        border-right: solid 1px #eae9ea;
-                    }
-
-                    &:nth-child(2) {
-                        color: #99999a;
-                    }
-                }
-            }
-
-            .ivu-progress {
-                margin-top: 4px;
-                width: 278px;
-                .ivu-progress-outer {
-                    .ivu-progress-inner {
-                        .ivu-progress-bg {
-                            background-color: rgba(#7eb5ff, 0.2) !important;
-                        }
-                        .ivu-progress-success-bg {
-                            background-color: #1a38f8;
-                        }
-                    }
-                }
-            }
-        }*/
-
     .walletInfo {
-      margin-bottom: 24px;
+      margin: 24px 0px;
+
+      .portfolioSection {
+        border: 1px solid #5a575c;
+        border-radius: 10px;
+        padding: 5px 15px;
+      }
 
       .tokenIcon {
         border-radius: 50%;
@@ -1452,49 +1707,272 @@ export default {
       }
 
       .tokenBox {
+        padding: 12px 0;
         border-bottom: solid 1px #e5e5e5;
-        display: flex;
-        padding: 16px 0;
+      }
 
+      .portfolioBox,
+      .tokenBox {
+        display: flex;
         .tokenIcon {
           width: 40px;
           height: 40px;
           margin-right: 8px;
         }
 
+        .allAssets {
+          display: flex;
+          overflow-x: scroll;
+          padding: 0 0 15px 0;
+
+          &::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          &::-webkit-scrollbar {
+            height: 8px !important;
+            cursor: pointer !important;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: #3b3737;
+          }
+        }
+
+        .allAssetsdiv.noSelect {
+          -webkit-user-select: none; /* Safari */
+          -ms-user-select: none; /* IE 10 and IE 11 */
+          user-select: none; /* Standard syntax */
+        }
+
+        // .dissolve {
+        //   width: 24px;
+        //   height: 24px;
+        //   background: red;
+        //   z-index: 10;
+        // }
+        // .allAssets::before {
+        //   position: absolute;
+        //   top: 0;
+        //   width: 300px;
+        //   height: 25px;
+        //   background: linear-gradient(
+        //     red,
+        //     rgba(255, 255, 255, 0.001)
+        //   ); /* transparent keyword is broken in Safari */
+        // }
+        // .allAssets::after {
+        //   position: absolute;
+        //   top: 0;
+        //   width: 300px;
+        //   height: 25px;
+        //   background: linear-gradient(
+        //     red,
+        //     rgba(255, 255, 255, 0.001)
+        //   ); /* transparent keyword is broken in Safari */
+        // }
+
+        .portfolioTabsContainer {
+          height: 24px;
+          background: rgba(171, 168, 168, 0.25);
+          border: 1px solid #5a575c;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          padding: 4px;
+          gap: 8px;
+          margin: 10px 8px 0 0;
+          cursor: pointer;
+          color: #696565;
+          background: #fff;
+          border: 1px solid #e5e5e5;
+
+          .app-dark & {
+            background-color: #141b2d;
+            border: 1px solid #3c3a3e;
+          }
+        }
+
+        .assetTabLeft {
+          text-align: center;
+          display: inline-flex;
+          margin-left: 5px;
+
+          .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 3px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              margin-bottom: 12px;
+            }
+          }
+
+          .assetName {
+            font-family: Gilroy-Bold;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 16px; /* 133.333% */
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #bababa;
+          }
+        }
+
+        .assetSelected {
+          border: 1px solid #1a38f8;
+          color: #5a575c;
+
+          .assetName {
+            color: #5a575c;
+            .app-dark & {
+              color: #fff;
+            }
+          }
+
+          .app-dark & {
+            border: 1px solid #1a38f8;
+          }
+        }
+        .assetTabRight {
+          border-left: 1px solid #bababa;
+          font-family: Gilroy-Bold;
+          font-size: 10px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 16px; /* 160% */
+          letter-spacing: 1.25px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+          letter-spacing: 1.25px;
+          text-transform: uppercase;
+          padding: 0px 3px 0 6px;
+          &.noPRatioBal {
+            color: #bababa;
+
+            .app-dark & {
+              color: #99999a;
+            }
+          }
+        }
+
+        .highAssetBal {
+          color: #3ecb87;
+        }
+        .midAssetBal {
+          color: #f2c94c;
+        }
+        .lowAssetBal {
+          color: #df434c;
+        }
+
         .box {
           flex: 1;
+          .expandIcon {
+            text-align: center;
+            cursor: pointer;
+            img {
+              max-width: 10px;
+            }
+
+            .collateralsContainer {
+              display: flex;
+              justify-content: space-between;
+              font-family: Gilroy;
+              font-size: 12px;
+              color: #99999a;
+              margin: 2px 0;
+            }
+          }
           .tokenItems {
-            font-family: Gilroy-Medium;
+            font-family: Gilroy;
+            font-weight: 400;
             font-size: 12px;
-            font-weight: 500;
-            font-stretch: normal;
-            font-style: normal;
-            line-height: 1.33;
-            letter-spacing: normal;
-            color: #5a575c;
+            line-height: 16px;
+            color: #696565;
             display: flex;
             justify-content: space-between;
 
-            .app-dark & {
-              color: #9d9d9d;
+            .rightCollateral {
+              font-family: Gilroy-Bold;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 24px;
+
+              .app-dark & {
+                color: #e5e5e5;
+              }
             }
-            .app-dark &:first-child {
-              color: $darkFontColorLight;
+
+            .tokenItemTop {
+              display: flex;
+              flex-direction: column;
+              font-variation-settings: normal;
             }
 
             &.obtrusive {
-              .left {
-                font-family: Gilroy-bold;
-                font-size: 16px;
-                line-height: 1.5;
+              font-family: Gilroy;
+              font-size: 16px;
+              line-height: 24px;
+              color: #5a575c;
+              font-variation-settings: "GRAD" 100, "slnt" 0, "XTRA" 468,
+                "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750,
+                "YTDE" -203, "YTFI" 738, "wght" 750;
+
+              .left,
+              .leftAsset {
                 text-align: left;
+                font-family: Gilroy-Bold;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 24px;
+                .showInfoMobile {
+                  margin-left: 4px;
+                }
+              }
+
+              .portfolio {
+                color: #5a575c;
+                font-family: Gilroy-Bold;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 20px;
+                .app-dark & {
+                  color: #fff;
+                }
+              }
+
+              .leftAsset {
+                margin-top: 5px;
+                font-variation-settings: "GRAD" 100, "slnt" 0, "XTRA" 468,
+                  "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750,
+                  "YTDE" -203, "YTFI" 738, "wght" 750;
               }
 
               .right {
-                font-family: Gilroy-Medium;
-                font-size: 16px;
                 text-align: right;
+              }
+
+              .tokenItemTop {
+                font-family: Gilroy;
+                font-weight: 400 !important;
+                font-size: 12px;
+                line-height: 16px;
+                color: #696565;
+                display: flex;
+
+                .right {
+                  .app-dark & {
+                    color: #99999a !important;
+                  }
+                }
               }
 
               &.singer {
@@ -1502,22 +1980,23 @@ export default {
                 .left {
                   display: flex;
                   align-items: center;
-
                   .ivu-tooltip {
                     margin-left: 8px;
                   }
                 }
 
+                .liquidsLeft {
+                  align-items: flex-start;
+                  .globalInfoStyle {
+                    margin-top: 4px;
+                  }
+                }
+
                 .right {
-                  font-family: Gilroy-Medium;
-                  font-weight: 500;
-                  font-stretch: normal;
-                  font-style: normal;
-                  letter-spacing: normal;
                   color: #5a575c;
 
                   .app-dark & {
-                    color: $darkFontColorLight;
+                    color: #99999a;
                   }
                   .top {
                     font-size: 16px;
@@ -1526,25 +2005,68 @@ export default {
                   .bottom {
                     font-size: 12px;
                     line-height: 1.33;
+                    color: #5a575c;
+
+                    .app-dark & {
+                      color: #99999a;
+                    }
                   }
                 }
               }
             }
 
             &.unobtrusive {
-              color: #99999a;
               margin-top: 8px;
               .left {
                 height: 18px;
+                color: #99999a;
                 display: inline-flex;
                 justify-content: center;
                 align-items: center;
+                font-family: Gilroy-Regular;
+                font-size: 12px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 16px;
                 .unlockScheduleButton {
                   width: 18px;
                   height: 18px;
                   margin-left: 6px;
                 }
               }
+            }
+          }
+        }
+      }
+
+      .portfolioBox {
+        flex-direction: column;
+        padding: 8px 0;
+
+        .top {
+          font-family: Gilroy-Bold;
+          .app-dark & {
+            color: #e5e5e5;
+          }
+        }
+
+        .bottom {
+          font-size: 12px;
+        }
+      }
+
+      .tokenBox {
+        border-bottom: solid 1px #e5e5e5;
+
+        .app-dark & {
+          border-bottom: solid 1px #3c3a3e;
+        }
+
+        .tokenItems {
+          .right {
+            color: #5a575c;
+            .app-dark & {
+              color: #99999a;
             }
           }
         }
@@ -1632,32 +2154,8 @@ export default {
           -webkit-animation: spin 1s linear 1s 5 alternate;
           animation: spin 1s linear infinite;
           cursor: not-allowed;
-
-          //     .border {
-          //         stroke: #1A38F8;
-          //         fill: #1A38F8;
-          //     }
-          //     .shape {
-          //         fill: #fff;
-          //     }
-
-          //     &:hover {
-          //         cursor: not-allowed;
-          //     }
         }
       }
-
-      // .refreshBtn:active {
-      //     .background {
-      //         fill: #1b05a1;
-      //     }
-      //     .border {
-      //         stroke: #fff;
-      //     }
-      //     .shape {
-      //         fill: #fff;
-      //     }
-      // }
     }
   }
 }
@@ -1668,8 +2166,8 @@ export default {
     position: fixed;
     right: 0;
     top: 0;
-    //z-index: 9999;
-    z-index: 999;
+    min-height: 100% !important;
+    z-index: 999 !important;
 
     &.mScroll {
       overflow-y: scroll;
@@ -1845,7 +2343,7 @@ export default {
         }
 
         .mNetworkName {
-          font-family: Gilroy-Medium;
+          font-family: Gilroy;
           font-size: 12px;
           font-weight: 500;
           font-stretch: normal;
@@ -1878,7 +2376,7 @@ export default {
     }
     .walletDetailsBox {
       width: 100%;
-      height: 890px;
+      height: 1000px;
       display: none;
       background-color: #ffffff;
 
@@ -2025,13 +2523,47 @@ export default {
       }
 
       .ratioBox {
-        margin: 24px 0 24px;
-        border-top: solid 1px #e5e5e5;
+        margin: 12px 0;
+        border-top: none;
         border-bottom: solid 1px #e5e5e5;
         padding: 16px 24px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 0;
+
+        .context {
+          width: 100%;
+          .pRatioTitle {
+            .showInfoMobile {
+              width: 16px;
+            }
+          }
+        }
+
+        .percentBox {
+          width: 100%;
+          .colorBlock {
+            .leftBlock,
+            .centerBlock,
+            .rightBlock {
+              height: 12px;
+            }
+          }
+
+          .flag {
+            margin-top: 10px;
+
+            .item {
+              &:first-child {
+                margin-left: 15vw;
+              }
+              &:last-child {
+                margin-left: 10vw;
+              }
+            }
+          }
+        }
 
         .title {
           width: 100%;
@@ -2111,7 +2643,7 @@ export default {
 
       .walletInfo {
         margin-bottom: 24px;
-        padding: 0 24px;
+        padding: 0 24px 100px;
 
         .tokenIcon {
           border-radius: 50%;
@@ -2150,7 +2682,7 @@ export default {
           .box {
             flex: 1;
             .tokenItems {
-              font-family: Gilroy-Medium;
+              font-family: Gilroy;
               font-size: 12px;
               font-weight: 500;
               font-stretch: normal;
@@ -2170,15 +2702,21 @@ export default {
 
               &.obtrusive {
                 .left {
-                  font-family: Gilroy-bold;
+                  color: #5a575c;
+                  font-family: Gilroy;
                   font-size: 16px;
-                  line-height: 1.5;
-                  text-align: left;
+                  font-style: normal;
+                  font-weight: 700;
+                  line-height: 24px;
                 }
 
+                // .tokenItemTop {
+                //   font-size: 12px;
+                // }
+
                 .right {
-                  font-family: Gilroy-Medium;
-                  font-size: 16px;
+                  font-family: Gilroy;
+                  font-size: 12px;
                   text-align: right;
                 }
 
@@ -2194,7 +2732,7 @@ export default {
                   }
 
                   .right {
-                    font-family: Gilroy-Medium;
+                    font-family: Gilroy;
                     font-weight: 500;
                     font-stretch: normal;
                     font-style: normal;
@@ -2207,6 +2745,11 @@ export default {
                     .top {
                       font-size: 16px;
                       line-height: 1.5;
+                      font-family: Gilroy;
+                      font-size: 16px;
+                      font-style: normal;
+                      font-weight: 700;
+                      line-height: 24px;
                     }
                     .bottom {
                       font-size: 12px;

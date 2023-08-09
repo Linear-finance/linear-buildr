@@ -13,9 +13,16 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
-      - name: Install prettier
+
+      - name: Use node 14
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Install dependencies
         run: |
-          yarn global add prettier
+          yarn install
+
       - name: Check prettier format
         run: |
-          prettier --check "."
+          yarn prettier --check "."

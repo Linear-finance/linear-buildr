@@ -52,6 +52,7 @@
         <div class="disconnect" @click.stop="disconnect">Disconnect</div>
       </div>
       <theme-switch :variant="variant" />
+
       <!-- <div class="chainChange" :class="{ chainChanging }">
                 <div
                     class="ethBox"
@@ -88,8 +89,10 @@
         <img v-if="theme === 'light'" src="@/static/icon-menu.svg" />
         <img v-else src="@/static/dark-theme/icon-menu.svg" />
       </div>
+      <div @click="showTooltipModle" class="menu">
+        <img src="@/static/menu.svg" />
+      </div>
     </div>
-
     <div class="walletDetailsBox" :class="{ mShowWalletClass: mShowWallet }">
       <div class="mWalletHead">
         <ethereumSvg
@@ -340,11 +343,13 @@
             <div class="tokenItems obtrusive">
               <div class="left">LINA</div>
               <div class="right">
-                <b>{{
-                  isEthereumNetwork
-                    ? walletDetails.avaliableLINA || 0
-                    : walletDetails.amountLINA || 0
-                }}</b>
+                <b>
+                  {{
+                    isEthereumNetwork
+                      ? walletDetails.avaliableLINA || 0
+                      : walletDetails.amountLINA || 0
+                  }}
+                </b>
                 LINA
               </div>
             </div>
@@ -412,7 +417,8 @@
             <div class="tokenItems obtrusive">
               <div class="left">ℓUSD</div>
               <div class="right">
-                <b>{{ walletDetails.amountlUSD || 0 }}</b> ℓUSD
+                <b>{{ walletDetails.amountlUSD || 0 }}</b>
+                ℓUSD
               </div>
             </div>
             <div class="tokenItems">
@@ -509,7 +515,8 @@
               </div>
               <div class="right">
                 <div class="top">
-                  <b>{{ walletDetails.liquids || 0 }}</b> ℓUSD
+                  <b>{{ walletDetails.liquids || 0 }}</b>
+                  ℓUSD
                 </div>
                 <div class="bottom">
                   ≈ ${{ walletDetails.liquids2USD || 0 }} USD
@@ -552,7 +559,9 @@
                   }"
                 >
                   <template v-if="!isEthereumNetwork">
-                    <b>{{ walletDetails.amountDebt || 0 }}</b>
+                    <b>
+                      {{ walletDetails.amountDebt || 0 }}
+                    </b>
                     ℓUSD
                   </template>
                   <template v-if="isEthereumNetwork"> N/A </template>
@@ -630,6 +639,7 @@ import lnrJSConnector, {
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
+
 import expandMoreSvg from "@/components/svg/more";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
@@ -976,6 +986,10 @@ export default {
     openUnlockSchedule() {
       this.$store.commit("setIsUnlockScheduleShow", true);
     },
+
+    showTooltipModle() {
+      this.$store.commit("setIsShowTooltipModle", true);
+    },
   },
 };
 </script>
@@ -1159,6 +1173,10 @@ export default {
 
     .mMenu {
       display: none;
+    }
+    .menu {
+      margin-left: 16px;
+      cursor: pointer;
     }
   }
 

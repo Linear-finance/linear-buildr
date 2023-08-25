@@ -104,30 +104,32 @@
         </div>
       </Modal>
 
-      <Tooltip
-        class="globalInfoStyle action"
-        offset="0 6"
-        max-width="300"
-        placement="bottom"
-        v-for="(item, index) in actions"
-        :key="index"
-        :class="{
-          activited: currentAction == index + 1,
-          isTransaction: isTransaction && currentAction != index + 1,
-        }"
-        :disabled="!isTransaction || currentAction == index + 1"
-        @click.native="actionChange(index + 1)"
-      >
-        {{ item }}
+      <!-- <Tooltip
+                class="globalInfoStyle action"
+                offset="0 6"
+                max-width="300"
+                placement="bottom"
+                v-for="(item, index) in actions"
+                :key="index"
+                :class="{
+                    activited: currentAction == index + 1,
+                    isTransaction: isTransaction && currentAction != index + 1
+                }"
+                :disabled="!isTransaction || currentAction == index + 1"
+                @click.native="actionChange(index + 1)"
+            >
+                {{ item }}
 
-        <div slot="content">
-          <div class="tipTitle">
-            Please complete the
-            {{ actions[currentAction - 1] }} transaction
-          </div>
-          <div class="tipDesc">You can only do one transaction at a time</div>
-        </div>
-      </Tooltip>
+                <div slot="content">
+                    <div class="tipTitle">
+                        Please complete the
+                        {{ actions[currentAction - 1] }} transaction
+                    </div>
+                    <div class="tipDesc">
+                        You can only do one transaction at a time
+                    </div>
+                </div>
+            </Tooltip> -->
 
       <div class="mNavigate" v-if="mMenuState && isMobile">
         <div class="mHead">
@@ -164,7 +166,38 @@
         </div>
       </div>
     </div>
-
+    <transition name="tooltipModleFade">
+      <div v-show="isShowTooltipModle" class="tooltipModle">
+        <div @click="closeTooltipModle" class="tooltipModle-close">
+          <img src="@/static/x_close.svg" />
+        </div>
+        <div class="tooltipModle-content">
+          <div class="tooltipModle-content-img">
+            <img src="@/static/linear_logo.svg" />
+          </div>
+          <ul class="tooltipModle-content-list">
+            <li
+              v-for="(item, index) in actions"
+              :key="item"
+              @click="actionChange(index + 1)"
+            >
+              {{ item }}
+            </li>
+          </ul>
+          <ul class="tooltipModle-content-exList">
+            <li
+              v-for="(item, index) in external"
+              :key="item"
+              @click="actionChange(index + 1)"
+            >
+              <a target="_blank" :href="item.url">
+                {{ item.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
     <div class="actionsBox">
       <homePage v-if="currentAction == 0"></homePage>
       <build v-else-if="currentAction == 1"></build>
@@ -212,10 +245,19 @@ export default {
   },
   data() {
     return {
-      introductActionModal: false,
       // currentAction: this.$store.state.currentAction,
       othersAction: 0, // 0没有 1track 2transaction 3referral
       actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
+      external: [
+        {
+          label: "Blog",
+          url: "",
+        },
+        {
+          label: "Instagram",
+          url: "https://www.instagram.com/accounts/suspended/?next=https%3A%2F%2Fwww.instagram.com%2Flinear%2F%3F__coig_ufac%3D1",
+        },
+      ],
     };
   },
   created() {
@@ -275,6 +317,9 @@ export default {
     theme() {
       return this.$store.state.theme;
     },
+    isShowTooltipModle() {
+      return this.$store.state.isShowTooltipModle;
+    },
   },
   methods: {
     // temporary dark theme in body
@@ -295,6 +340,8 @@ export default {
     actionChange(action) {
       //正在交易中无法点击其他按钮
       if (!this.isTransaction) {
+        this.$store.commit("setIsShowTooltipModle", false);
+
         if (this.currentAction != action) {
           this.$store.commit("setCurrentAction", action);
           const path = common.SUBPAGE_OPTIONS_MAP[action];
@@ -326,6 +373,13 @@ export default {
 
     mHideMenuFun() {
       this.$store.commit("setmMenuState", false);
+    },
+
+    closeTooltipModle() {
+      this.$store.commit("setIsShowTooltipModle", false);
+    },
+    showTooltipModle() {
+      this.$store.commit("setIsShowTooltipModle", true);
     },
   },
 };
@@ -407,7 +461,101 @@ export default {
       }
     }
   }
+  .tooltipModle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(
+        72.9% 64.69% at 40% 50%,
+        rgba(53, 85, 254, 0.5) 0%,
+        rgba(0, 0, 0, 0) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(26, 56, 248, 0.09) 0%,
+        rgba(0, 0, 0, 0) 60.94%
+      ),
+      #000;
+    // background: #000;
+    z-index: 999;
+    overflow-y: auto;
 
+    &-close {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      display: flex;
+      width: 48px;
+      height: 48px;
+      padding: 8px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      border: 1px solid #b0b7c7;
+      cursor: pointer;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    &-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transform: translateX(200px);
+      height: 100vh;
+      // max-height: 666px;
+
+      @media only screen and (max-width: $max-phone-width) {
+        transform: translateX(-50px);
+      }
+
+      &-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        color: #fff;
+        font-family: Gilroy-UltraLight;
+        font-size: 48px;
+        font-style: normal;
+        font-weight: 200;
+        line-height: 48px;
+        flex-grow: 1;
+        margin: 80px 0;
+        max-height: 392px;
+
+        & > li {
+          cursor: pointer;
+          transition: color 0.5s;
+          &:hover {
+            color: #1a38f8;
+          }
+        }
+      }
+
+      &-exList {
+        font-family: Gilroy-Regular;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 200;
+        line-height: 32px;
+
+        & > li > a {
+          color: #fff;
+          transition: color 0.5s;
+          &:hover {
+            color: #1a38f8;
+          }
+        }
+      }
+    }
+  }
   .actionsBox {
     width: 786px;
     height: 840px;
@@ -592,5 +740,13 @@ export default {
       }
     }
   }
+}
+
+.tooltipModleFade-enter-active,
+.tooltipModleFade-leave-active {
+  transition: opacity 0.5s;
+}
+.tooltipModleFade-enter, .tooltipModleFade-leave-to /* .tooltipModleFade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

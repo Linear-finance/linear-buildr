@@ -1241,8 +1241,12 @@ export default {
         &-item {
           display: flex;
           align-items: center;
-          padding: 7px 16px;
+          padding: 7px 16px 7px 10px;
           transition: all 0.5s;
+
+          & > span {
+            margin-left: 8px;
+          }
         }
 
         &-item:hover {
@@ -1412,6 +1416,10 @@ export default {
           align-items: center;
           padding: 7px 16px;
           transition: all 0.5s;
+
+          & > span {
+            margin-left: 8px;
+          }
         }
 
         &-item:hover {

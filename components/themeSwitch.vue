@@ -33,7 +33,7 @@
         />
       </svg>
     </div>
-    <div v-if="!isMobile">
+    <div class="container" v-if="!isMobile">
       <svg
         width="41"
         height="40"

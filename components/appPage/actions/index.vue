@@ -5,13 +5,9 @@
         <img
           v-if="$store.getters.isDarkTheme"
           class="linearBuildrlogo"
-          src="@/static/linear_buildr_logo_dark.svg"
+          src="@/static/linear_logo_dark.svg"
         />
-        <img
-          v-else
-          class="linearBuildrlogo"
-          src="@/static/linear_buildr_logo.svg"
-        />
+        <img v-else class="linearBuildrlogo" src="@/static/linear_logo.svg" />
       </a>
 
       <a href="/" class="mobileLogo">
@@ -251,7 +247,7 @@ export default {
       external: [
         {
           label: "Blog",
-          url: "",
+          url: "https://linear-finance.medium.com/",
         },
         {
           label: "Instagram",

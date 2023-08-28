@@ -4,9 +4,13 @@
       <img
         v-if="$store.getters.isDarkTheme"
         class="linearBuildrlogo"
-        src="@/static/linear_logo_dark.svg"
+        src="@/static/linear_buildr_logo_dark.svg"
       />
-      <img v-else class="linearBuildrlogo" src="@/static/linear_logo.svg" />
+      <img
+        v-else
+        class="linearBuildrlogo"
+        src="@/static/linear_buildr_logo.svg"
+      />
       <theme-switch v-if="!isMobile" />
       <div class="mBuyLINA mobileShow" @click.stop="buyDisplay = true">
         <theme-switch v-if="isMobile" variant="mobile" />

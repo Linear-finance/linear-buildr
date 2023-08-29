@@ -7,7 +7,11 @@
           class="linearBuildrlogo"
           src="@/static/linear_logo_dark.svg"
         />
-        <img v-else class="linearBuildrlogo" src="@/static/linear_logo.svg" />
+        <img
+          v-else
+          class="linearBuildrlogo"
+          src="@/static/linear_logo_light.svg"
+        />
       </a>
 
       <a href="/" class="mobileLogo">
@@ -397,8 +401,8 @@ export default {
 
     .webLogo {
       .linearBuildrlogo {
-        width: 163px;
-        height: 32px;
+        width: 160px;
+        height: 40px;
         cursor: pointer;
         margin-right: 28px;
       }
@@ -585,8 +589,8 @@ export default {
         display: block;
 
         .linearBuildrlogo {
-          width: 163px;
-          height: 32px;
+          width: 160px;
+          height: 45px;
           cursor: pointer;
           margin-right: 28px;
         }

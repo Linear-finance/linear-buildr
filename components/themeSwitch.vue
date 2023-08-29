@@ -160,10 +160,10 @@ export default {
     justify-content: center;
     align-items: center;
     &.dark {
-      background: #141b2d;
+      // background: #141b2d;
     }
     &.light {
-      background: #f6f5f6;
+      // background: #f6f5f6;
     }
   }
   &--mobile {

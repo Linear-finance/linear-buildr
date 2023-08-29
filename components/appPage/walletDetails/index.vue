@@ -1209,7 +1209,7 @@ export default {
     .chainChange {
       position: relative;
       width: calc(100% - 32px - 8px);
-      padding: 7px 16px;
+      padding: 3px 16px;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
@@ -1273,7 +1273,7 @@ export default {
 
     .info {
       width: calc(100% - 32px - 8px);
-      padding: 7px 16px;
+      padding: 3px 16px;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
@@ -1382,7 +1382,7 @@ export default {
     .chainChange {
       position: relative;
       width: calc(100% - 32px - 8px);
-      padding: 7px 16px;
+      padding: 3px 16px;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
@@ -1993,7 +1993,7 @@ export default {
 
       .info {
         width: 294px;
-        padding: 7px 16px;
+        padding: 3px 16px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
@@ -2115,6 +2115,8 @@ export default {
 
         #ethereumSvg,
         #binanceSvg {
+          display: flex;
+          align-items: center;
           width: 16px;
           height: 16px;
           margin-right: 4px;
@@ -2294,7 +2296,7 @@ export default {
           font-weight: 500;
           font-stretch: normal;
           font-style: normal;
-          line-height: 1.33;
+          line-height: 12px;
           letter-spacing: normal;
           color: #99999a;
           margin: 0 4px;

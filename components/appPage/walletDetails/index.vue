@@ -1100,7 +1100,7 @@ export default {
 
     .info {
       width: calc(100% - 32px - 8px);
-      padding: 7px 16px;
+      padding: 3px 16px;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
@@ -1151,10 +1151,10 @@ export default {
         font-style: normal;
         line-height: 1.29;
         letter-spacing: normal;
-        color: #99999a;
+        color: #475a75;
 
         .app-dark & {
-          color: $darkFontColorSecondary;
+          color: #dde4e9;
         }
       }
 
@@ -1188,7 +1188,7 @@ export default {
         font-style: normal;
         letter-spacing: 1.25px;
         text-align: center;
-        color: #99999a;
+        color: #475a75;
         text-transform: uppercase;
         cursor: pointer;
         transition: $animete-time linear;
@@ -1361,7 +1361,7 @@ export default {
         font-style: normal;
         letter-spacing: 1.25px;
         text-align: center;
-        color: #99999a;
+        color: #475a75;
         text-transform: uppercase;
         cursor: pointer;
         transition: $animete-time linear;
@@ -2115,8 +2115,6 @@ export default {
 
         #ethereumSvg,
         #binanceSvg {
-          display: flex;
-          align-items: center;
           width: 16px;
           height: 16px;
           margin-right: 4px;
@@ -2163,7 +2161,7 @@ export default {
 
       .info {
         width: 294px;
-        padding: 7px 16px;
+        padding: 3px 16px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
@@ -2205,11 +2203,10 @@ export default {
         }
 
         .copyBtn {
-          cursor: pointer;
           width: 16px;
           height: 16px;
-          display: none;
-          margin-right: 12px;
+          cursor: pointer;
+          margin: 2px 8px 0 4px;
 
           &:hover {
             #Combined-Shape {
@@ -2399,9 +2396,10 @@ export default {
           }
 
           .copyBtn {
-            cursor: pointer;
             width: 16px;
             height: 16px;
+            cursor: pointer;
+            margin: 2px 8px 0 4px;
 
             &:hover {
               #Combined-Shape {

@@ -228,6 +228,26 @@
         </div>
       </div>
       <div class="ratioBox">
+        <!-- <div class="title">
+                    Pledge ratio
+                    <Tooltip
+                        max-width="200"
+                        class="globalInfoStyle"
+                        content=""
+                        placement="bottom"
+                        offset="0 6"
+                    >
+                        <img
+                            v-if="theme === 'light'"
+                            src="@/static/info_white.svg"
+                        />
+                        <img
+                            v-else
+                            src="@/static/dark-theme/new_info_white.svg"
+                        />
+                    </Tooltip>
+                </div> -->
+
         <div
           class="currentRatio"
           :class="{ inLiquidation: liquidationStatus.status }"
@@ -251,7 +271,7 @@
             offset="0 6"
           >
             <img v-if="theme === 'light'" src="@/static/info_white.svg" />
-            <img v-else src="@/static/dark-theme/info_white.svg" />
+            <img v-else src="@/static/dark-theme/new_info_white.svg" />
           </Tooltip>
         </div>
         <div class="percentBox">
@@ -326,40 +346,35 @@
       <div class="walletInfo">
         <div class="title">Wallet Balance</div>
         <div class="tokenBox">
-          <img
-            v-if="theme === 'light'"
-            class="tokenIcon"
-            src="@/static/LINA_logo.svg"
-          />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/LINA_logo.svg"
-          />
+          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
           <div class="box">
             <div class="tokenItems obtrusive">
-              <div class="left">LINA</div>
-              <div class="right">
-                <b>{{
+              <div class="left">
+                {{
                   isEthereumNetwork
                     ? walletDetails.avaliableLINA || 0
                     : walletDetails.amountLINA || 0
-                }}</b>
+                }}
                 LINA
+              </div>
+              <div class="right">
+                <div>
+                  ≈ ${{
+                    isEthereumNetwork
+                      ? walletDetails.avaliableLINA2USD || 0
+                      : walletDetails.amountLINA2USD || 0
+                  }}
+                  USD
+                </div>
               </div>
             </div>
             <div class="tokenItems">
-              <div class="left">
-                1 LINA = ${{ walletDetails.LINA2USDRate || 0 }}
-                USD
-              </div>
+              <div class="left"></div>
               <div class="right">
-                ≈ ${{
-                  isEthereumNetwork
-                    ? walletDetails.avaliableLINA2USD || 0
-                    : walletDetails.amountLINA2USD || 0
-                }}
-                USD
+                <div>
+                  1 LINA = ${{ walletDetails.LINA2USDRate || 0 }}
+                  USD
+                </div>
               </div>
             </div>
             <div class="tokenItems unobtrusive">
@@ -398,27 +413,19 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img
-            v-if="theme === 'light'"
-            class="tokenIcon"
-            src="@/static/currency/lUSD.svg"
-          />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/currency/lUSD.svg"
-          />
+          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">ℓUSD</div>
               <div class="right">
-                <b>{{ walletDetails.amountlUSD || 0 }}</b> ℓUSD
+                <b>{{ walletDetails.amountlUSD || 0 }}</b>
+                ℓUSD
               </div>
             </div>
             <div class="tokenItems">
               <div class="left">
-                1 ℓUSD = ${{ walletDetails.lUSD2USDRate || 1 }}
-                USD
+                <!-- 1 ℓUSD = ${{ walletDetails.lUSD2USDRate || 1 }}
+                                USD -->
               </div>
               <div class="right">
                 ≈ ${{ walletDetails.amountlUSD2USD || 0 }} USD
@@ -428,16 +435,7 @@
         </div>
         <div class="tokenBox">
           <template v-if="isEthereumNetwork">
-            <img
-              v-if="theme === 'light'"
-              class="tokenIcon"
-              src="@/static/ETH_logo.svg"
-            />
-            <img
-              v-else
-              class="tokenIcon"
-              src="@/static/dark-theme/ETH_logo.svg"
-            />
+            <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
             <div class="box">
               <div class="tokenItems obtrusive">
                 <div class="left">ETH</div>
@@ -448,8 +446,10 @@
               </div>
               <div class="tokenItems">
                 <div class="left">
-                  1 ETH = ${{ walletDetails.ETH2USDRate || 0 }}
-                  USD
+                  <!-- 1 ETH = ${{
+                                        walletDetails.ETH2USDRate || 0
+                                    }}
+                                    USD -->
                 </div>
                 <div class="right">
                   ≈ ${{ walletDetails.amountETH2USD || 0 }}
@@ -482,16 +482,7 @@
           </template>
         </div>
         <div class="tokenBox">
-          <img
-            v-if="theme === 'light'"
-            class="tokenIcon"
-            src="@/static/currency/lUSD.svg"
-          />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/currency/lUSD.svg"
-          />
+          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -504,12 +495,13 @@
                   offset="0 6"
                 >
                   <img v-if="theme === 'light'" src="@/static/info_white.svg" />
-                  <img v-else src="@/static/dark-theme/info_white.svg" />
+                  <img v-else src="@/static/dark-theme/new_info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
                 <div class="top">
-                  <b>{{ walletDetails.liquids || 0 }}</b> ℓUSD
+                  <b>{{ walletDetails.liquids || 0 }}</b>
+                  ℓUSD
                 </div>
                 <div class="bottom">
                   ≈ ${{ walletDetails.liquids2USD || 0 }} USD
@@ -519,16 +511,7 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img
-            v-if="theme === 'light'"
-            class="tokenIcon"
-            src="@/static/currency/lUSD.svg"
-          />
-          <img
-            v-else
-            class="tokenIcon"
-            src="@/static/dark-theme/currency/lUSD.svg"
-          />
+          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -540,8 +523,11 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
-                  <img v-else src="@/static/dark-theme/info_white.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/new_info_white.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/new_info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
@@ -552,7 +538,9 @@
                   }"
                 >
                   <template v-if="!isEthereumNetwork">
-                    <b>{{ walletDetails.amountDebt || 0 }}</b>
+                    <b>
+                      {{ walletDetails.amountDebt || 0 }}
+                    </b>
                     ℓUSD
                   </template>
                   <template v-if="isEthereumNetwork"> N/A </template>
@@ -599,7 +587,7 @@
                 >
                   <circle cx="32" cy="32" r="31.5" />
                 </g>
-                <g fill="#99999A" class="shape">
+                <g stroke="#7A8BA5" fill="#99999A" class="shape">
                   <path
                     d="M9.062 22.422C10.185 27.514 14.718 31.2 20 31.2c4.593 0 8.646-2.79 10.353-6.917l-6.214 1.094c-.387.068-.758-.154-.89-.51l-.037-.139c-.068-.387.154-.757.51-.889l.14-.038 7.878-1.389c.386-.068.757.154.889.51l.037.14 1.39 7.878c.076.435-.214.85-.65.926-.386.069-.757-.153-.889-.51l-.037-.139-.984-5.581C29.385 29.943 24.97 32.8 20 32.8c-6.037 0-11.217-4.212-12.5-10.033-.095-.432.178-.859.609-.954.432-.095.858.178.953.61zm11.22-16.628c6.037 0 11.216 4.213 12.5 10.034.094.431-.178.858-.61.953-.431.095-.858-.178-.953-.609-1.122-5.091-5.655-8.778-10.938-8.778-4.593 0-8.646 2.79-10.352 6.918l6.213-1.095c.387-.068.758.154.89.51l.037.14c.068.386-.154.757-.51.889l-.139.037-7.878 1.39c-.387.068-.758-.154-.89-.51l-.037-.14-1.39-7.878c-.076-.435.215-.85.65-.927.386-.068.757.154.889.51l.037.14.984 5.58c2.112-4.307 6.527-7.164 11.496-7.164z"
                     transform="translate(-1110 -917) translate(1110 917) translate(11.8 12.8)"
@@ -1196,7 +1184,7 @@ export default {
           transition: $animete-time linear;
           font-weight: bold;
           letter-spacing: 1.5px;
-          font-family: Gilroy-bold;
+          font-family: $BodyTextFontFamily;
           font-size: 12px;
           font-stretch: normal;
           font-style: normal;
@@ -1233,11 +1221,27 @@ export default {
       border-bottom: solid 1px #e5e5e5;
       padding: 24px 0;
 
+      .title {
+        font-family: Gilroy-bold;
+        font-size: 14px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.29;
+        letter-spacing: normal;
+        color: #5a575c;
+        margin-bottom: 8px;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
+      }
+
       .currentRatio {
         font-family: Gilroy-Bold;
         font-size: 32px;
         text-align: center;
-        color: #5a575c;
+        color: #1d2639;
 
         .app-dark & {
           color: $darkFontColorLight;
@@ -1256,10 +1260,11 @@ export default {
       }
 
       .context {
-        font-family: Gilroy-Bold;
+        font-family: $BodyTextFontFamily;
         font-size: 14px;
         text-align: center;
-        color: #5a575c;
+        color: #1d2639;
+        font-weight: 700;
 
         .app-dark & {
           color: $darkFontColorLight;
@@ -1281,6 +1286,10 @@ export default {
             margin-bottom: -3px;
             border: 6px solid;
             border-color: black transparent transparent;
+
+            .app-dark & {
+              border-color: #fff transparent transparent;
+            }
           }
         }
 
@@ -1313,13 +1322,13 @@ export default {
             height: 16px;
             border-bottom-left-radius: 100px;
             border-top-left-radius: 100px;
-            background-color: #df434c;
+            background-color: #fe2712;
           }
 
           .centerBlock {
             width: 28.8%;
             height: 16px;
-            background-color: #ffc941;
+            background-color: #fabc02;
           }
 
           .rightBlock {
@@ -1327,25 +1336,33 @@ export default {
             height: 16px;
             border-bottom-right-radius: 100px;
             border-top-right-radius: 100px;
-            background-color: #7eb5ff;
+            background-color: #1a38f8;
           }
         }
 
         .flag {
           display: flex;
-          margin-top: 6px;
+          margin-top: 12px;
 
           .item {
-            font-family: Gilroy;
-            font-size: 10px;
+            font-family: $BodyTextFontFamily;
+            font-size: 12px;
             text-align: center;
-            color: #99999a;
+            color: #475a75;
 
             &:first-child {
               margin-left: 69px;
             }
             &:last-child {
               margin-left: 62px;
+            }
+
+            .app-dark &:first-child {
+              color: $darkFontColor;
+            }
+
+            .app-dark &:last-child {
+              color: $darkFontColor;
             }
           }
         }
@@ -1436,18 +1453,17 @@ export default {
       }
 
       .title {
-        font-family: Gilroy-bold;
         font-size: 14px;
         font-weight: bold;
         font-stretch: normal;
         font-style: normal;
         line-height: 1.29;
         letter-spacing: normal;
-        color: #5a575c;
+        color: #1d2639;
         margin-bottom: 8px;
 
         .app-dark & {
-          color: $darkFontColorLight;
+          color: $darkFontColorSecondary;
         }
       }
 
@@ -1465,36 +1481,44 @@ export default {
         .box {
           flex: 1;
           .tokenItems {
-            font-family: Gilroy-Medium;
+            font-family: $BodyTextFontFamily;
             font-size: 12px;
             font-weight: 500;
             font-stretch: normal;
             font-style: normal;
             line-height: 1.33;
             letter-spacing: normal;
-            color: #5a575c;
+            color: #475a75;
             display: flex;
             justify-content: space-between;
 
-            .app-dark & {
-              color: #9d9d9d;
-            }
             .app-dark &:first-child {
               color: $darkFontColorLight;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 28px; /* 175% */
             }
 
             &.obtrusive {
               .left {
-                font-family: Gilroy-bold;
+                font-family: $BodyTextFontFamily;
+                font-weight: 700;
                 font-size: 16px;
                 line-height: 1.5;
                 text-align: left;
+                color: #1d2639;
+
+                .app-dark & {
+                  color: $darkFontColorLight;
+                }
               }
 
               .right {
-                font-family: Gilroy-Medium;
-                font-size: 16px;
+                font-family: $BodyTextFontFamily;
+                font-size: 12px;
                 text-align: right;
+                font-weight: 700;
               }
 
               &.singer {
@@ -1509,30 +1533,32 @@ export default {
                 }
 
                 .right {
-                  font-family: Gilroy-Medium;
+                  font-family: $BodyTextFontFamily;
                   font-weight: 500;
                   font-stretch: normal;
                   font-style: normal;
                   letter-spacing: normal;
-                  color: #5a575c;
+                  color: #475a75;
 
                   .app-dark & {
                     color: $darkFontColorLight;
                   }
                   .top {
-                    font-size: 16px;
+                    font-size: 12px;
                     line-height: 1.5;
+                    font-weight: 700;
                   }
                   .bottom {
                     font-size: 12px;
                     line-height: 1.33;
+                    font-weight: 400;
                   }
                 }
               }
             }
 
             &.unobtrusive {
-              color: #99999a;
+              color: #475a75;
               margin-top: 8px;
               .left {
                 height: 18px;
@@ -1558,7 +1584,7 @@ export default {
 
       .box {
         .title {
-          font-family: Gilroy-bold;
+          font-family: $BodyTextFontFamily;
           font-size: 14px;
           font-weight: bold;
           font-stretch: normal;
@@ -2240,14 +2266,14 @@ export default {
 
         .box {
           .title {
-            font-family: Gilroy-bold;
+            font-family: $BodyTextFontFamily;
             font-size: 14px;
             font-weight: bold;
             font-stretch: normal;
             font-style: normal;
             line-height: 1.29;
             letter-spacing: normal;
-            color: #5a575c;
+            color: #1d2639;
             margin-bottom: 8px;
 
             .app-dark & {
@@ -2256,14 +2282,14 @@ export default {
           }
 
           .amount {
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
             font-style: normal;
             line-height: 1.25;
             letter-spacing: normal;
-            color: #5a575c;
+            color: #1d2639;
 
             .app-dark & {
               color: $darkFontColorLight;

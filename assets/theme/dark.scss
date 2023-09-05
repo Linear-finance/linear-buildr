@@ -1,21 +1,24 @@
 //暗色主题
 //Preparation for dark theme
 $white: #fff;
-$darkBackgroundColor: #141b2d; //背景色 / background color
-$darkBackgroundDeepColor: #050d20; //深色背景 / dark background color
+$darkBackgroundColor: #1d2639; //背景色 / background color
+$darkBackgroundDeepColor: #101a28; //深色背景 / dark background color
 
 $darkLighterBlue: #cee1fb;
-$darkFontColor: $white; //字体色 / font-color
-$darkFontColorSecondary: #f6f5f6; //字体色 / font-color
+$darkFontColor: #7a8ba5; //字体色 / font-color
+$darkFontColorSecondary: #dde4e9; //字体色 / font-color
 $darkFontColorLight: #e5e5e5; //字体色 / font-color
 $darkFontColorDisabled: #5a575c; //字体色 / font-color
 
-$darkBorderColor: #1f2b4d; //边框色 / border-color
+$darkBorderColor: #dde4e9; //边框色 / border-color
 $darkBorderLightColor: #5a575c; //边框浅色 / Light border
 $darkButtonColor: #3851f0; //按钮色 / Button color
 $darkButtonColor2: #1a38f8; //按钮色 / Button color
 $darkButtonColorHighlight: #1b9cfc; //按钮色 / Button color
 $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
+
+$HeadingsFontFamily: Switzer;
+$BodyTextFontFamily: Satoshi Variable;
 
 .dark {
   * {
@@ -37,6 +40,8 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   darkButtonHoverColor: $darkButtonHoverColor;
   darkFontColorSecondary: $darkFontColorSecondary;
   darkFontColorLight: $darkFontColorLight;
+  headingsFontFamily: $HeadingsFontFamily;
+  bodyTextFontFamily: $BodyTextFontFamily;
 }
 
 html.dark-theme,
@@ -115,7 +120,7 @@ body.dark-theme {
 
   #homePage {
     .actionsBox .boxItem {
-      background-color: #141b2d !important;
+      background-color: #475a75 !important;
       border: 1px solid rgba(153, 153, 154, 0.2) !important;
 
       .boxContext {
@@ -187,10 +192,10 @@ body.dark-theme {
     background-color: transparent !important;
   }
 
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .title,
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .amount,
   #walletDetails .walletDetailsBox .walletInfo .title,
-  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems.obtrusive .left,
   #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentTitle,
-  #homePage .title,
   #landingPage .container .walletBox .box .boxItem .boxSub,
   .ivu-collapse-item-active .ivu-collapse-header,
   .ivu-collapse-header,
@@ -220,8 +225,6 @@ body.dark-theme {
   }
 
   //#landingPage .container .walletBox .box .boxItem .boxSub,
-  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .title,
-  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .amount,
   #walletDetails
     .walletDetailsBox
     .walletInfo
@@ -250,11 +253,9 @@ body.dark-theme {
     .itemSpeed,
   #gasEditor .editInfo .infoLeft .editTitle,
   .ivu-input-number-input,
-  #homePage .actionsBox .boxItem .boxContext,
   #homePage .context,
   .ivu-collapse-content-box,
   .mBuyLINA,
-  .actionTitle,
   .buyLINA .ivu-icon,
   .actionDesc,
   .itemTypeBtn,
@@ -278,7 +279,7 @@ body.dark-theme {
   }
 
   #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems {
-    color: #99999a !important;
+    color: #7a8ba5 !important;
   }
 
   .itemTypeBtn,
@@ -569,6 +570,10 @@ body.dark-theme {
     }
   }
 
+  #build .actionTitle {
+    color: #fff !important;
+  }
+
   #build
     .actionTabs
     .ivu-tabs-content
@@ -576,7 +581,7 @@ body.dark-theme {
     .buildBox
     .actionBodyWeb
     .actionDesc {
-    color: #e5e5e5 !important;
+    color: $darkFontColor !important;
   }
 
   #build

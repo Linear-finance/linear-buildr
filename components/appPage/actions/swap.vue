@@ -635,9 +635,9 @@ export default {
             padding: 64px 193px 0;
 
             .actionTitle {
-              font-family: Gilroy-Bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
@@ -648,7 +648,7 @@ export default {
 
             .actionDesc {
               margin: 8px 55px 84px;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -697,7 +697,7 @@ export default {
                 }
 
                 .name {
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   text-align: center;
                   font-size: 24px;
                   line-height: 32px;
@@ -750,7 +750,7 @@ export default {
                         }
 
                         .itemName {
-                          font-family: Gilroy-Bold;
+                          font-family: $BodyTextFontFamily;
                           font-size: 16px;
                           font-weight: bold;
                           font-stretch: normal;
@@ -797,7 +797,7 @@ export default {
 
                 .label {
                   .amount {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 16px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -808,7 +808,7 @@ export default {
                   }
 
                   .max {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -841,7 +841,7 @@ export default {
 
                   .ivu-input-number-input {
                     text-align: right;
-                    font-family: Gilroy-bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 32px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -910,7 +910,7 @@ export default {
                   .max {
                     opacity: 1;
                     background: none !important;
-                    color: $darkButtonColor !important;
+                    color: $BodyTextFontFamily !important;
                   }
                 }
               }
@@ -943,7 +943,7 @@ export default {
             letter-spacing: 3px;
             cursor: pointer;
             transition: $animete-time linear;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             line-height: 32px;
@@ -1004,7 +1004,7 @@ export default {
                 }
 
                 .errMessage {
-                  font-family: Gilroy-Medium;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: 500;
                   font-stretch: normal;
@@ -1030,7 +1030,7 @@ export default {
                     margin-bottom: 12px;
                   }
                   .avaliable {
-                    font-family: Gilroy-Medium;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: 500;
                     font-stretch: normal;
@@ -1055,7 +1055,7 @@ export default {
                   .label {
                     flex: 1;
                     .amount {
-                      font-family: Gilroy-Medium;
+                      font-family: $BodyTextFontFamily;
                       font-size: 12px;
                       font-weight: 500;
                       line-height: 1.33;

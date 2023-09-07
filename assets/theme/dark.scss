@@ -225,33 +225,12 @@ body.dark-theme {
   }
 
   //#landingPage .container .walletBox .box .boxItem .boxSub,
-  #walletDetails
-    .walletDetailsBox
-    .walletInfo
-    .tokenBox
-    .box
-    .tokenItems.obtrusive
-    .right,
+  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems.obtrusive .right,
   #walletDetails .walletDetailsBox .actionsBox .box .boxItem,
   #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentDesc,
-  #gasEditor
-    .gasEditorModal
-    .ivu-modal
-    .ivu-modal-body
-    .content
-    .custom
-    .leftRect
-    .desc
-    .unit,
-  #gasEditor
-    .gasEditorModal
-    .ivu-modal
-    .ivu-modal-body
-    .content
-    .selections
-    .selectionItem
-    .itemSpeed,
-  #gasEditor .editInfo .infoLeft .editTitle,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .custom .leftRect .desc .unit,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .selections .selectionItem .itemSpeed,
+  // #gasEditor .editInfo .infoLeft .editTitle,
   .ivu-input-number-input,
   #homePage .context,
   .ivu-collapse-content-box,
@@ -570,7 +549,11 @@ body.dark-theme {
     }
   }
 
-  #build .actionTitle {
+  #build .actionTitle,
+  #burn .actionTitle,
+  #claim .actionTitle,
+  #transfer .actionTitle,
+  #swap .actionTitle {
     color: #fff !important;
   }
 
@@ -722,7 +705,7 @@ body.dark-theme {
       .transferMain
       .text
       .descript {
-      color: #ffffff !important;
+      color: $darkFontColor !important;
     }
     .actionTabs
       .ivu-tabs-content

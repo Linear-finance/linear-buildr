@@ -47,9 +47,9 @@
                   >
                     <img
                       v-if="theme === 'light'"
-                      src="@/static/info_white.svg"
+                      src="@/static/new_info_white.svg"
                     />
-                    <img v-else src="@/static/dark-theme/info_white.svg" />
+                    <img v-else src="@/static/dark-theme/new_info_white.svg" />
                   </Tooltip>
 
                   <img
@@ -497,9 +497,9 @@ export default {
             padding: 64px 193px 0;
 
             .actionTitle {
-              font-family: Gilroy-Bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
@@ -510,7 +510,7 @@ export default {
 
             .actionDesc {
               margin: 8px 0 76px 0;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -544,7 +544,7 @@ export default {
 
                 .title {
                   color: #5a575c;
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: bold;
                   font-stretch: normal;
@@ -559,7 +559,7 @@ export default {
                   align-items: center;
                   justify-content: center;
                   color: #5a575c;
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-stretch: normal;
                   font-style: normal;
@@ -568,7 +568,7 @@ export default {
 
                   span {
                     color: #5a575c;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 32px;
                     font-weight: bold;
                     margin-right: 6px;
@@ -612,7 +612,7 @@ export default {
                 margin-bottom: 14px;
 
                 .title {
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: normal;
                   font-stretch: normal;
@@ -634,7 +634,7 @@ export default {
                   text-align: center;
                   border-radius: 12px;
                   background: #f6f5f6;
-                  font-family: Gilroy-Medium;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: 500;
                   font-stretch: normal;
@@ -650,7 +650,7 @@ export default {
                 }
 
                 .days {
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: normal;
                   font-stretch: normal;
@@ -676,7 +676,7 @@ export default {
             text-transform: uppercase;
             cursor: pointer;
             transition: $animete-time linear;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
@@ -701,7 +701,7 @@ export default {
             }
 
             &.switchToBSC {
-              font-family: Gilroy-Bold;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               font-weight: bold;
               font-stretch: normal;
@@ -869,7 +869,7 @@ export default {
 
                   .title {
                     display: flex;
-                    font-family: Gilroy-Regular;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: normal;
                     font-stretch: normal;
@@ -893,7 +893,7 @@ export default {
                     text-align: center;
                     border-radius: 12px;
                     background: unset;
-                    font-family: Gilroy-Medium;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: 500;
                     font-stretch: normal;
@@ -909,7 +909,7 @@ export default {
                   }
 
                   .days {
-                    font-family: Gilroy-Regular;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: normal;
                     font-stretch: normal;
@@ -935,7 +935,7 @@ export default {
               text-transform: uppercase;
               cursor: pointer;
               transition: $animete-time linear;
-              font-family: Gilroy-Bold;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               font-weight: bold;
               font-stretch: normal;
@@ -988,7 +988,7 @@ export default {
               padding: 24px;
 
               .title {
-                font-family: Gilroy-Bold;
+                font-family: $BodyTextFontFamily;
                 font-size: 16px;
                 margin-bottom: 9px;
               }

@@ -4,6 +4,7 @@ import ChainConfigs from "./chainConfigs.json";
 import util from "./util";
 import * as contracts from "../linearJs/lib/contracts";
 import { INFURA_PROJECT_ID } from "../../../constants/envVars";
+console.log("ChainConfigs>>", ChainConfigs);
 
 let Contracts: any = contracts;
 

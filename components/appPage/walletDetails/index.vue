@@ -1037,7 +1037,7 @@ export default {
         color: #5a575c;
 
         .app-dark & {
-          color: $darkFontColorSecondary;
+          color: $darkFontColorSecondary !important;
         }
       }
 
@@ -1098,7 +1098,7 @@ export default {
         transition: $animete-time linear;
 
         .app-dark & {
-          color: $darkFontColorSecondary;
+          color: $darkFontColorSecondary !important;
           &:hover {
             color: #fff;
           }
@@ -1463,7 +1463,7 @@ export default {
         margin-bottom: 8px;
 
         .app-dark & {
-          color: $darkFontColorSecondary;
+          color: $darkFontColorSecondary !important;
         }
       }
 

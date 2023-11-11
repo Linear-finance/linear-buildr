@@ -336,7 +336,7 @@ export const storeDetailsData = async () => {
           name: "BNB",
           balance: amountETH,
           valueUSD: 0,
-          img: require("@/static/currency/lBNB.svg"),
+          img: require("@/static/currency/BNBl.svg"),
         });
       }
 

@@ -214,7 +214,7 @@ export default {
         lock: 0,
         amountlUSD: 0,
         debt: 0,
-        targetRatio: 400,
+        targetRatio: 350,
         currentRatio: 0,
       },
       showPopup: false,
@@ -327,7 +327,7 @@ export default {
             this.currentRatioStatus = 2;
           } else if (
             this.walletData.currentRatio > 0 &&
-            this.walletData.currentRatio < 400
+            this.walletData.currentRatio < 350
           ) {
             //警告
             this.targetRatioCal();
@@ -399,7 +399,7 @@ export default {
           break;
         case 3:
           window.open(
-            "https://pancakeswap.finance/swap?outputCurrency=0x23e8a70534308a4aaf76fb8c32ec13d17a3bd89e"
+            "https://pancakeswap.finance/swap?outputCurrency=0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
           );
           break;
         case 4:

@@ -47,27 +47,27 @@ export interface ChainAddresses {
   LnRewardLocker?: string;
   LnRewardSystem?: string;
   lUSD: string;
-  lBTC: string;
-  lETH: string;
-  lLINK: string;
-  lTRX: string;
-  lDOT: string;
-  lYFI: string;
-  lBNB: string;
-  lADA: string;
-  lXLM: string;
-  lXAU: string;
-  lXAG: string;
-  lJPY: string;
+  BTCl: string;
+  ETHl: string;
+  LINKl: string;
+  TRXl: string;
+  DOTl: string;
+  YFIl: string;
+  BNBl: string;
+  ADAl: string;
+  XLMl: string;
+  XAUl: string;
+  XAGl: string;
+  JPYl: string;
   lXLCI: string;
   lXBCI: string;
-  lVET: string;
-  lEUR: string;
-  lUNI: string;
+  VETl: string;
+  EURl: string;
+  UNIl: string;
   lDEFI: string;
-  lCAKE: string;
-  lMATIC: string;
-  lSOL: string;
+  CAKEl: string;
+  MATICl: string;
+  SOLl: string;
   lPLAY: string;
 }
 
@@ -89,27 +89,27 @@ typedConfigs.forEach((object) => {
 
 const assetUpgradeableSubcontract = [
   "lUSD",
-  "lBTC",
-  "lETH",
-  "lLINK",
-  "lTRX",
-  "lDOT",
-  "lYFI",
-  "lBNB",
-  "lADA",
-  "lXLM",
-  "lXAU",
-  "lXAG",
-  "lEUR",
-  "lUNI",
-  "lJPY",
+  "BTCl",
+  "ETHl",
+  "LINKl",
+  "TRXl",
+  "DOTl",
+  "YFIl",
+  "BNBl",
+  "ADAl",
+  "XLMl",
+  "XAUl",
+  "XAGl",
+  "EURl",
+  "UNIl",
+  "JPYl",
   "lXLCI",
   "lXBCI",
-  "lVET",
+  "VETl",
   "lDEFI",
-  "lCAKE",
-  "lMATIC",
-  "lSOL",
+  "CAKEl",
+  "MATICl",
+  "SOLl",
   "lPLAY",
 ];
 

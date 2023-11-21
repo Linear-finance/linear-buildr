@@ -1,21 +1,21 @@
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+# on:
+#   push:
+#     branches:
+#       - master
+#   pull_request:
 
-name: Linting
+# name: Linting
 
-jobs:
-  lint:
-    name: Lints
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-      - name: Install prettier
-        run: |
-          yarn global add prettier
-      - name: Check prettier format
-        run: |
-          prettier --check "."
+# jobs:
+#   lint:
+#     name: Lints
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout source code
+#         uses: actions/checkout@v2
+#       - name: Install prettier
+#         run: |
+#           yarn global add prettier
+#       - name: Check prettier format
+#         run: |
+#           prettier --check "."

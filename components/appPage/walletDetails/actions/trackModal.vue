@@ -382,7 +382,6 @@ export default {
 #trackModal {
   .ivu-modal-wrap {
     position: absolute;
-
     .ivu-modal-body {
       border-radius: 16px;
       background: #ffffff;
@@ -657,7 +656,6 @@ export default {
     .ivu-modal-wrap {
       .ivu-modal-body {
         padding: 24px 24px 0;
-
         .closeBtn {
           position: absolute;
           top: 7px;

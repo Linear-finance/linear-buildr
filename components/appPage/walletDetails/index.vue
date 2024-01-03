@@ -395,16 +395,6 @@
                 }}
                 LINA
               </div>
-              <!-- <div class="right">
-                <b>
-                  {{
-                    isEthereumNetwork
-                      ? walletDetails.avaliableLINA || 0
-                      : walletDetails.amountLINA || 0
-                  }}
-                </b>
-                LINA
-              </div> -->
               <div class="right">
                 <div>
                   ≈ ${{

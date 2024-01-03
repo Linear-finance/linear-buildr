@@ -482,7 +482,7 @@ export default {
       ),
       #000;
     // background: #000;
-    z-index: 999;
+    z-index: 9999;
     overflow-y: auto;
 
     &-close {

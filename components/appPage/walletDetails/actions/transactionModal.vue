@@ -816,7 +816,6 @@ body {
 
   .ivu-modal-wrap {
     position: absolute;
-
     .ivu-modal-body {
       border-radius: 16px;
       background: #ffffff;

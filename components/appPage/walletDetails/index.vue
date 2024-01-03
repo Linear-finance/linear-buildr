@@ -387,8 +387,15 @@
           <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
           <div class="box">
             <div class="tokenItems obtrusive">
-              <div class="left">LINA</div>
-              <div class="right">
+              <div class="left">
+                {{
+                  isEthereumNetwork
+                    ? walletDetails.avaliableLINA || 0
+                    : walletDetails.amountLINA || 0
+                }}
+                LINA
+              </div>
+              <!-- <div class="right">
                 <b>
                   {{
                     isEthereumNetwork
@@ -397,7 +404,7 @@
                   }}
                 </b>
                 LINA
-              </div>
+              </div> -->
               <div class="right">
                 <div>
                   ≈ ${{

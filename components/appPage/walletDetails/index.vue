@@ -537,7 +537,10 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/new_info_white.svg"
+                  />
                   <img v-else src="@/static/dark-theme/new_info_white.svg" />
                 </Tooltip>
               </div>

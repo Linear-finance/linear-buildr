@@ -5,7 +5,7 @@ let SUBPAGE_OPTIONS = {
   burn: 2,
   claim: 3,
   transfer: 4,
-  swap: 5,
+  bridge: 5,
 };
 
 let WALLET_DETAILS_OPTIONS = {

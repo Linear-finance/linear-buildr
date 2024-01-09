@@ -123,7 +123,7 @@ module.exports = {
       "/burn",
       "/claim",
       "/transfer",
-      "/swap",
+      "/bridge",
       "/transaction",
       "/track",
     ],

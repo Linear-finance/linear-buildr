@@ -58,7 +58,7 @@
           Transfer
         </div>
         <div class="title" v-if="currentAction == 5 && othersAction == 0">
-          Swap
+          Bridge
         </div>
 
         <div class="title" v-if="othersAction == 1">Track Debt</div>
@@ -247,7 +247,7 @@ export default {
     return {
       // currentAction: this.$store.state.currentAction,
       othersAction: 0, // 0没有 1track 2transaction 3referral
-      actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
+      actions: ["Build", "Burn", "Claim", "Transfer", "Bridge"],
       external: [
         {
           label: "Blog",

@@ -5,7 +5,7 @@
         <div class="swapBox">
           <div class="actionBody">
             <template v-if="!isMobile">
-              <div class="actionTitle">Swap</div>
+              <div class="actionTitle">Bridge</div>
               <div class="actionDesc">
                 You can select the type of liquids and enter the amount you want
                 to swap to the other chain.

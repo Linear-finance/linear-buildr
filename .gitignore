@@ -93,8 +93,8 @@ sw.*
 
 .env.*
 .editorconfig
-#package-lock.json #暂需
-#yarn.lock #暂需
+package-lock.json
+yarn.lock 
 
 
 # generated contracts

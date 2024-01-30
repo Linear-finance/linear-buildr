@@ -332,7 +332,7 @@
           </div>
           <div class="flag">
             <div class="item">Liquidate: 200</div>
-            <div class="item">Target: 400</div>
+            <div class="item">Target: 350</div>
           </div>
         </div>
       </div>
@@ -499,7 +499,7 @@
             </div>
           </template>
           <template v-else-if="isBinanceNetwork">
-            <img class="tokenIcon bsc" src="@/static/currency/lBNB.svg" />
+            <img class="tokenIcon bsc" src="@/static/currency/BNBl.svg" />
             <div class="box">
               <div class="tokenItems obtrusive">
                 <div class="left">BNB</div>

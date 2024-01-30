@@ -334,7 +334,7 @@ export default {
     async getTrackData() {
       try {
         const {
-          lnrJS: { lUSD, lBTC, lETH, lHB10 },
+          lnrJS: { lUSD, BTCl, ETHl, lHB10 },
         } = lnrJSConnector;
 
         let trackData = { issuedDebt: 0, currentDebt: [] };

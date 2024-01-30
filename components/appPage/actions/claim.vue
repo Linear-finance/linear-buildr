@@ -219,7 +219,7 @@ export default {
         !this.feesAreClaimable ||
         this.processing ||
         (this.tradingRewards == 0 && this.stakingRewards == 0) ||
-        this.currentRatioPercent < 400
+        this.currentRatioPercent < 350
       );
     },
 
@@ -372,7 +372,7 @@ export default {
         const allRewardEntries = await allRewardEntriesRes.json();
 
         const pendingRewardEntries = allRewardEntries.filter(
-          (entry) => entry.periodId > lastClaimPeriodId
+          (entry) => entry.periodId > lastClaimPeriodId && entry.periodId >= 154
         );
 
         this.hasClaim = pendingRewardEntries.length === 0;

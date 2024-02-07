@@ -1281,6 +1281,10 @@ export default {
             margin-bottom: -3px;
             border: 6px solid;
             border-color: black transparent transparent;
+
+            .app-dark & {
+              border-color: #fff transparent transparent;
+            }
           }
         }
 
@@ -1297,11 +1301,11 @@ export default {
         }
 
         .scale200 {
-          left: 28.6%;
+          left: 28.5714285714%;
         }
 
         .scale500 {
-          left: 57.2%;
+          left: 50%;
         }
 
         .colorBlock {
@@ -1309,7 +1313,7 @@ export default {
           display: flex;
 
           .leftBlock {
-            width: 28.6%;
+            width: 28.5714285714%;
             height: 16px;
             border-bottom-left-radius: 100px;
             border-top-left-radius: 100px;
@@ -1317,13 +1321,13 @@ export default {
           }
 
           .centerBlock {
-            width: 28.8%;
+            width: 21.4285714286%;
             height: 16px;
             background-color: #ffc941;
           }
 
           .rightBlock {
-            width: 42.6%;
+            width: 50%;
             height: 16px;
             border-bottom-right-radius: 100px;
             border-top-right-radius: 100px;
@@ -1342,10 +1346,10 @@ export default {
             color: #99999a;
 
             &:first-child {
-              margin-left: 69px;
+              margin-left: 22%;
             }
             &:last-child {
-              margin-left: 62px;
+              margin-left: 8%;
             }
           }
         }

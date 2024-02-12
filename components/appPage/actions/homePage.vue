@@ -124,7 +124,16 @@
     <div class="actionsBox">
       <div class="boxItem" :class="{ isMobile }" @click.stop="toggleModal">
         <div class="imgBox">
-          <img src="@/static/currency/NEW_LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/NEW_LINA_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/NEW_LINA_logo.svg"
+          />
         </div>
         <div class="boxContext">
           Buy LINA <br />
@@ -141,7 +150,16 @@
         @click="isMobile && btnClick(2)"
       >
         <div class="imgBox">
-          <img src="@/static/currency/NEW_IUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LUSD_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
         </div>
         <div class="boxContext">
           Stake LINA <br />

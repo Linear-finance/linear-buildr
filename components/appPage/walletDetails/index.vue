@@ -384,7 +384,16 @@
       <div class="walletInfo">
         <div class="title">Wallet Balance</div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/NEW_LINA_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/NEW_LINA_logo.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">
@@ -451,8 +460,17 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
-          <div class="box">
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LUSD_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
+          <div class="box box-offSet">
             <div class="tokenItems obtrusive">
               <div class="left">ℓUSD</div>
               <div class="right">
@@ -475,7 +493,16 @@
         </div>
         <div class="tokenBox">
           <template v-if="isEthereumNetwork">
-            <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
+            <img
+              v-if="theme === 'light'"
+              class="tokenIcon"
+              src="@/static/ETH_logo.svg"
+            />
+            <img
+              v-else
+              class="tokenIcon"
+              src="@/static/dark-theme/ETH_logo.svg"
+            />
             <div class="box">
               <div class="tokenItems obtrusive">
                 <div class="left">ETH</div>
@@ -522,7 +549,16 @@
           </template>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LUSD_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -556,7 +592,16 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/NEW_LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LUSD_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -1052,7 +1097,7 @@ export default {
 
 <style lang="scss">
 #walletDetails {
-  // width: 374px;
+  width: 374px;
 
   @-webkit-keyframes spin {
     from {
@@ -1585,11 +1630,11 @@ export default {
         }
 
         .scale200 {
-          left: 28.6%;
+          left: 28.5714285714%;
         }
 
         .scale500 {
-          left: 57.2%;
+          left: 50%;
         }
 
         .colorBlock {
@@ -1597,25 +1642,25 @@ export default {
           display: flex;
 
           .leftBlock {
-            width: 28.6%;
+            width: 28.5714285714%;
             height: 16px;
             border-bottom-left-radius: 100px;
             border-top-left-radius: 100px;
-            background-color: #fe2712;
+            background-color: #df434c;
           }
 
           .centerBlock {
-            width: 28.8%;
+            width: 21.4285714286%;
             height: 16px;
-            background-color: #fabc02;
+            background-color: #ffc941;
           }
 
           .rightBlock {
-            width: 42.6%;
+            width: 50%;
             height: 16px;
             border-bottom-right-radius: 100px;
             border-top-right-radius: 100px;
-            background-color: #1a38f8;
+            background-color: #7eb5ff;
           }
         }
 
@@ -1630,10 +1675,10 @@ export default {
             color: #475a75;
 
             &:first-child {
-              margin-left: 69px;
+              margin-left: 22%;
             }
             &:last-child {
-              margin-left: 62px;
+              margin-left: 8%;
             }
 
             .app-dark &:first-child {

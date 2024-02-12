@@ -348,8 +348,8 @@ export default {
           key: "LINA",
           img:
             this.theme === "light"
-              ? require("@/static/LINA_logo.svg")
-              : require("@/static/dark-theme/LINA_logo.svg"),
+              ? require("@/static/NEW_LINA_logo.svg")
+              : require("@/static/dark-theme/NEW_LINA_logo.svg"),
           balance: 0,
           frozenBalance: 0,
           totalBalance: 0,

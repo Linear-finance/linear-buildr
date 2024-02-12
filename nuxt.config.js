@@ -15,7 +15,7 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: "Linear | Buildr",
+    title: "Linear | Builder",
     meta: [
       { charset: "utf-8" },
       {

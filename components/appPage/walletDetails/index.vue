@@ -109,23 +109,37 @@
           {{ walletNetworkName }}
         </div>
       </div>
-
-      <!-- <div class="mMenu" @click="mShowMenuFun">
-                <img v-if="theme === 'light'" src="@/static/icon-menu.svg" />
-                <img v-else src="@/static/dark-theme/icon-menu.svg" />
-            </div> -->
       <div v-if="isMobile" @click="showTooltipModle" class="menu">
-        <img
-          width="30"
-          height="30"
+        <font-awesome-icon
           v-if="theme === 'dark'"
-          src="@/static/menu_dark.svg"
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="white"
         />
-        <img width="30" height="30" v-else src="@/static/menu_light.svg" />
+        <font-awesome-icon
+          v-else
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="black"
+        />
       </div>
       <div v-if="!isMobile" @click="showTooltipModle" class="menu">
-        <img v-if="theme === 'dark'" src="@/static/menu_dark.svg" />
-        <img v-else src="@/static/menu_light.svg" />
+        <font-awesome-icon
+          v-if="theme === 'dark'"
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="white"
+        />
+        <font-awesome-icon
+          v-else
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="black"
+        />
       </div>
     </div>
     <div class="walletDetailsBox" :class="{ mShowWalletClass: mShowWallet }">
@@ -1470,6 +1484,7 @@ export default {
     }
     .menu {
       margin-left: 8px;
+      margin-right: 8px;
       cursor: pointer;
     }
   }
@@ -1675,10 +1690,10 @@ export default {
             color: #475a75;
 
             &:first-child {
-              margin-left: 22%;
+              margin-left: 21%;
             }
             &:last-child {
-              margin-left: 8%;
+              margin-left: 3%;
             }
 
             .app-dark &:first-child {

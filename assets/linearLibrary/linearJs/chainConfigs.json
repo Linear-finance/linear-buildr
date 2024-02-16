@@ -97,7 +97,7 @@
     "networkType": "mainnet",
     "isLiquidationEnable": true,
     "isRewardable": true,
-    "rpcUrl": "https://bsc-dataseed1.binance.org",
+    "rpcUrl": "https://bsc-dataseed3.ninicoin.io",
     "blockchainBrowser": "https://bscscan.com/tx/",
     "blockchainBrowserApi": "https://api.bscscan.com/api",
     "rewardApiBase": "https://api.rewards.linear.finance/",

@@ -550,7 +550,7 @@ export default {
           key: this.isEthereumNetwork ? "ETH" : "BNB",
           img: require(`@/static/${
             this.theme === "light" ? "" : "dark-theme/"
-          }${this.isEthereumNetwork ? "ETH_logo" : "currency/lBNB"}.svg`),
+          }${this.isEthereumNetwork ? "ETH_logo" : "currency/BNBl"}.svg`),
           balance: _.floor(bn2n(walletBalance), 4),
         },
       ];

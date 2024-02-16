@@ -4,220 +4,220 @@ const currencies = {
     fullName: "ℓUSD",
     type: "crypto",
   },
-  lBTC: {
-    name: "ℓBTC",
+  BTCl: {
+    name: "BTCℓ",
     fullName: "Liquid Bitcoin",
     type: "crypto",
   },
-  lETH: {
-    name: "ℓETH",
+  ETHl: {
+    name: "ETHℓ",
     fullName: "Liquid Ether",
     type: "crypto",
   },
   //lBCH: {
-  //    name: "ℓBCH",
-  //    fullName: "ℓBCH",
+  //    name: "BCH",
+  //    fullName: "BCH",
   //    type: "crypto"
   //},
   //lEOS: {
-  //    name: "ℓEOS",
-  //    fullName: "ℓEOS",
+  //    name: "EOS",
+  //    fullName: "EOS",
   //    type: "crypto"
   //},
   //lLTC: {
-  //    name: "ℓLTC",
-  //    fullName: "ℓLTC",
+  //    name: "LTC",
+  //    fullName: "LTC",
   //    type: "crypto"
   //},
-  lXRP: {
-    name: "ℓXRP",
-    fullName: "ℓXRP",
+  XRPl: {
+    name: "XRPℓ",
+    fullName: "XRPℓ",
     type: "crypto",
   },
-  lTRX: {
-    name: "ℓTRX",
-    fullName: "ℓTRX",
+  TRXl: {
+    name: "TRXℓ",
+    fullName: "TRXℓ",
     type: "crypto",
   },
   //lBSV: {
-  //    name: "ℓBSV",
-  //    fullName: "ℓBSV",
+  //    name: "BSV",
+  //    fullName: "BSV",
   //    type: "crypto"
   //},
-  lLINK: {
-    name: "ℓLINK",
-    fullName: "ℓLINK",
+  LINKl: {
+    name: "LINKℓ",
+    fullName: "LINKℓ",
     type: "crypto",
   },
   //lZEC: {
-  //    name: "ℓZEC",
-  //    fullName: "ℓZEC",
+  //    name: "ZEC",
+  //    fullName: "ZEC",
   //    type: "crypto"
   //},
   //lNEO: {
-  //    name: "ℓNEO",
-  //    fullName: "ℓNEO",
+  //    name: "NEO",
+  //    fullName: "NEO",
   //    type: "crypto"
   //},
-  lBNB: {
-    name: "ℓBNB",
-    fullName: "ℓBNB",
+  BNBl: {
+    name: "BNBℓ",
+    fullName: "BNBℓ",
     type: "crypto",
   },
   //lDASH: {
-  //    name: "ℓDASH",
-  //    fullName: "ℓDASH",
+  //    name: "DASH",
+  //    fullName: "DASH",
   //    type: "crypto"
   //},
   //lJUST: {
-  //    name: "ℓJUST",
-  //    fullName: "ℓJUST",
+  //    name: "JUST",
+  //    fullName: "JUST",
   //    type: "crypto"
   //},
-  lDOT: {
-    name: "ℓDOT",
-    fullName: "ℓDOT",
+  DOTl: {
+    name: "DOTℓ",
+    fullName: "DOTℓ",
     type: "crypto",
   },
-  lYFI: {
-    name: "ℓYFI",
+  YFIl: {
+    name: "YFIℓ",
     fullName: "Yearn.finance",
     type: "crypto",
   },
-  lADA: {
-    name: "ℓADA",
+  ADAl: {
+    name: "ADAℓ",
     fullName: "Cardano",
     type: "crypto",
   },
-  lXLM: {
-    name: "ℓXLM",
+  XLMl: {
+    name: "XLMℓ",
     fullName: "Stellar",
     type: "crypto",
   },
   //lXCF: {
-  //    name: "ℓXCF",
-  //    fullName: "ℓXCF",
+  //    name: "XCF",
+  //    fullName: "XCF",
   //    type: " "
   //},
-  lXAU: {
-    name: "ℓXAU",
-    fullName: "ℓXAU",
+  XAUl: {
+    name: "XAUℓ",
+    fullName: "XAUℓ",
     type: "commodity",
   },
-  lXAG: {
-    name: "ℓXAG",
-    fullName: "ℓXAG",
+  XAGl: {
+    name: "XAGℓ",
+    fullName: "XAGℓ",
     type: "commodity",
   },
   //lSOY: {
-  //    name: "ℓSOY",
-  //    fullName: "ℓSOY",
+  //    name: "SOY",
+  //    fullName: "SOY",
   //    type: "commodity"
   //},
   //lOIL: {
-  //    name: "ℓOIL",
-  //    fullName: "ℓOIL",
+  //    name: "OIL",
+  //    fullName: "OIL",
   //    type: "commodity"
   //},
   //lNIKK: {
-  //    name: "ℓNIKK",
-  //    fullName: "ℓNIKK",
+  //    name: "NIKK",
+  //    fullName: "NIKK",
   //    type: "index"
   //},
   //lFTSE: {
-  //    name: "ℓFTSE",
-  //    fullName: "ℓFTSE",
+  //    name: "FTSE",
+  //    fullName: "FTSE",
   //    type: "index"
   //},
   //lCAC: {
-  //    name: "ℓCAC",
-  //    fullName: "ℓCAC",
+  //    name: "CAC",
+  //    fullName: "CAC",
   //    type: "index"
   //},
   //lDAX: {
-  //    name: "ℓDAX",
-  //    fullName: "ℓDAX",
+  //    name: "DAX",
+  //    fullName: "DAX",
   //    type: "index"
   //},
   lHB10: {
-    name: "ℓHB-10",
+    name: "HB-10ℓ",
     fullName: "Liquid Huobi index",
     type: "index",
   },
   lXBCI: {
-    name: "ℓXBCI",
+    name: "XBCIℓ",
     fullName: "Xangle Blue Chip Index",
     type: "index",
   },
   lXLCI: {
-    name: "ℓXLCI",
+    name: "XLCIℓ",
     fullName: "Xangle Large Cap Index",
     type: "index",
   },
   lXCI: {
-    name: "ℓXCI",
+    name: "XCIℓ",
     fullName: "Xangle Cap index",
     type: "index",
   },
   lDEFI: {
-    name: "ℓDEFI",
+    name: "DEFIℓ",
     fullName: "Pie DAO Index",
     type: "index",
   },
-  lUNI: {
-    name: "ℓUNI",
+  UNIl: {
+    name: "UNIℓ",
     fullName: "Uniswap",
     type: "crypto",
   },
   lXCU: {
-    name: "ℓXCU",
-    fullName: "ℓXCU",
+    name: "XCUℓ",
+    fullName: "XCUℓ",
     type: "commodity",
   },
   lCHF: {
-    name: "ℓCHF",
-    fullName: "ℓCHF",
+    name: "CHFℓ",
+    fullName: "CHFℓ",
     type: "currencies",
   },
-  lJPY: {
-    name: "ℓJPY",
-    fullName: "ℓJPY",
+  JPYl: {
+    name: "JPYℓ",
+    fullName: "JPYℓ",
     type: "currencies",
   },
-  lEUR: {
-    name: "ℓEUR",
-    fullName: "ℓEUR",
+  EURl: {
+    name: "EURℓ",
+    fullName: "EURℓ",
     type: "currencies",
   },
-  lDOGE: {
-    name: "ℓDOGE",
+  DOGEl: {
+    name: "DOGEℓ",
     fullName: "Doge Coin",
     type: "crypto",
   },
-  lVET: {
-    name: "ℓVET",
+  VETl: {
+    name: "VETℓ",
     fullName: "Vechain",
     type: "crypto",
   },
-  lCAKE: {
-    name: "ℓCAKE",
+  CAKEl: {
+    name: "CAKEℓ",
     fullName: "PancakeSwap",
     type: "crypto",
   },
-  lMATIC: {
-    name: "ℓMATIC",
+  MATICl: {
+    name: "MATICℓ",
     fullName: "Polygon",
     type: "crypto",
     tokenColor: "#2BBDF7",
   },
-  lSOL: {
-    name: "ℓSOL",
+  SOLl: {
+    name: "SOLℓ",
     fullName: "Solana",
     type: "crypto",
     tokenColor: "#9945FF",
   },
   lPLAY: {
-    name: "ℓPLAY",
+    name: "PLAYℓ",
     fullName: "Pie DAO Index",
     type: "index",
     tokenColor: "#D50A99",

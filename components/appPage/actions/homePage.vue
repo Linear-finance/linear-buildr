@@ -139,6 +139,129 @@ export default {
     toggleModal() {
       this.showPopup = true;
     },
+    async checkLiquidation() {
+      try {
+        this.currentRatioStatus = 0;
+
+        //如果是bsc main/bsc(私链)则检查liquidation buildr一定时链接了钱包才能进到homepage，所以无需检查是否有钱包连接
+        if (LIQUIDATION_NETWORKS[this.walletNetworkId] !== undefined) {
+          const {
+            lnrJS: {
+              LinearFinance,
+              LnCollateralSystem,
+              LnRewardLocker,
+              LnDebtSystem,
+              lUSD,
+            },
+            utils,
+          } = lnrJSConnector;
+
+          const LINABytes = utils.formatBytes32String("LINA");
+
+          //取合约地址
+          const LnCollateralSystemAddress = LnCollateralSystem.address;
+
+          const results = await Promise.all([
+            LinearFinance.balanceOf(this.walletAddress), //LINA余额
+            LnCollateralSystem.userCollateralData(
+              this.walletAddress,
+              LINABytes
+            ), //staked lina
+            LnRewardLocker.balanceOf(this.walletAddress), //lock lina
+            LnDebtSystem.GetUserDebtBalanceInUsd(this.walletAddress), //总债务
+            LnCollateralSystem.GetUserTotalCollateralInUsd(this.walletAddress), //个人全部抵押物兑lUSD,用于计算pratio
+            lUSD.balanceOf(this.walletAddress), //lUSD余额
+          ]);
+
+          let currentRatioPercent = BigNumber.from("0");
+
+          if (results[4].gt("0") && results[3][0].gt("0")) {
+            currentRatioPercent = formatEtherToNumber(
+              bnMul(bnDiv(results[4], results[3][0]), n2bn("100"))
+            );
+          }
+
+          const [
+            avaliableLINA,
+            stakedLina,
+            lockLina,
+            amountDebt,
+            totalCollateralInUsd, //个人全部抵押物兑lUSD,用于计算pratio
+            amountlUSD,
+          ] = results.map(formatEtherToNumber);
+
+          const priceRates = await getPriceRates(["LINA", "lUSD"]);
+
+          this.walletData.LINA2USD = priceRates.LINA / priceRates.lUSD;
+
+          this.walletData.avaliableLINA = avaliableLINA + stakedLina + lockLina;
+          this.walletData.staked = stakedLina;
+          this.walletData.lock = lockLina;
+          this.walletData.debt = amountDebt[0];
+          this.walletData.amountlUSD = amountlUSD;
+          this.walletData.currentRatio = currentRatioPercent;
+
+          let liquidationStatus = await lnr.userPositionMarked({
+            account: this.walletAddress,
+          });
+
+          if (liquidationStatus.length > 0 && liquidationStatus[0].state) {
+            //已标记
+            this.targetRatioCal();
+            this.currentRatioStatus = 2;
+          } else if (
+            this.walletData.currentRatio > 0 &&
+            this.walletData.currentRatio < 350
+          ) {
+            //警告
+            this.targetRatioCal();
+            this.currentRatioStatus = 1;
+          } else {
+            //pratio为0，检查最近一天有无爆仓
+            let liquidatedStatus = await lnr.positionLiquidated({
+              account: this.walletAddress,
+            });
+            let currentTimstamp = Math.round(new Date() / 1000);
+
+            if (liquidatedStatus.length > 0) {
+              let liquidatedTime =
+                currentTimstamp - liquidatedStatus[0].timestamp / 1000;
+
+              if (liquidatedTime < 86400) {
+                this.currentRatioStatus = 3;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e, "home page check liquidation err");
+      }
+    },
+    colseAttention() {
+      this.currentRatioStatus = 0;
+    },
+    targetRatioCal() {
+      //计算达到target需要补stake多少lina
+      let needStakeWhenTargetRatio =
+        (4 * this.walletData.debt) / this.walletData.LINA2USD -
+        this.walletData.lock;
+
+      this.needLINANum = needStakeWhenTargetRatio - this.walletData.staked;
+      if (this.needLINANum < 0) this.needLINANum = 0;
+      if (this.needLINANum > this.walletData.avaliableLINA)
+        this.needBuyLINA = true; //可用lina数量不足
+
+      //计算达到target需要burn多少lusd
+      let canBuildlUSDWhenTargetRatio =
+        ((this.walletData.staked + this.walletData.lock) *
+          this.walletData.LINA2USD) /
+        4;
+
+      this.needlUSDNum = this.walletData.debt - canBuildlUSDWhenTargetRatio;
+      if (this.needlUSDNum < 0) this.needlUSDNum = 0;
+      if (this.needlUSDNum > this.walletData.amountlUSD)
+        this.needBuylUSD = true; //可用lusd数量不足
+    },
     btnClick(type) {
       if (type == 1) {
         openBuyLINA();
@@ -146,6 +269,34 @@ export default {
         this.$store.commit("setCurrentAction", 1);
         this.$router.push("/build");
       }
+    },
+    actionLink(value) {
+      switch (value) {
+        case 1:
+          window.open(
+            "https://pancakeswap.finance/swap?outputCurrency=0x762539b45a1dcce3d36d080f74d1aed37844b878"
+          );
+          break;
+        case 2:
+          this.$store.commit("setCurrentAction", 1);
+          this.$router.push("/build");
+          break;
+        case 3:
+          window.open(
+            "https://pancakeswap.finance/swap?outputCurrency=0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
+          );
+          break;
+        case 4:
+          this.$store.commit("setCurrentAction", 2);
+          this.$router.push("/burn");
+          break;
+        case 5:
+          this.$pub.publish("transactionModalChange", true);
+          break;
+      }
+    },
+    walletStatusChange() {
+      this.checkLiquidation();
     },
   },
 };

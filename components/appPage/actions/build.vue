@@ -688,7 +688,7 @@ export default {
         staked: 0,
         lock: 0,
         debt: 0,
-        targetRatio: 400,
+        targetRatio: 350,
         currentRatio: 0,
       },
 

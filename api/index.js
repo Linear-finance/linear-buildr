@@ -9,7 +9,7 @@ export default {
   async getBSCGasPrice(walletNetworkId = 56) {
     let url;
     if (isMainnetNetwork(walletNetworkId)) {
-      url = "https://bsc-dataseed.binance.org";
+      url = "https://bsc-dataseed3.ninicoin.io";
     } else {
       url = "https://data-seed-prebsc-1-s3.binance.org:8545";
     }

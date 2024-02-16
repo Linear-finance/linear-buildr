@@ -6,12 +6,12 @@
           <img
             v-if="$store.getters.isDarkTheme"
             class="linearBuildrlogo"
-            src="@/static/linear_logo_dark.svg"
+            src="@/static/linear_buildr_logo_dark.svg"
           />
           <img
             v-else
             class="linearBuildrlogo"
-            src="@/static/linear_logo_light.svg"
+            src="@/static/linear_buildr_logo.svg"
           />
         </a>
         <a href="/" class="mobileLogo">
@@ -174,14 +174,15 @@
           </div>
           <div class="tooltipModle-container-content">
             <div class="tooltipModle-container-content-img">
-              <img src="@/static/linear_logo.svg" />
+              <a href="https://linear.finance/" rel="noopener noreferrer">
+                <img src="@/static/linear_logo.svg" />
+              </a>
             </div>
             <ul class="tooltipModle-container-content-list">
               <li v-for="item in menuActions">
                 <a
                   class="white-text"
                   :href="item.url"
-                  target="_blank"
                   rel="noopener noreferrer"
                   >{{ item.name }}</a
                 >

@@ -80,9 +80,12 @@
                     >
                       <img
                         v-if="theme === 'light'"
-                        src="@/static/info_white.svg"
+                        src="@/static/new_info_white.svg"
                       />
-                      <img v-else src="@/static/dark-theme/info_white.svg" />
+                      <img
+                        v-else
+                        src="@/static/dark-theme/new_info_white.svg"
+                      />
                     </Tooltip>
                   </div>
                   <div
@@ -2194,9 +2197,9 @@ export default {
             align-items: center;
 
             .actionTitle {
-              font-family: Gilroy-Bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
@@ -2207,7 +2210,7 @@ export default {
 
             .actionDesc {
               margin-top: 8px;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -2220,7 +2223,7 @@ export default {
 
               .step {
                 text-transform: uppercase;
-                font-family: Gilroy-Bold;
+                font-family: $BodyTextFontFamily;
                 font-weight: bold;
                 line-height: 1.6;
                 letter-spacing: 1.25px;
@@ -2236,7 +2239,7 @@ export default {
               justify-content: center;
               align-items: center;
               padding: 4px 16px;
-              font-family: Gilroy-Medium;
+              font-family: $BodyTextFontFamily;
               font-size: 12px;
               font-weight: 500;
               font-stretch: normal;
@@ -2293,7 +2296,7 @@ export default {
 
                 .itemType {
                   .itemTypeTitle {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 16px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -2316,7 +2319,7 @@ export default {
                     cursor: pointer;
                     display: flex;
                     text-transform: uppercase;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -2385,7 +2388,7 @@ export default {
 
                     .ivu-input-number-input {
                       text-align: right;
-                      font-family: Gilroy-Bold;
+                      font-family: $BodyTextFontFamily;
                       font-size: 32px;
                       font-weight: bold;
                       font-stretch: normal;
@@ -2401,7 +2404,7 @@ export default {
 
                   .unit {
                     color: #5a575c;
-                    font-family: Gilroy-Regular;
+                    font-family: $BodyTextFontFamily;
                     font-size: 16px;
                     font-weight: 400;
                     line-height: 24px;
@@ -2426,7 +2429,7 @@ export default {
                 bottom: -20px;
                 height: 16px;
                 color: #df434c;
-                font-family: Gilroy;
+                font-family: $BodyTextFontFamily;
                 font-size: 10px;
                 font-weight: 700;
                 line-height: 16px;
@@ -2461,7 +2464,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
@@ -2480,7 +2483,7 @@ export default {
             }
 
             &.switchToBSC {
-              font-family: Gilroy-Bold;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               font-weight: bold;
               font-stretch: normal;
@@ -2591,7 +2594,7 @@ export default {
                 align-items: center;
                 padding: 4px 16px;
                 text-align: center;
-                font-family: Gilroy-Medium;
+                font-family: $BodyTextFontFamily;
                 font-size: 12px;
                 font-weight: 500;
                 font-stretch: normal;
@@ -2648,7 +2651,7 @@ export default {
 
                   .itemType {
                     .itemTypeTitle {
-                      font-family: Gilroy-Bold;
+                      font-family: $BodyTextFontFamily;
                       font-size: 16px;
                       font-weight: bold;
                       font-stretch: normal;
@@ -2719,19 +2722,17 @@ export default {
                   .inputRect {
                     display: flex;
                     align-items: center;
-                    justify-content: flex-end;
+                    padding: 0 16px;
+                    height: 21.6vw;
 
-                    .ivu-input-number-input[disabled],
-                    .ivu-input-number-disabled {
-                      background-color: #fff !important;
-                      cursor: not-allowed;
-
-                      .app-dark & {
-                        background-color: transparent !important;
-                      }
+                    .itemTypeTitle {
+                      font-family: $BodyTextFontFamily;
+                      font-size: 12px;
+                      font-weight: 500;
+                      text-align: center;
+                      color: #99999a;
                     }
 
-                    // margin-bottom: 8px;
                     .input {
                       width: 100%;
                       border: none;
@@ -2743,7 +2744,7 @@ export default {
 
                       .ivu-input-number-input {
                         text-align: right;
-                        font-family: Gilroy-Bold;
+                        font-family: $BodyTextFontFamily;
                         font-size: 32px;
                         font-weight: bold;
                         font-stretch: normal;
@@ -2811,7 +2812,7 @@ export default {
               display: flex;
               align-items: center;
               justify-content: center;
-              font-family: Gilroy-Bold;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               font-weight: bold;
               font-stretch: normal;
@@ -2858,7 +2859,7 @@ export default {
               padding: 24px;
 
               .title {
-                font-family: Gilroy-Bold;
+                font-family: $BodyTextFontFamily;
                 font-size: 16px;
                 margin-bottom: 9px;
               }

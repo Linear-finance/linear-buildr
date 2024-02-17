@@ -12,11 +12,13 @@
         src="@/static/linear_buildr_logo.svg"
       />
       <theme-switch v-if="!isMobile" />
-      <div class="mBuyLINA mobileShow" @click.stop="buyDisplay = true">
+      <div class="mBuyLINA mobileShow">
         <theme-switch v-if="isMobile" variant="mobile" />
-        BUY LINA
-        <img v-if="theme === 'light'" src="@/static/arrow_right.svg" />
-        <img v-else src="@/static/dark-theme/arrow_right.svg" />
+        <div @click.stop="buyDisplay = true">
+          BUY LINA
+          <img v-if="theme === 'light'" src="@/static/arrow_right.svg" />
+          <img v-else src="@/static/dark-theme/arrow_right.svg" />
+        </div>
       </div>
     </div>
 

@@ -45,6 +45,8 @@ let REWARD_UNLOCK_NETWORKS: { [k: number]: string } = {};
 
 let SUPPORTED_NETWORKS: { [k: number]: string } = {};
 
+let SUPPORTED_NETWORKS_CONFIG: { [k: number]: object } = {};
+
 let BLOCKCHAIN_BROWSER: { [k: number]: string } = {};
 
 let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
@@ -93,6 +95,7 @@ for (let i = 0; i < typedConfigs.length; i++) {
     REWARD_UNLOCK_NETWORKS[id] = object.name;
   }
   SUPPORTED_NETWORKS[id] = object.name;
+  SUPPORTED_NETWORKS_CONFIG[id] = object;
   BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
   BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
   REWARD_API_BASES[id] = object.rewardApiBase;
@@ -435,6 +438,7 @@ export {
   LIQUIDATION_NETWORKS,
   REWARD_UNLOCK_NETWORKS,
   SUPPORTED_NETWORKS,
+  SUPPORTED_NETWORKS_CONFIG,
   BLOCKCHAIN_BROWSER,
   BLOCKCHAIN_BROWSER_API,
   REWARD_API_BASES,

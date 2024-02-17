@@ -2,6 +2,7 @@
   {
     "name": "Mainnet",
     "networkId": 1,
+    "hexChainId": "0x1",
     "wormholeNetworkId": 2,
     "chainType": "ethereum",
     "networkType": "mainnet",
@@ -9,8 +10,10 @@
     "isRewardable": false,
     "rpcUrl": "https://mainnet.infura.io/v3/",
     "blockchainBrowser": "https://etherscan.io/tx/",
+    "blockExplorerUrls": "https://etherscan.io",
     "blockchainBrowserApi": "https://api.etherscan.io/api",
     "rewardApiBase": "https://api.rewards.linear.finance/",
+    "nativeCurrency": "ETH",
     "addresses": {
       "system": {
         "LinearFinance": "0x3E9BC21C9b189C09dF3eF1B824798658d5011937",
@@ -92,6 +95,7 @@
   {
     "name": "BscMainnet",
     "networkId": 56,
+    "hexChainId": "0x38",
     "wormholeNetworkId": 4,
     "chainType": "binance",
     "networkType": "mainnet",
@@ -99,8 +103,10 @@
     "isRewardable": true,
     "rpcUrl": "https://bsc-dataseed3.ninicoin.io",
     "blockchainBrowser": "https://bscscan.com/tx/",
+    "blockExplorerUrls": "https://bscscan.com",
     "blockchainBrowserApi": "https://api.bscscan.com/api",
     "rewardApiBase": "https://api.rewards.linear.finance/",
+    "nativeCurrency": "BNB",
     "addresses": {
       "system": {
         "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
@@ -182,6 +188,7 @@
   {
     "name": "EthDev",
     "networkId": 10001,
+    "hexChainId": "0x2711",
     "wormholeNetworkId": 2,
     "chainType": "ethereum",
     "networkType": "dev",
@@ -189,8 +196,10 @@
     "isRewardable": false,
     "rpcUrl": "https://eth-rpc-http.dev.linear.finance/",
     "blockchainBrowser": "https://eth-explorer.dev.linear.finance/tx/",
+    "blockExplorerUrls": "https://eth-explorer.dev.linear.finance",
     "blockchainBrowserApi": "https://eth-explorer.dev.linear.finance/api",
     "rewardApiBase": "https://reward-api.dev.linear.finance/",
+    "nativeCurrency": "",
     "addresses": {
       "system": {
         "LinearFinance": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
@@ -272,6 +281,7 @@
   {
     "name": "BscDev",
     "networkId": 10056,
+    "hexChainId": "0x2748",
     "wormholeNetworkId": 4,
     "chainType": "binance",
     "networkType": "dev",
@@ -279,8 +289,10 @@
     "isRewardable": true,
     "rpcUrl": "https://bsc-rpc-http.dev.linear.finance/",
     "blockchainBrowser": "https://bsc-explorer.dev.linear.finance/tx/",
+    "blockExplorerUrls": "https://bsc-explorer.dev.linear.finance",
     "blockchainBrowserApi": "https://bsc-explorer.dev.linear.finance/api",
     "rewardApiBase": "https://reward-api.dev.linear.finance/",
+    "nativeCurrency": "",
     "addresses": {
       "system": {
         "LinearFinance": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",

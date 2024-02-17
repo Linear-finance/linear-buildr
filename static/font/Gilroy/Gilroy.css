@@ -39,3 +39,9 @@
   src: url("./Gilroy-SemiBold.ttf") format("trueType");
   font-display: block;
 }
+
+@font-face {
+  font-family: Gilroy-UltraLight;
+  src: url("./Gilroy-UltraLight.ttf") format("trueType");
+  font-display: block;
+}

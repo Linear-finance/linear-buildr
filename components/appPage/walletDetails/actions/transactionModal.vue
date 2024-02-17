@@ -85,7 +85,7 @@
                 <Checkbox label="Stake"> Stake </Checkbox>
                 <Checkbox label="Unstake"> Unstake </Checkbox>
                 <Checkbox label="Referral"> Referral </Checkbox>
-                <Checkbox label="Swap"> Swap </Checkbox>
+                <Checkbox label="Swap"> Bridge </Checkbox>
                 <Checkbox label="Liquidated(Staked)">
                   Liquidated(Staked)
                 </Checkbox>
@@ -345,7 +345,7 @@
               <Checkbox label="Stake"> Stake </Checkbox>
               <Checkbox label="Unstake"> Unstake </Checkbox>
               <Checkbox label="Referral"> Referral </Checkbox>
-              <Checkbox label="Swap"> Swap </Checkbox>
+              <Checkbox label="Swap"> Bridge </Checkbox>
               <Checkbox label="Liquidated(Staked)">
                 Liquidated(Staked)
               </Checkbox>

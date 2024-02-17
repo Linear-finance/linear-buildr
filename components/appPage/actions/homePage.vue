@@ -17,8 +17,16 @@
     <div class="actionsBox">
       <div class="boxItem" :class="{ isMobile }" @click.stop="toggleModal">
         <div class="imgBox">
-          <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
-          <img v-else src="@/static/dark-theme/LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/NEW_LINA_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/NEW_LINA_logo.svg"
+          />
         </div>
         <div class="boxContext">
           Buy LINA <br />
@@ -35,8 +43,16 @@
         @click="isMobile && btnClick(2)"
       >
         <div class="imgBox">
-          <img v-if="theme === 'light'" src="@/static/currency/lUSD.svg" />
-          <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LUSD_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
         </div>
         <div class="boxContext">
           Stake LINA <br />
@@ -317,41 +333,134 @@ export default {
     z-index: 2;
     margin: 10px 0;
     left: 50%;
-    .alertContainer {
-      padding: 4px;
+    transform: translateX(-300px);
+    display: flex;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px 0 #deddde;
+
+    .colorBlock {
+      width: 20px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .container {
+      width: 100%;
+      display: flex;
+      padding: 16px;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .content {
+        margin-left: 8px;
+        width: 499px;
+
+        .title {
+          font-family: $BodyTextFontFamily;
+          font-size: 14px;
+          line-height: 24px;
+          color: #101a28;
+          text-align: left;
+          margin-bottom: 4px;
+
+          .app-dark & {
+            color: $darkFontColor;
+          }
+        }
+
+        .context {
+          font-family: $BodyTextFontFamily;
+          font-size: 14px;
+          color: #99999a;
+          text-align: left;
+          margin: 0 0 4px;
+
+          .app-dark & {
+            color: $darkFontColor;
+          }
+
+          span {
+            font-family: Gilroy-Bold;
+          }
+        }
+
+        .btnBox {
+          display: flex;
+          font-family: Gilroy-Bold;
+          font-size: 10px;
+          letter-spacing: 1.25px;
+
+          .btn {
+            margin-right: 24px;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .close {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+    }
+
+    &.attention {
+      .colorBlock {
+        background-color: #f08b0b;
+      }
+
+      .btnBox {
+        color: #f08b0b;
+      }
+    }
+    &.urgent {
+      .colorBlock {
+        background-color: #df434c;
+      }
+
+      .btnBox {
+        color: #df434c;
+      }
+    }
+    &.liquidated {
+      .colorBlock {
+        background-color: #1a38f8;
+      }
+
+      .btnBox {
+        color: #1a38f8;
+      }
     }
   }
 
-  .app-dark & {
-    background: $darkBackgroundColor;
-  }
-
   .title {
-    font-family: Gilroy-bold;
-    font-size: 32px;
-    font-weight: bold;
+    font-family: $HeadingsFontFamily;
+    font-size: 36px;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.25;
     letter-spacing: normal;
-    color: #5a575c;
+    color: #101a28;
+    font-weight: 200;
 
     .app-dark & {
-      color: $darkFontColor;
+      color: #fff;
     }
   }
 
   .context {
-    font-family: Gilroy-Regular;
+    font-family: $BodyTextFontFamily;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: 400;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.29;
     letter-spacing: normal;
     text-align: center;
-    color: #99999a;
-
+    color: #475a75;
     margin: 9px 0 48px;
 
     .app-dark & {
@@ -394,14 +503,14 @@ export default {
         width: 100%;
         text-align: center;
         font-size: 14px;
-        font-weight: normal;
+        font-weight: 200;
         font-stretch: normal;
         font-style: normal;
-        line-height: 1.29;
+        line-height: 20px;
         letter-spacing: normal;
         text-align: center;
-        color: #5a575c;
-        font-family: Gilroy-Regular;
+        color: #1d2639;
+        font-family: $HeadingsFontFamily;
         cursor: default;
 
         .app-dark & {
@@ -471,15 +580,15 @@ export default {
     }
 
     .title {
-      font-family: Gilroy-Bold;
+      font-family: $HeadingsFontFamily;
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 200;
       font-stretch: normal;
       font-style: normal;
       line-height: 1.33;
       letter-spacing: normal;
       text-align: center;
-      color: #5a575c;
+      color: #101a28;
 
       .app-dark & {
         color: $darkFontColor;
@@ -487,7 +596,7 @@ export default {
     }
 
     .context {
-      font-family: Gilroy;
+      font-family: $BodyTextFontFamily;
       font-size: 12px;
       font-weight: normal;
       font-stretch: normal;
@@ -495,7 +604,7 @@ export default {
       line-height: 1.33;
       letter-spacing: normal;
       text-align: center;
-      color: #99999a;
+      color: #475a75;
 
       margin: 9px 60px;
 

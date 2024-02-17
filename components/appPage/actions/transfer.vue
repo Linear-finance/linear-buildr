@@ -394,8 +394,8 @@ export default {
           key: "LINA",
           img:
             this.theme === "light"
-              ? require("@/static/LINA_logo.svg")
-              : require("@/static/dark-theme/LINA_logo.svg"),
+              ? require("@/static/NEW_LINA_logo.svg")
+              : require("@/static/dark-theme/NEW_LINA_logo.svg"),
           balance: 0,
         },
       ],
@@ -907,9 +907,9 @@ export default {
 
             .text {
               .title {
-                font-family: Gilroy-Bold;
+                font-family: $HeadingsFontFamily;
                 font-size: 32px;
-                font-weight: bold;
+                font-weight: 200;
                 font-stretch: normal;
                 font-style: normal;
                 line-height: 1.25;
@@ -919,7 +919,7 @@ export default {
               }
               .descript {
                 margin-top: 8px;
-                font-family: Gilroy-Regular;
+                font-family: $BodyTextFontFamily;
                 font-size: 14px;
                 font-weight: normal;
                 font-stretch: normal;
@@ -986,7 +986,7 @@ export default {
                   width: 100%;
                 }
                 .p_1 {
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: bold;
                   font-stretch: normal;
@@ -1000,7 +1000,7 @@ export default {
                   opacity: 0.2;
                   cursor: pointer;
                   transition: $animete-time linear;
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: bold;
                   font-stretch: normal;
@@ -1141,7 +1141,7 @@ export default {
                   }
                   .midle {
                     flex: 1;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 16px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -1245,7 +1245,7 @@ export default {
                     box-shadow: none;
                     outline: none;
                     color: #5a575c;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 14px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -1290,7 +1290,7 @@ export default {
             letter-spacing: 3px;
             cursor: pointer;
             transition: $animete-time linear;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
@@ -1410,7 +1410,7 @@ export default {
                   align-items: center;
 
                   .tokenName {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 24px;
                     text-align: center;
                     color: #5a575c;
@@ -1463,7 +1463,7 @@ export default {
                       .ivu-input-number-input {
                         text-align: left;
                         color: #99999a;
-                        font-family: Gilroy-Bold;
+                        font-family: $BodyTextFontFamily;
                         font-size: 16px;
                         font-weight: bold;
                         font-stretch: normal;
@@ -1485,7 +1485,7 @@ export default {
                     background-color: rgba(126, 181, 255, 0.1);
                     text-align: center;
                     line-height: 44px;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 10px;
                     font-weight: bold;
                     color: #1a38f8;
@@ -1528,7 +1528,7 @@ export default {
                     }
                     .midle {
                       flex: 1;
-                      font-family: Gilroy-Bold;
+                      font-family: $BodyTextFontFamily;
                       font-size: 16px;
                       font-weight: bold;
                       font-stretch: normal;
@@ -1564,7 +1564,7 @@ export default {
                 justify-content: center;
                 border: solid 1px #e5e5e5;
                 border-radius: 8px;
-                font-family: Gilroy;
+                font-family: $BodyTextFontFamily;
                 font-size: 12px;
                 color: #99999a;
                 margin-bottom: 16px;
@@ -1575,7 +1575,7 @@ export default {
                   box-shadow: none;
                   outline: none;
                   color: #5a575c;
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 14px;
                   font-weight: bold;
                   font-stretch: normal;

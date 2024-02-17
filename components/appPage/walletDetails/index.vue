@@ -1,13 +1,59 @@
 <template>
   <div id="walletDetails" :class="{ mScroll: mShowWallet }">
-    <div class="walletAndAddressBox" v-if="!mShowWallet">
-      <div class="info">
-        <img class="network" v-if="isEthereumNetwork" src="@/static/ETH.svg" />
-        <img class="network" v-else src="@/static/binance.svg" />
-
-        <div class="wallet">
+    <div
+      :class="[
+        `${
+          theme === 'dark' ? 'walletAndAddressBox' : 'walletAndAddressBoxLight'
+        }`,
+      ]"
+      v-if="!mShowWallet"
+    >
+      <div
+        v-if="!isMobile"
+        class="chainChange"
+        @click="isShowChainList = !isShowChainList"
+      >
+        <div
+          class="ethBox"
+          v-if="isEthereumNetwork"
+          @click="triggerSwitchChain(SUPPORTED_NETWORKS_MAP.Mainnet)"
+        >
+          <ethereumSvg :selected="isEthereumNetwork" />
+        </div>
+        <div
+          class="bscBox"
+          v-if="isBinanceNetwork"
+          @click="triggerSwitchChain(SUPPORTED_NETWORKS_MAP.BscMainnet)"
+        >
+          <binanceSvg :selected="isBinanceNetwork" />
+        </div>
+        <div class="mNetworkName">
           {{ walletNetworkName }}
         </div>
+        <div :class="{ showList: !isShowChainList }">
+          <img src="@/static/awrow.svg" alt="" />
+        </div>
+
+        <div class="chainChange-list" v-show="isShowChainList">
+          <div
+            class="chainChange-list-item"
+            :selected="isEthereumNetwork"
+            @click="triggerSwitchChain(SUPPORTED_NETWORKS_MAP.Mainnet)"
+          >
+            <ethereumSvg :selected="isEthereumNetwork" />
+            <span>Mainnet</span>
+          </div>
+          <div
+            class="chainChange-list-item"
+            :selected="isBinanceNetwork"
+            @click="triggerSwitchChain(SUPPORTED_NETWORKS_MAP.BscMainnet)"
+          >
+            <binanceSvg :selected="isBinanceNetwork" />
+            <span>BscMainnet</span>
+          </div>
+        </div>
+      </div>
+      <div class="info">
         <div class="address">
           {{ abbreviateAddress }}
         </div>
@@ -49,41 +95,12 @@
           </svg>
         </Tooltip>
 
-        <img
-          v-if="isMobile"
-          class="disconnectMobile"
-          src="@/static/disconnectMobile.svg"
-          alt="disconnect"
-          @click.stop="disconnect"
-        />
-        <div v-else-if="!isMobile" class="disconnect" @click.stop="disconnect">
-          Disconnect
-        </div>
+        <div class="disconnect" @click.stop="disconnect">Disconnect</div>
       </div>
-      <theme-switch :variant="variant" />
-      <!-- <div class="chainChange" :class="{ chainChanging }">
-                <div
-                    class="ethBox"
-                    :class="{
-                        selected: isEthereumNetwork
-                    }"
-                    @click="changeChain(SUPPORTED_WALLETS.METAMASK)"
-                >
-                    <ethereumSvg :selected="isEthereumNetwork" />
-                </div>
-                <div
-                    class="bscBox"
-                    :class="{
-                        selected: isBinanceNetwork
-                    }"
-                    @click="changeChain(SUPPORTED_WALLETS.BINANCE_CHAIN)"
-                >
-                    <binanceSvg :selected="isBinanceNetwork" />
-                </div>
-                <div class="mNetworkName" @click="mShowWallet = true">
-                    {{ walletNetworkName }}
-                </div>
-            </div> -->
+
+      <div class="info-themeSwitch">
+        <theme-switch :variant="variant" />
+      </div>
 
       <div v-if="isMobile" class="mNetwork" @click="mShowWallet = true">
         <ethereumSvg v-if="isEthereumNetwork" :selected="true" />
@@ -92,13 +109,39 @@
           {{ walletNetworkName }}
         </div>
       </div>
-
-      <div class="mMenu" @click="mShowMenuFun">
-        <img v-if="theme === 'light'" src="@/static/icon-menu.svg" />
-        <img v-else src="@/static/dark-theme/icon-menu.svg" />
+      <div v-if="isMobile" @click="showTooltipModle" class="menu">
+        <font-awesome-icon
+          v-if="theme === 'dark'"
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="white"
+        />
+        <font-awesome-icon
+          v-else
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="black"
+        />
+      </div>
+      <div v-if="!isMobile" @click="showTooltipModle" class="menu">
+        <font-awesome-icon
+          v-if="theme === 'dark'"
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="white"
+        />
+        <font-awesome-icon
+          v-else
+          class="menu-logo"
+          :icon="['fas', 'bars']"
+          size="lh"
+          color="black"
+        />
       </div>
     </div>
-
     <div class="walletDetailsBox" :class="{ mShowWalletClass: mShowWallet }">
       <div class="mWalletHead">
         <ethereumSvg
@@ -605,12 +648,12 @@
           <img
             v-if="theme === 'light'"
             class="tokenIcon"
-            src="@/static/currency/lUSD.svg"
+            src="@/static/LUSD_logo.svg"
           />
           <img
             v-else
             class="tokenIcon"
-            src="@/static/dark-theme/currency/lUSD.svg"
+            src="@/static/dark-theme/LUSD_logo.svg"
           />
           <div class="box">
             <div class="tokenItems obtrusive">
@@ -634,9 +677,13 @@
           <img
             v-if="theme === 'light'"
             class="tokenIcon"
-            src="@/static/LINA_logo.svg"
+            src="@/static/LUSD_logo.svg"
           />
-          <img v-else class="tokenIcon" src="@/static/LINA_logo_dark.svg" />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left liquidsLeft">
@@ -655,8 +702,11 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img v-if="theme === 'light'" src="@/static/info_grey.svg" />
-                  <img v-else src="@/static/info_grey.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/new_info_white.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/new_info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
@@ -702,7 +752,7 @@
                 >
                   <circle cx="32" cy="32" r="31.5" />
                 </g>
-                <g fill="#99999A" class="shape">
+                <g stroke="#7A8BA5" fill="#99999A" class="shape">
                   <path
                     d="M9.062 22.422C10.185 27.514 14.718 31.2 20 31.2c4.593 0 8.646-2.79 10.353-6.917l-6.214 1.094c-.387.068-.758-.154-.89-.51l-.037-.139c-.068-.387.154-.757.51-.889l.14-.038 7.878-1.389c.386-.068.757.154.889.51l.037.14 1.39 7.878c.076.435-.214.85-.65.926-.386.069-.757-.153-.889-.51l-.037-.139-.984-5.581C29.385 29.943 24.97 32.8 20 32.8c-6.037 0-11.217-4.212-12.5-10.033-.095-.432.178-.859.609-.954.432-.095.858.178.953.61zm11.22-16.628c6.037 0 11.216 4.213 12.5 10.034.094.431-.178.858-.61.953-.431.095-.858-.178-.953-.609-1.122-5.091-5.655-8.778-10.938-8.778-4.593 0-8.646 2.79-10.352 6.918l6.213-1.095c.387-.068.758.154.89.51l.037.14c.068.386-.154.757-.51.889l-.139.037-7.878 1.39c-.387.068-.758-.154-.89-.51l-.037-.14-1.39-7.878c-.076-.435.215-.85.65-.927.386-.068.757.154.889.51l.037.14.984 5.58c2.112-4.307 6.527-7.164 11.496-7.164z"
                     transform="translate(-1110 -917) translate(1110 917) translate(11.8 12.8)"
@@ -734,18 +784,23 @@
 import _ from "lodash";
 import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
+
 import {
   CHAIN_CHANGE_TYPE,
   isBinanceNetwork,
   isEthereumNetwork,
   SUPPORTED_WALLETS,
   LIQUIDATION_NETWORKS,
+  SUPPORTED_NETWORKS_MAP,
+  SUPPORTED_NETWORKS,
+  SUPPORTED_NETWORKS_CONFIG,
 } from "@/assets/linearLibrary/linearTools/network";
 import lnrJSConnector, {
   selectedWallet,
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
+
 import expandMoreSvg from "@/components/svg/more";
 import {
   abbreviateAddress,
@@ -762,9 +817,10 @@ export default {
   name: "walletDetails",
   data() {
     return {
+      SUPPORTED_NETWORKS_MAP,
       tooltipContent: "Copy to clipboard",
       // refreshing: false, //刷新钱包详情数据中
-
+      isShowChainList: false,
       transactionStatus: false, //历史记录窗口状态
       transactionIconStatus: 0, //鼠标状态 0离开,1进入
 
@@ -1035,6 +1091,29 @@ export default {
     async getdata() {
       await storeDetailsData();
     },
+    async triggerSwitchChain(chainId, account) {
+      const provider = await lnrJSConnector.signer.provider.provider;
+
+      provider
+        ?.send("wallet_switchEthereumChain", [
+          {
+            chainId: SUPPORTED_NETWORKS_CONFIG[chainId].hexChainId,
+          },
+          account,
+        ])
+        .catch((err) => {
+          if (err?.code === 4001) return;
+          const params = SUPPORTED_NETWORKS_CONFIG[chainId];
+          const obj = {};
+          obj.chainId = SUPPORTED_NETWORKS_CONFIG[chainId].hexChainId;
+          obj.chainName = params?.name;
+          obj.nativeCurrency = params?.nativeCurrency;
+          obj.rpcUrls = params?.rpcUrl;
+          obj.blockExplorerUrls = params?.blockExplorerUrls;
+
+          provider?.send("wallet_addEthereumChain", [obj, account]);
+        });
+    },
     async checkLiquidation() {
       try {
         clearInterval(this.liquidationCountDownId);
@@ -1134,11 +1213,12 @@ export default {
       //不重复连接
       if (walletType == this.walletType || this.chainChanging) return;
 
-      // this.chainChanging = true;
+      this.chainChanging = true;
       const staus = await selectedWallet(walletType);
+
       staus &&
         this.$pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.WALLET);
-      // this.chainChanging = false;
+      this.chainChanging = false;
     },
 
     //获取当前钱包详情数据
@@ -1221,6 +1301,10 @@ export default {
     openUnlockSchedule() {
       this.$store.commit("setIsUnlockScheduleShow", true);
     },
+
+    showTooltipModle() {
+      this.$store.commit("setIsShowTooltipModle", true);
+    },
   },
 };
 </script>
@@ -1263,14 +1347,20 @@ export default {
     justify-content: space-between;
     align-items: center;
 
+    // transform: translateX(-80px);
+
     .info {
       width: calc(100% - 32px - 8px);
-      padding: 7px 16px;
+      padding: 3px 16px;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
       border-radius: 20px;
-      background: #f6f5f6;
+      border: 1px solid #fff;
+
+      &-themeSwitch {
+        margin-left: 16px;
+      }
 
       .app-dark & {
         background: $darkBackgroundColor;
@@ -1295,6 +1385,179 @@ export default {
 
         .app-dark & {
           color: $darkFontColorSecondary;
+        }
+      }
+
+      .address {
+        flex: 1;
+        font-family: Gilroy-Regular;
+        font-size: 14px;
+        margin-right: 4px;
+        text-align: center;
+        // white-space: nowrap;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.29;
+        letter-spacing: normal;
+        color: #475a75;
+
+        .app-dark & {
+          color: #dde4e9;
+        }
+      }
+
+      .copyBtn {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        margin-top: 4px;
+        margin-right: 12px;
+
+        &:hover {
+          #Combined-Shape {
+            fill: #1a38f8;
+            stroke: #1a38f8;
+          }
+        }
+        .app-dark & {
+          &,
+          #Combined-Shape {
+            fill: #ffffff;
+            stroke: #ffffff;
+          }
+        }
+      }
+
+      .disconnect {
+        font-family: Gilroy-Bold;
+        font-size: 10px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        letter-spacing: 1.25px;
+        text-align: center;
+        color: #475a75;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: $animete-time linear;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+          &:hover {
+            color: #fff;
+          }
+        }
+
+        &:hover {
+          color: #1a38f8;
+        }
+      }
+    }
+
+    .chainChange {
+      position: relative;
+      width: calc(100% - 32px - 8px);
+      padding: 3px 16px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      border-radius: 20px;
+      border: 1px solid #fff;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 20px;
+
+      & > .showList {
+        transform: rotate(-90deg);
+      }
+
+      & > .mNetworkName {
+        margin: 0 4px;
+      }
+
+      &-list {
+        position: absolute;
+        top: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #151927;
+        box-shadow: rgba(72, 69, 69, 0.2) 0px 8px 24px;
+        z-index: 99;
+
+        &-item {
+          display: flex;
+          align-items: center;
+          padding: 7px 16px 7px 10px;
+          transition: all 0.5s;
+
+          & > span {
+            margin-left: 8px;
+          }
+        }
+
+        &-item:hover {
+          background-color: #ffffff27;
+        }
+      }
+    }
+
+    .mMenu {
+      display: none;
+    }
+    .menu {
+      margin-left: 8px;
+      cursor: pointer;
+    }
+  }
+
+  .walletAndAddressBoxLight {
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // transform: translateX(-80px);
+
+    .info {
+      width: calc(100% - 32px - 8px);
+      padding: 3px 16px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      border-radius: 20px;
+      border: 1px solid #475a75;
+
+      &-themeSwitch {
+        margin-left: 16px;
+      }
+
+      .app-dark & {
+        background: $darkBackgroundColor;
+      }
+
+      .network {
+        margin-right: 8px;
+        width: 16px;
+        height: 16px;
+      }
+
+      .wallet {
+        margin-right: 8px;
+        font-family: Gilroy-Bold;
+        font-size: 14px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.29;
+        letter-spacing: normal;
+        color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorSecondary !important;
         }
       }
 
@@ -1349,13 +1612,13 @@ export default {
         font-style: normal;
         letter-spacing: 1.25px;
         text-align: center;
-        color: #99999a;
+        color: #475a75;
         text-transform: uppercase;
         cursor: pointer;
         transition: $animete-time linear;
 
         .app-dark & {
-          color: $darkFontColorSecondary;
+          color: $darkFontColorSecondary !important;
           &:hover {
             color: #fff;
           }
@@ -1367,43 +1630,62 @@ export default {
       }
     }
 
-    // .chainChange {
-    //     width: 64px;
-    //     height: 32px;
-    //     display: flex;
-    //     border-radius: 20px;
-    //     background: #f6f5f6;
+    .chainChange {
+      position: relative;
+      width: calc(100% - 32px - 8px);
+      padding: 3px 16px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      border-radius: 20px;
+      border: 1px solid #475a75;
+      color: #475a75;
+      cursor: pointer;
+      margin-right: 20px;
 
-    //     &.chainChanging {
-    //         .ethBox,
-    //         .bscBox {
-    //             opacity: 0.2 !important;
-    //             cursor: not-allowed !important;
-    //         }
-    //     }
+      & > .showList {
+        transform: rotate(-90deg);
+      }
 
-    //     .ethBox,
-    //     .bscBox {
-    //         width: 32px;
-    //         height: 32px;
-    //         border-radius: 50%;
-    //         display: flex;
-    //         justify-content: center;
-    //         align-items: center;
-    //         transition: $animete-time linear;
+      & > .mNetworkName {
+        margin: 0 4px;
+      }
 
-    //         &.selected {
-    //             box-shadow: 0 2px 6px 0 #deddde;
-    //             background-color: #ffffff;
-    //         }
-    //     }
-    //     .mNetworkName {
-    //         display: none;
-    //     }
-    // }
+      &-list {
+        position: absolute;
+        top: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #fff;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        z-index: 99;
+
+        &-item {
+          display: flex;
+          align-items: center;
+          padding: 7px 16px;
+          transition: all 0.5s;
+
+          & > span {
+            margin-left: 8px;
+          }
+        }
+
+        &-item:hover {
+          background-color: #00000027;
+        }
+      }
+    }
 
     .mMenu {
       display: none;
+    }
+    .menu {
+      margin-left: 8px;
+      margin-right: 8px;
+      cursor: pointer;
     }
   }
 
@@ -1441,7 +1723,7 @@ export default {
           transition: $animete-time linear;
           font-weight: bold;
           letter-spacing: 1.5px;
-          font-family: Gilroy-bold;
+          font-family: $BodyTextFontFamily;
           font-size: 12px;
           font-stretch: normal;
           font-style: normal;
@@ -1506,13 +1788,29 @@ export default {
     .ratioBox {
       border-top: solid 1px #e5e5e5;
       border-bottom: solid 1px #e5e5e5;
-      padding: 12px 0;
+      padding: 24px 0;
+
+      .title {
+        font-family: Gilroy-bold;
+        font-size: 14px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.29;
+        letter-spacing: normal;
+        color: #5a575c;
+        margin-bottom: 8px;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
+      }
 
       .currentRatio {
         font-family: Gilroy-Bold;
         font-size: 32px;
         text-align: center;
-        color: #5a575c;
+        color: #1d2639;
 
         .app-dark & {
           color: $darkFontColorLight;
@@ -1551,10 +1849,11 @@ export default {
       .context {
         display: flex;
         justify-content: space-between;
-        font-family: Gilroy-Bold;
-        font-size: 16px;
+        font-family: $BodyTextFontFamily;
+        font-size: 14px;
         text-align: center;
-        color: #5a575c;
+        color: #1d2639;
+        font-weight: 700;
         line-height: 24px;
         align-items: center;
 
@@ -1656,21 +1955,27 @@ export default {
 
         .flag {
           display: flex;
-          margin-top: 6px;
+          margin-top: 12px;
 
           .item {
-            font-family: Gilroy;
+            font-family: $BodyTextFontFamily;
             font-size: 12px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 16px;
-            color: #99999a;
+            text-align: center;
+            color: #475a75;
 
             &:first-child {
-              margin-left: 69px;
+              margin-left: 21%;
             }
             &:last-child {
-              margin-left: 62px;
+              margin-left: 3%;
+            }
+
+            .app-dark &:first-child {
+              color: $darkFontColor;
+            }
+
+            .app-dark &:last-child {
+              color: $darkFontColor;
             }
           }
         }
@@ -1834,6 +2139,7 @@ export default {
           }
 
           .app-dark & {
+            color: $darkFontColorSecondary !important;
             border: 1px solid #1a38f8;
           }
         }
@@ -1889,11 +2195,14 @@ export default {
             }
           }
           .tokenItems {
-            font-family: Gilroy;
-            font-weight: 400;
+            font-family: $BodyTextFontFamily;
             font-size: 12px;
-            line-height: 16px;
-            color: #696565;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: normal;
+            color: #475a75;
             display: flex;
             justify-content: space-between;
 
@@ -1904,19 +2213,26 @@ export default {
               font-weight: 700;
               line-height: 24px;
 
-              .app-dark & {
-                color: #e5e5e5;
-              }
-            }
+            .rightCollateral {
+              font-family: Gilroy-Bold;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 24px;
 
-            .tokenItemTop {
-              display: flex;
-              flex-direction: column;
-              font-variation-settings: normal;
+            .app-dark & {
+              color: #9d9d9d;
+            }
+            .app-dark &:first-child {
+              color: $darkFontColorLight;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 28px; /* 175% */
             }
 
             &.obtrusive {
-              font-family: Gilroy;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               line-height: 24px;
               color: #5a575c;
@@ -1927,6 +2243,11 @@ export default {
               .left,
               .leftAsset {
                 text-align: left;
+                color: #1d2639;
+
+                .app-dark & {
+                  color: $darkFontColorLight;
+                }
                 font-family: Gilroy-Bold;
                 font-size: 16px;
                 font-style: normal;
@@ -1957,7 +2278,25 @@ export default {
               }
 
               .right {
+                font-family: $BodyTextFontFamily;
+                font-size: 12px;
                 text-align: right;
+                font-weight: 700;
+              }
+
+              .tokenItemTop {
+                font-family: Gilroy;
+                font-weight: 400 !important;
+                font-size: 12px;
+                line-height: 16px;
+                color: #696565;
+                display: flex;
+
+                .right {
+                  .app-dark & {
+                    color: #99999a !important;
+                  }
+                }
               }
 
               .tokenItemTop {
@@ -1993,29 +2332,32 @@ export default {
                 }
 
                 .right {
-                  color: #5a575c;
+                  font-family: $BodyTextFontFamily;
+                  font-weight: 500;
+                  font-stretch: normal;
+                  font-style: normal;
+                  letter-spacing: normal;
+                  color: #475a75;
 
                   .app-dark & {
                     color: #99999a;
                   }
                   .top {
-                    font-size: 16px;
+                    font-size: 12px;
                     line-height: 1.5;
+                    font-weight: 700;
                   }
                   .bottom {
                     font-size: 12px;
                     line-height: 1.33;
-                    color: #5a575c;
-
-                    .app-dark & {
-                      color: #99999a;
-                    }
+                    font-weight: 400;
                   }
                 }
               }
             }
 
             &.unobtrusive {
+              color: #475a75;
               margin-top: 8px;
               .left {
                 height: 18px;
@@ -2080,7 +2422,7 @@ export default {
 
       .box {
         .title {
-          font-family: Gilroy-bold;
+          font-family: $BodyTextFontFamily;
           font-size: 14px;
           font-weight: bold;
           font-stretch: normal;
@@ -2167,7 +2509,7 @@ export default {
     right: 0;
     top: 0;
     min-height: 100% !important;
-    z-index: 999 !important;
+    // z-index: 999 !important;
 
     &.mScroll {
       overflow-y: scroll;
@@ -2210,11 +2552,13 @@ export default {
       align-items: center;
       margin-top: 10px;
       margin-right: 16px;
-      float: right;
+      position: absolute;
+      right: 0px;
+      top: 0;
 
       .info {
         width: 294px;
-        padding: 7px 16px;
+        padding: 3px 16px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
@@ -2333,7 +2677,6 @@ export default {
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
         border-radius: 16px;
-        margin-right: 8px;
 
         #ethereumSvg,
         #binanceSvg {
@@ -2351,9 +2694,174 @@ export default {
           line-height: 1.33;
           letter-spacing: normal;
           color: #99999a;
+          margin: 0 4px;
+        }
+      }
+
+      .mMenu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px 0 #deddde;
+        background-color: #ffffff;
+        .app-dark & {
+          border: 1px solid #ffffff;
+        }
+      }
+    }
+
+    .walletAndAddressBoxLight {
+      height: 44px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+      margin-right: 16px;
+      position: absolute;
+      right: 0px;
+      top: 0;
+
+      .info {
+        width: 294px;
+        padding: 3px 16px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        border-radius: 20px;
+        background: #f6f5f6;
+        display: none;
+
+        .wallet {
+          margin-right: 8px;
+          font-family: Gilroy-Bold;
+          font-size: 14px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #5a575c;
+
           .app-dark & {
-            color: #ffffff;
+            color: $darkFontColorLight;
           }
+        }
+
+        .address {
+          flex: 1;
+          font-family: Gilroy-Regular;
+          font-size: 14px;
+          margin-right: 4px;
+          text-align: center;
+          // white-space: nowrap;
+          // overflow: hidden;
+          // text-overflow: ellipsis;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #99999a;
+        }
+
+        .copyBtn {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          margin: 2px 8px 0 4px;
+
+          &:hover {
+            #Combined-Shape {
+              fill: #1a38f8;
+              stroke: #1a38f8;
+            }
+          }
+        }
+      }
+
+      // .chainChange {
+      //     width: 90px;
+      //     height: 32px;
+      //     display: flex;
+      //     border-radius: 20px;
+      //     background: #fff;
+      //     box-shadow: 0 2px 6px 0 #deddde;
+      //     padding: 0 0;
+      //     position: relative;
+
+      //     &.chainChanging {
+      //         .ethBox,
+      //         .bscBox {
+      //             opacity: 0.2 !important;
+      //             cursor: not-allowed !important;
+      //         }
+      //     }
+
+      //     .ethBox,
+      //     .bscBox {
+      //         width: 32px;
+      //         height: 32px;
+      //         border-radius: 50%;
+      //         display: flex;
+      //         justify-content: center;
+      //         align-items: center;
+      //         transition: $animete-time linear;
+
+      //         &.selected {
+      //             box-shadow: 0 0 0 0 #deddde;
+      //             background-color: #ffffff;
+      //         }
+      //     }
+
+      //     .bscBox {
+      //         display: none;
+      //     }
+
+      //     .mNetworkName {
+      //         display: block;
+      //         font-family: Gilroy;
+      //         font-size: 12px;
+      //         font-weight: 500;
+      //         font-stretch: normal;
+      //         font-style: normal;
+      //         line-height: 32px;
+      //         letter-spacing: normal;
+      //         color: #99999a;
+      //         position: absolute;
+      //         padding-left: 29px;
+      //         left: 0;
+      //         top: 0px;
+      //     }
+      // }
+
+      .mNetwork {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        box-shadow: 0 2px 6px 0 #deddde;
+        background-color: #ffffff;
+        border-radius: 16px;
+
+        #ethereumSvg,
+        #binanceSvg {
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+
+        .mNetworkName {
+          font-family: Gilroy-Medium;
+          font-size: 12px;
+          font-weight: 500;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 12px;
+          letter-spacing: normal;
+          color: #99999a;
+          margin: 0 4px;
         }
       }
 
@@ -2453,9 +2961,10 @@ export default {
           }
 
           .copyBtn {
-            cursor: pointer;
             width: 16px;
             height: 16px;
+            cursor: pointer;
+            margin: 2px 8px 0 4px;
 
             &:hover {
               #Combined-Shape {
@@ -2783,14 +3292,14 @@ export default {
 
         .box {
           .title {
-            font-family: Gilroy-bold;
+            font-family: $BodyTextFontFamily;
             font-size: 14px;
             font-weight: bold;
             font-stretch: normal;
             font-style: normal;
             line-height: 1.29;
             letter-spacing: normal;
-            color: #5a575c;
+            color: #1d2639;
             margin-bottom: 8px;
 
             .app-dark & {
@@ -2799,14 +3308,14 @@ export default {
           }
 
           .amount {
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
             font-style: normal;
             line-height: 1.25;
             letter-spacing: normal;
-            color: #5a575c;
+            color: #1d2639;
 
             .app-dark & {
               color: $darkFontColorLight;

@@ -62,6 +62,7 @@ const connectToMetamask = async () => {
   const walletState = {
     walletType: SUPPORTED_WALLETS.METAMASK,
   };
+
   try {
     if (window.ethereum) {
       // window.ethereum.autoRefreshOnNetworkChange = true;
@@ -222,6 +223,7 @@ export const selectedWallet = async (
   try {
     //连接钱包
     const walletStatus = await connectToWallet(walletType);
+
     if (
       walletStatus === undefined ||
       !SUPPORTED_NETWORKS[walletStatus?.networkId]

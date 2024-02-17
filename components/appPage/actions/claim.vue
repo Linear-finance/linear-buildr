@@ -718,9 +718,9 @@ export default {
             padding: 64px 193px 0;
 
             .actionTitle {
-              font-family: Gilroy-Bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
@@ -731,7 +731,7 @@ export default {
 
             .actionDesc {
               margin: 8px 0 76px 0;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -771,8 +771,10 @@ export default {
 
                 .title {
                   color: #5a575c;
-                  font-family: Gilroy-Bold;
-                  font-size: 24px;
+                  font-family: $BodyTextFontFamily;
+                  font-size: 16px;
+                  font-weight: bold;
+                  font-stretch: normal;
                   font-style: normal;
                   font-weight: 700;
                   line-height: 32px;
@@ -825,7 +827,7 @@ export default {
 
                 .multiCollateralContainer {
                   color: #5a575c;
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-stretch: normal;
                   font-style: normal;
@@ -850,30 +852,10 @@ export default {
                     justify-content: space-between;
                     margin: 5px 20px;
                     color: #5a575c;
-                    font-size: 14px;
-
-                    .app-dark & {
-                      color: #e5e5e5;
-                    }
-
-                    &.assetLocked {
-                      color: #bababa;
-
-                      .app-dark & {
-                        color: #5a575c;
-                      }
-                    }
-                  }
-
-                  .stakedAssetContainer {
-                    border-bottom: 1px solid #e5e5e5;
-                    margin: 10px 20px;
-                    color: #99999a;
-                    padding-bottom: 10px;
-                  }
-
-                  .assetLocked {
-                    color: #5a575c;
+                    font-family: $BodyTextFontFamily;
+                    font-size: 32px;
+                    font-weight: bold;
+                    margin-right: 6px;
                   }
                 }
 
@@ -940,7 +922,7 @@ export default {
                 margin-bottom: 14px;
 
                 .title {
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: normal;
                   font-stretch: normal;
@@ -958,7 +940,7 @@ export default {
                   text-align: center;
                   background: #f6f5f6;
                   border-radius: 12px;
-                  font-family: Gilroy-Medium;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: 500;
                   font-stretch: normal;
@@ -974,7 +956,7 @@ export default {
                 }
 
                 .days {
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: normal;
                   font-stretch: normal;
@@ -1000,7 +982,7 @@ export default {
             text-transform: uppercase;
             cursor: pointer;
             transition: $animete-time linear;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
@@ -1025,7 +1007,7 @@ export default {
             }
 
             &.switchToBSC {
-              font-family: Gilroy-Bold;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               font-weight: bold;
               font-stretch: normal;
@@ -1213,7 +1195,7 @@ export default {
 
                 .title {
                   display: flex;
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 14px !important;
                   font-weight: normal;
                   font-stretch: normal;
@@ -1233,18 +1215,18 @@ export default {
                 }
 
                 .status {
-                  padding: 0 !important;
+                  padding: 0;
                   text-align: center;
                   border-radius: 12px;
                   background: unset;
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
-                  font-weight: 700;
+                  font-weight: 500;
                   font-stretch: normal;
                   font-style: normal;
                   line-height: 1.33;
                   letter-spacing: normal;
-                  color: #99999a;
+                  color: #5a575c;
                 }
 
                 .open {
@@ -1252,7 +1234,7 @@ export default {
                 }
 
                 .days {
-                  font-family: Gilroy-Regular;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: normal;
                   font-stretch: normal;
@@ -1262,6 +1244,44 @@ export default {
                   color: #5a575c;
                 }
               }
+            }
+          }
+
+          .claimBtn {
+            width: 100%;
+            height: 12.8vw !important;
+            background: #1a38f8;
+            position: absolute;
+            bottom: 0px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: $animete-time linear;
+            font-family: $BodyTextFontFamily;
+            font-size: 16px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: 3px;
+            text-align: center;
+
+            &:hover {
+              &:not(.disabled) {
+                background-color: #7eb5ff;
+              }
+            }
+
+            &.disabled {
+              opacity: 0.1;
+              cursor: not-allowed;
+            }
+
+            &.claimBtnActivited {
+              opacity: unset;
             }
           }
         }
@@ -1293,7 +1313,7 @@ export default {
             padding: 24px;
 
             .title {
-              font-family: Gilroy-Bold;
+              font-family: $BodyTextFontFamily;
               font-size: 16px;
               margin-bottom: 9px;
             }

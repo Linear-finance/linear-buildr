@@ -2152,20 +2152,20 @@ export default {
             align-items: center;
 
             .actionTitle {
-              font-family: Gilroy-bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
               letter-spacing: normal;
               text-align: center;
-              color: #5a575c;
+              color: #101a28;
             }
 
             .actionDesc {
               margin-top: 8px;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -2173,7 +2173,7 @@ export default {
               line-height: 1.29;
               letter-spacing: normal;
               text-align: center;
-              color: #99999a;
+              color: #475a75;
               margin-bottom: 40px;
 
               .step {

@@ -840,7 +840,6 @@
 import _ from "lodash";
 import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
-
 import {
   CHAIN_CHANGE_TYPE,
   isBinanceNetwork,
@@ -996,26 +995,37 @@ export default {
         Object.values(collateralValue).reduce((a, b) => a + b)
       );
     },
-    walletDetails() {
-      if (this.$store.state?.walletDetails.currentRatioPercent > 700) {
-        this.cursorPosition = 98;
-      } else {
-        this.cursorPosition =
-          (this.$store.state?.walletDetails.currentRatioPercent / 700) * 100;
-      }
-      return _.clone(this.$store.state?.walletDetails);
-    },
+    // walletDetails() {
+    //   if (this.$store.state?.walletDetails.currentRatioPercent > 700) {
+    //     this.cursorPosition = 98;
+    //   } else {
+    //     console.log(this.$store.state?.walletDetails.currentRatioPercent);
+    //     this.cursorPosition =
+    //       (this.$store.state?.walletDetails.currentRatioPercent / 700) * 100;
+    //   }
+    //   return _.clone(this.$store.state?.walletDetails);
+    // },
     //当前抵押率占目标抵押率的百分比
-    currentRatio() {
+    currentRatio(currencyName, ratio) {
+      var info = collateralAssets.find((asset) => asset.name === currencyName);
       var currentRatio = 0;
 
-      if (Object.keys(this.walletDetails).length !== 0) {
-        currentRatio =
-          (this.walletDetails.currentRatioPercent /
-            this.walletDetails.targetRatioPercent) *
-          100;
-        if (currentRatio > 100) currentRatio = 100;
+      if (ratio < 200) {
+        return 1 / 3;
+      } else if (200 < ratio < info.targetRatio * 100) {
+        return 2 / 3;
+      } else if (info.targetRatio < ration < 600) {
+        return 2.5 / 3;
+      } else {
+        return 3 / 3;
       }
+      // if (Object.keys(this.walletDetails).length !== 0) {
+      //   currentRatio =
+      //     (this.walletDetails.currentRatioPercent /
+      //       this.walletDetails.targetRatioPercent) *
+      //     100;
+      //   if (currentRatio > 100) currentRatio = 100;
+      // }
 
       return currentRatio;
     },
@@ -1035,6 +1045,7 @@ export default {
         currentRatio > 600
           ? (this.cursorPosition = 98)
           : (this.cursorPosition = (currentRatio / 600) * 100);
+        console.log((currentRatio / 600) * 100);
       } else if (assetArr.includes(asset)) {
         if (currentRatio > maxRatio || currentRatio < 50) {
           currentRatio < 50

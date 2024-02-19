@@ -7,7 +7,7 @@ $darkBackgroundDeepColor: #101a28; //深色背景 / dark background color
 $darkLighterBlue: #cee1fb;
 $darkFontColor: #7a8ba5; //字体色 / font-color
 $darkFontColorSecondary: #dde4e9; //字体色 / font-color
-$darkFontColorLight: #e5e5e5; //字体色 / font-color
+$darkFontColorLight: #e5e5e5 !important; //字体色 / font-color
 $darkFontColorDisabled: #5a575c; //字体色 / font-color
 
 $darkBorderColor: #dde4e9; //边框色 / border-color
@@ -119,6 +119,8 @@ body.dark-theme {
   }
 
   #homePage {
+    background-color: #1d2639 !important;
+
     .actionsBox .boxItem {
       background-color: #1d2639 !important;
       border: 1px solid rgba(153, 153, 154, 0.2) !important;
@@ -267,6 +269,16 @@ body.dark-theme {
 
   #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems {
     color: #7a8ba5 !important;
+  }
+
+  #walletDetails
+    .walletDetailsBox
+    .walletInfo
+    .tokenBox
+    .box
+    .tokenItems.obtrusive
+    .left {
+    color: $darkFontColorLight;
   }
 
   .itemTypeBtn,

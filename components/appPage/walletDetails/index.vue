@@ -645,6 +645,63 @@
           </div>
         </div>
         <div class="tokenBox">
+          <template v-if="isEthereumNetwork">
+            <img
+              v-if="theme === 'light'"
+              class="tokenIcon"
+              src="@/static/ETH_logo.svg"
+            />
+            <img
+              v-else
+              class="tokenIcon"
+              src="@/static/dark-theme/ETH_logo.svg"
+            />
+            <div class="box">
+              <div class="tokenItems obtrusive">
+                <div class="left">ETH</div>
+                <div class="right">
+                  <b>{{ walletDetails.amountETH || 0 }}</b>
+                  ETH
+                </div>
+              </div>
+              <div class="tokenItems">
+                <div class="left">
+                  <!-- 1 ETH = ${{
+                                        walletDetails.ETH2USDRate || 0
+                                    }}
+                                    USD -->
+                </div>
+                <div class="right">
+                  ≈ ${{ walletDetails.amountETH2USD || 0 }}
+                  USD
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else-if="isBinanceNetwork">
+            <img class="tokenIcon bsc" src="@/static/currency/BNBl.svg" />
+            <div class="box">
+              <div class="tokenItems obtrusive">
+                <div class="left">BNB</div>
+                <div class="right">
+                  <b>{{ walletDetails.amountETH || 0 }}</b>
+                  BNB
+                </div>
+              </div>
+              <div class="tokenItems">
+                <div class="left">
+                  1 BNB = ${{ walletDetails.ETH2USDRate || 0 }}
+                  USD
+                </div>
+                <div class="right">
+                  ≈ ${{ walletDetails.amountETH2USD || 0 }}
+                  USD
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div class="tokenBox">
           <img
             v-if="theme === 'light'"
             class="tokenIcon"
@@ -726,7 +783,6 @@
           <div class="title">Total Crypto Balance in USD</div>
           <div class="amount">${{ walletDetails.totalBalanceInUsd || 0 }}</div>
         </div>
-
         <svg
           class="refreshBtn"
           :class="{
@@ -1964,10 +2020,10 @@ export default {
             color: #475a75;
 
             &:first-child {
-              margin-left: 21%;
+              margin-left: 22%;
             }
             &:last-child {
-              margin-left: 3%;
+              margin-left: 12%;
             }
 
             .app-dark &:first-child {
@@ -1986,6 +2042,7 @@ export default {
       margin: 24px 0px;
 
       .portfolioSection {
+        min-height: 380px;
         border: 1px solid #5a575c;
         border-radius: 10px;
         padding: 5px 15px;
@@ -2049,33 +2106,6 @@ export default {
           -ms-user-select: none; /* IE 10 and IE 11 */
           user-select: none; /* Standard syntax */
         }
-
-        // .dissolve {
-        //   width: 24px;
-        //   height: 24px;
-        //   background: red;
-        //   z-index: 10;
-        // }
-        // .allAssets::before {
-        //   position: absolute;
-        //   top: 0;
-        //   width: 300px;
-        //   height: 25px;
-        //   background: linear-gradient(
-        //     red,
-        //     rgba(255, 255, 255, 0.001)
-        //   ); /* transparent keyword is broken in Safari */
-        // }
-        // .allAssets::after {
-        //   position: absolute;
-        //   top: 0;
-        //   width: 300px;
-        //   height: 25px;
-        //   background: linear-gradient(
-        //     red,
-        //     rgba(255, 255, 255, 0.001)
-        //   ); /* transparent keyword is broken in Safari */
-        // }
 
         .portfolioTabsContainer {
           height: 24px;
@@ -2178,6 +2208,7 @@ export default {
 
         .box {
           flex: 1;
+
           .expandIcon {
             text-align: center;
             cursor: pointer;
@@ -2206,177 +2237,177 @@ export default {
             display: flex;
             justify-content: space-between;
 
-            .rightCollateral {
-              font-family: Gilroy-Bold;
+            .app-dark &:first-child {
+              color: $darkFontColorLight;
               font-size: 16px;
               font-style: normal;
               font-weight: 700;
-              line-height: 24px;
+              line-height: 28px; /* 175% */
+            }
 
-              .rightCollateral {
-                font-family: Gilroy-Bold;
+            &.obtrusive {
+              // font-family: $BodyTextFontFamily;
+              // font-size: 16px;
+              // line-height: 24px;
+              // color: #5a575c;
+              // font-variation-settings: "GRAD" 100, "slnt" 0, "XTRA" 468,
+              //   "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750,
+              //   "YTDE" -203, "YTFI" 738, "wght" 750;
+
+              .left,
+              .leftAsset {
+                text-align: left;
+                color: #1d2639;
+                font-family: $BodyTextFontFamily;
                 font-size: 16px;
-                font-style: normal;
                 font-weight: 700;
                 line-height: 24px;
 
                 .app-dark & {
-                  color: #9d9d9d;
-                }
-                .app-dark &:first-child {
                   color: $darkFontColorLight;
-                  font-size: 16px;
-                  font-style: normal;
-                  font-weight: 700;
-                  line-height: 28px; /* 175% */
+                }
+                .showInfoMobile {
+                  margin-left: 4px;
+                }
+              }
+
+              .portfolio {
+                color: #5a575c;
+                font-family: $BodyTextFontFamily;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 20px;
+                .app-dark & {
+                  color: #fff;
+                }
+              }
+
+              .leftAsset {
+                margin-top: 5px;
+                font-variation-settings: "GRAD" 100, "slnt" 0, "XTRA" 468,
+                  "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750,
+                  "YTDE" -203, "YTFI" 738, "wght" 750;
+              }
+
+              .right {
+                font-family: $BodyTextFontFamily;
+                font-size: 12px;
+                text-align: right;
+                font-weight: 700;
+
+                .top {
+                  .app-dark & {
+                    color: #7a8ba5 !important;
+                  }
                 }
 
-                &.obtrusive {
+                .bottom {
+                  .app-dark & {
+                    color: #7a8ba5 !important;
+                  }
+                }
+              }
+
+              .tokenItemTop {
+                font-family: $BodyTextFontFamily;
+                font-weight: 400 !important;
+                font-size: 12px;
+                line-height: 16px;
+                color: #696565;
+                display: flex;
+
+                .right {
+                  .app-dark & {
+                    color: #99999a !important;
+                  }
+                }
+              }
+
+              .tokenItemTop {
+                font-family: $BodyTextFontFamily;
+                color: #696565;
+                display: flex;
+
+                .right {
+                  .app-dark & {
+                    color: #7a8ba5 !important;
+                  }
+                }
+              }
+
+              &.singer {
+                height: 100%;
+                .left {
+                  display: flex;
+                  align-items: center;
+                  .ivu-tooltip {
+                    margin-left: 8px;
+                  }
+                }
+
+                .liquidsLeft {
+                  align-items: flex-start;
+                  .globalInfoStyle {
+                    margin-top: 4px;
+                  }
+                }
+
+                .right {
                   font-family: $BodyTextFontFamily;
-                  font-size: 16px;
-                  line-height: 24px;
-                  color: #5a575c;
-                  font-variation-settings: "GRAD" 100, "slnt" 0, "XTRA" 468,
-                    "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750,
-                    "YTDE" -203, "YTFI" 738, "wght" 750;
-
-                  .left,
-                  .leftAsset {
-                    text-align: left;
-                    color: #1d2639;
-
-                    .app-dark & {
-                      color: $darkFontColorLight;
-                    }
-                    font-family: Gilroy-Bold;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 24px;
-                    .showInfoMobile {
-                      margin-left: 4px;
-                    }
-                  }
-
-                  .portfolio {
-                    color: #5a575c;
-                    font-family: Gilroy-Bold;
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 20px;
-                    .app-dark & {
-                      color: #fff;
-                    }
-                  }
-
-                  .leftAsset {
-                    margin-top: 5px;
-                    font-variation-settings: "GRAD" 100, "slnt" 0, "XTRA" 468,
-                      "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750,
-                      "YTDE" -203, "YTFI" 738, "wght" 750;
-                  }
-
-                  .right {
-                    font-family: $BodyTextFontFamily;
-                    font-size: 12px;
-                    text-align: right;
-                    font-weight: 700;
-                  }
-
-                  .tokenItemTop {
-                    font-family: Gilroy;
-                    font-weight: 400 !important;
-                    font-size: 12px;
-                    line-height: 16px;
-                    color: #696565;
-                    display: flex;
-
-                    .right {
-                      .app-dark & {
-                        color: #99999a !important;
-                      }
-                    }
-                  }
-
-                  .tokenItemTop {
-                    font-family: Gilroy;
-                    font-weight: 400 !important;
-                    font-size: 12px;
-                    line-height: 16px;
-                    color: #696565;
-                    display: flex;
-
-                    .right {
-                      .app-dark & {
-                        color: #99999a !important;
-                      }
-                    }
-                  }
-
-                  &.singer {
-                    height: 100%;
-                    .left {
-                      display: flex;
-                      align-items: center;
-                      .ivu-tooltip {
-                        margin-left: 8px;
-                      }
-                    }
-
-                    .liquidsLeft {
-                      align-items: flex-start;
-                      .globalInfoStyle {
-                        margin-top: 4px;
-                      }
-                    }
-
-                    .right {
-                      font-family: $BodyTextFontFamily;
-                      font-weight: 500;
-                      font-stretch: normal;
-                      font-style: normal;
-                      letter-spacing: normal;
-                      color: #475a75;
-
-                      .app-dark & {
-                        color: #99999a;
-                      }
-                      .top {
-                        font-size: 12px;
-                        line-height: 1.5;
-                        font-weight: 700;
-                      }
-                      .bottom {
-                        font-size: 12px;
-                        line-height: 1.33;
-                        font-weight: 400;
-                      }
-                    }
-                  }
-                }
-
-                &.unobtrusive {
+                  font-weight: 500;
+                  font-stretch: normal;
+                  font-style: normal;
+                  letter-spacing: normal;
                   color: #475a75;
-                  margin-top: 8px;
-                  .left {
-                    height: 18px;
+
+                  .app-dark & {
                     color: #99999a;
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-family: Gilroy-Regular;
+                  }
+                  .top {
                     font-size: 12px;
-                    font-style: normal;
+                    line-height: 1.5;
+                    font-weight: 700;
+                  }
+                  .bottom {
+                    font-size: 12px;
+                    line-height: 1.33;
                     font-weight: 400;
-                    line-height: 16px;
-                    .unlockScheduleButton {
-                      width: 18px;
-                      height: 18px;
-                      margin-left: 6px;
-                    }
                   }
                 }
+              }
+            }
+
+            &.unobtrusive {
+              color: #475a75;
+              margin-top: 8px;
+              .left {
+                height: 18px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                .unlockScheduleButton {
+                  width: 18px;
+                  height: 18px;
+                  margin-left: 6px;
+                }
+              }
+            }
+
+            .tokenItemTop {
+              display: flex;
+              flex-direction: column;
+              font-variation-settings: normal;
+            }
+
+            .rightCollateral {
+              font-family: $BodyTextFontFamily;
+              font-size: 12px;
+              text-align: right;
+              font-weight: 700;
+
+              .app-dark & {
+                color: #7a8ba5 !important;
               }
             }
           }
@@ -2414,278 +2445,673 @@ export default {
             }
           }
         }
+      }
+    }
+    .totalBalanceToUSD {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-        .totalBalanceToUSD {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+      .box {
+        .title {
+          font-family: $BodyTextFontFamily;
+          font-size: 14px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #5a575c;
+          margin-bottom: 8px;
 
-          .box {
-            .title {
-              font-family: $BodyTextFontFamily;
-              font-size: 14px;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.29;
-              letter-spacing: normal;
-              color: #5a575c;
-              margin-bottom: 8px;
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+        }
 
-              .app-dark & {
-                color: $darkFontColorLight;
-              }
+        .amount {
+          font-family: Gilroy-Bold;
+          font-size: 32px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.25;
+          letter-spacing: normal;
+          color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+        }
+      }
+
+      .refreshBtn {
+        cursor: pointer;
+        .border,
+        .shape {
+          transition: fill $animete-time linear;
+        }
+
+        .app-dark & {
+          &:not(.selected) {
+            .border {
+              stroke: #ffffff;
             }
-
-            .amount {
-              font-family: Gilroy-Bold;
-              font-size: 32px;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.25;
-              letter-spacing: normal;
-              color: #5a575c;
-
-              .app-dark & {
-                color: $darkFontColorLight;
-              }
+            .shape {
+              fill: #ffffff;
             }
           }
+        }
 
-          .refreshBtn {
-            cursor: pointer;
-            .border,
+        &:hover {
+          &:not(.selected) {
+            .border {
+              stroke: #1a38f8;
+            }
             .shape {
-              transition: fill $animete-time linear;
+              fill: #1a38f8;
             }
+          }
+        }
 
-            .app-dark & {
-              &:not(.selected) {
-                .border {
-                  stroke: #ffffff;
-                }
-                .shape {
-                  fill: #ffffff;
-                }
-              }
-            }
+        &.selected {
+          .border {
+            stroke: #1a38f8;
+            fill: #1a38f8;
+          }
+          .shape {
+            fill: #fff;
+          }
+        }
 
-            &:hover {
-              &:not(.selected) {
-                .border {
-                  stroke: #1a38f8;
-                }
-                .shape {
-                  fill: #1a38f8;
-                }
-              }
-            }
+        &.refreshing {
+          -webkit-animation: spin 1s linear 1s 5 alternate;
+          animation: spin 1s linear infinite;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: $max-phone-width) {
+  #walletDetails {
+    width: 10vw;
+    position: fixed;
+    right: 0;
+    top: 0;
+    min-height: 100% !important;
+    // z-index: 999 !important;
 
-            &.selected {
-              .border {
-                stroke: #1a38f8;
-                fill: #1a38f8;
-              }
-              .shape {
-                fill: #fff;
-              }
-            }
+    &.mScroll {
+      overflow-y: scroll;
+      height: 100%;
+      width: 100vw;
+    }
 
-            &.refreshing {
-              -webkit-animation: spin 1s linear 1s 5 alternate;
-              animation: spin 1s linear infinite;
-              cursor: not-allowed;
+    @-webkit-keyframes spin {
+      from {
+        -webkit-transform: rotate(360deg);
+      }
+      to {
+        -webkit-transform: rotate(0deg);
+      }
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(360deg);
+      }
+      to {
+        transform: rotate(0deg);
+      }
+    }
+
+    .img-fade-enter-active,
+    .img-fade-leave-active {
+      transition: opacity $animete-time;
+    }
+
+    .img-fade-enter,
+    .img-fade-leave-to {
+      opacity: 0;
+    }
+
+    .walletAndAddressBox {
+      height: 44px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+      margin-right: 16px;
+      position: absolute;
+      right: 0px;
+      top: 0;
+
+      .info {
+        width: 294px;
+        padding: 3px 16px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        border-radius: 20px;
+        background: #f6f5f6;
+        display: none;
+
+        .wallet {
+          margin-right: 8px;
+          font-family: Gilroy-Bold;
+          font-size: 14px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+        }
+
+        .address {
+          flex: 1;
+          font-family: Gilroy-Regular;
+          font-size: 14px;
+          margin-right: 4px;
+          text-align: center;
+          // white-space: nowrap;
+          // overflow: hidden;
+          // text-overflow: ellipsis;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #99999a;
+        }
+
+        .copyBtn {
+          cursor: pointer;
+          width: 16px;
+          height: 16px;
+          display: none;
+          margin-right: 12px;
+
+          &:hover {
+            #Combined-Shape {
+              fill: #1a38f8;
+              stroke: #1a38f8;
             }
           }
         }
       }
+
+      .mNetwork {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        box-shadow: 0 2px 6px 0 #deddde;
+        background-color: #ffffff;
+        border-radius: 16px;
+
+        #ethereumSvg,
+        #binanceSvg {
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+
+        .mNetworkName {
+          font-family: Gilroy;
+          font-size: 12px;
+          font-weight: 500;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.33;
+          letter-spacing: normal;
+          color: #99999a;
+          margin: 0 4px;
+        }
+      }
+
+      .mMenu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px 0 #deddde;
+        background-color: #ffffff;
+        .app-dark & {
+          border: 1px solid #ffffff;
+        }
+      }
     }
 
-    @media only screen and (max-width: $max-phone-width) {
-      #walletDetails {
-        width: 10vw;
-        position: fixed;
-        right: 0;
-        top: 0;
-        min-height: 100% !important;
-        // z-index: 999 !important;
+    .walletAndAddressBoxLight {
+      height: 44px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+      margin-right: 16px;
+      position: absolute;
+      right: 0px;
+      top: 0;
 
-        &.mScroll {
-          overflow-y: scroll;
-          height: 100%;
-          width: 100vw;
-        }
+      .info {
+        width: 294px;
+        padding: 3px 16px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        border-radius: 20px;
+        background: #f6f5f6;
+        display: none;
 
-        @-webkit-keyframes spin {
-          from {
-            -webkit-transform: rotate(360deg);
+        .wallet {
+          margin-right: 8px;
+          font-family: Gilroy-Bold;
+          font-size: 14px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
           }
-          to {
-            -webkit-transform: rotate(0deg);
+        }
+
+        .address {
+          flex: 1;
+          font-family: Gilroy-Regular;
+          font-size: 14px;
+          margin-right: 4px;
+          text-align: center;
+          // white-space: nowrap;
+          // overflow: hidden;
+          // text-overflow: ellipsis;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #99999a;
+        }
+
+        .copyBtn {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          margin: 2px 8px 0 4px;
+
+          &:hover {
+            #Combined-Shape {
+              fill: #1a38f8;
+              stroke: #1a38f8;
+            }
           }
         }
+      }
 
-        @keyframes spin {
-          from {
-            transform: rotate(360deg);
+      .mNetwork {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        box-shadow: 0 2px 6px 0 #deddde;
+        background-color: #ffffff;
+        border-radius: 16px;
+
+        #ethereumSvg,
+        #binanceSvg {
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+
+        .mNetworkName {
+          font-family: Gilroy-Medium;
+          font-size: 12px;
+          font-weight: 500;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 12px;
+          letter-spacing: normal;
+          color: #99999a;
+          margin: 0 4px;
+        }
+      }
+
+      .mMenu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px 0 #deddde;
+        background-color: #ffffff;
+        .app-dark & {
+          border: 1px solid #ffffff;
+        }
+      }
+    }
+    .mShowWalletClass {
+      display: block !important;
+    }
+    .walletDetailsBox {
+      width: 100%;
+      height: 1000px;
+      display: none;
+      background-color: #ffffff;
+
+      .mWalletHead {
+        width: 100%;
+        height: 64px;
+        padding: 16px 24px;
+        display: flex;
+        margin-bottom: 16px;
+
+        .networkIcon {
+          width: 32px;
+          height: 32px;
+          padding: 8px 8px 8px 8px;
+          box-shadow: 0 2px 6px 0 #deddde;
+          background-color: #ffffff;
+          text-align: center;
+          border-radius: 16px;
+          span {
+            width: 100%;
+            height: 100%;
+            display: block;
           }
-          to {
-            transform: rotate(0deg);
+          img {
+            width: 16px;
+            height: 16px;
+            left: 50%;
+            transform: translateX(-50%);
           }
         }
-
-        .img-fade-enter-active,
-        .img-fade-leave-active {
-          transition: opacity $animete-time;
-        }
-
-        .img-fade-enter,
-        .img-fade-leave-to {
-          opacity: 0;
-        }
-
-        .walletAndAddressBox {
-          height: 44px;
+        .mInfo {
+          width: 65.3333333317vw;
+          padding: 7px 16px;
           display: flex;
-          justify-content: space-around;
+          justify-content: space-evenly;
           align-items: center;
-          margin-top: 10px;
-          margin-right: 16px;
-          position: absolute;
-          right: 0px;
-          top: 0;
+          border-radius: 20px;
+          background: #f6f5f6;
+          margin-left: 10px;
 
-          .info {
-            width: 294px;
-            padding: 3px 16px;
+          .wallet {
+            margin-right: 8px;
+            font-family: Gilroy-Bold;
+            font-size: 14px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.29;
+            letter-spacing: normal;
+            color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
+          }
+
+          .address {
+            flex: 1;
+            font-family: Gilroy-Regular;
+            font-size: 14px;
+            text-align: center;
+            // white-space: nowrap;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.29;
+            letter-spacing: normal;
+            color: #99999a;
+            .app-dark & {
+              color: #ffffff !important;
+            }
+          }
+
+          .copyBtn {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            margin: 2px 8px 0 4px;
+
+            &:hover {
+              #Combined-Shape {
+                fill: #1a38f8;
+                stroke: #1a38f8;
+              }
+            }
+            .app-dark & {
+              #Combined-Shape {
+                fill: #ffffff;
+                stroke: #ffffff;
+              }
+            }
+          }
+        }
+
+        .mClose {
+          position: relative;
+          left: 16px;
+        }
+      }
+      .actionsBox {
+        display: flex;
+        justify-content: space-around;
+
+        .box {
+          .boxItem {
             display: flex;
-            justify-content: space-evenly;
+            justify-content: center;
             align-items: center;
-            border-radius: 20px;
-            background: #f6f5f6;
-            display: none;
+            flex-direction: column;
+            color: #99999a;
+            text-align: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: $animete-time linear;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            font-family: Gilroy-bold;
+            font-size: 12px;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
 
-            .wallet {
-              margin-right: 8px;
-              font-family: Gilroy-Bold;
-              font-size: 14px;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.29;
-              letter-spacing: normal;
-              color: #5a575c;
+            .placeholder {
+              width: 40px;
+              height: 40px;
+              margin-bottom: 8px;
+              position: relative;
 
-              .app-dark & {
-                color: $darkFontColorLight;
+              img {
+                left: 0;
+                width: 40px;
+                position: absolute;
+                transform: translateZ(0);
               }
             }
 
-            .address {
-              flex: 1;
-              font-family: Gilroy-Regular;
+            &:hover,
+            &.selected {
+              color: #1a38f8;
+            }
+          }
+        }
+      }
+
+      .ratioBox {
+        margin: 12px 0;
+        border-top: none;
+        border-bottom: solid 1px #e5e5e5;
+        padding: 16px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+
+        .context {
+          width: 100%;
+          .pRatioTitle {
+            .showInfoMobile {
+              width: 16px;
+            }
+          }
+        }
+
+        .percentBox {
+          width: 100%;
+          .colorBlock {
+            .leftBlock,
+            .centerBlock,
+            .rightBlock {
+              height: 12px;
+            }
+          }
+
+          .flag {
+            margin-top: 10px;
+
+            .item {
+              &:first-child {
+                margin-left: 15vw;
+              }
+              &:last-child {
+                margin-left: 10vw;
+              }
+            }
+          }
+        }
+
+        .title {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          margin-bottom: 27px;
+          font-family: Gilroy-bold;
+          font-size: 14px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+
+          .ivu-tooltip {
+            margin-left: 8px;
+          }
+        }
+
+        .ratio {
+          display: flex;
+          width: 100%;
+
+          .box {
+            flex: 1;
+            font-family: Gilroy-bold;
+            font-size: 24px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.25;
+            letter-spacing: normal;
+            text-align: center;
+            color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
+
+            .context {
               font-size: 14px;
-              margin-right: 4px;
-              text-align: center;
-              // white-space: nowrap;
-              // overflow: hidden;
-              // text-overflow: ellipsis;
-              font-weight: normal;
-              font-stretch: normal;
-              font-style: normal;
+              font-family: Gilroy;
               line-height: 1.29;
-              letter-spacing: normal;
+              font-weight: 100;
+            }
+
+            &:nth-child(1) {
+              border-right: solid 1px #eae9ea;
+            }
+
+            &:nth-child(2) {
               color: #99999a;
             }
+          }
+        }
 
-            .copyBtn {
-              cursor: pointer;
-              width: 16px;
-              height: 16px;
-              display: none;
-              margin-right: 12px;
-
-              &:hover {
-                #Combined-Shape {
-                  fill: #1a38f8;
-                  stroke: #1a38f8;
-                }
+        .ivu-progress {
+          margin-top: 4px;
+          width: 87.46666666448vw;
+          .ivu-progress-outer {
+            .ivu-progress-inner {
+              .ivu-progress-bg {
+                background-color: rgba(#7eb5ff, 0.2) !important;
+              }
+              .ivu-progress-success-bg {
+                background-color: #1a38f8;
               }
             }
           }
+        }
+      }
 
-          // .chainChange {
-          //     width: 90px;
-          //     height: 32px;
-          //     display: flex;
-          //     border-radius: 20px;
-          //     background: #fff;
-          //     box-shadow: 0 2px 6px 0 #deddde;
-          //     padding: 0 0;
-          //     position: relative;
+      .walletInfo {
+        margin-bottom: 24px;
+        padding: 0 24px 100px;
 
-          //     &.chainChanging {
-          //         .ethBox,
-          //         .bscBox {
-          //             opacity: 0.2 !important;
-          //             cursor: not-allowed !important;
-          //         }
-          //     }
+        .tokenIcon {
+          border-radius: 50%;
+        }
 
-          //     .ethBox,
-          //     .bscBox {
-          //         width: 32px;
-          //         height: 32px;
-          //         border-radius: 50%;
-          //         display: flex;
-          //         justify-content: center;
-          //         align-items: center;
-          //         transition: $animete-time linear;
+        .title {
+          font-family: Gilroy-bold;
+          font-size: 14px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.29;
+          letter-spacing: normal;
+          color: #5a575c;
+          margin-bottom: 8px;
 
-          //         &.selected {
-          //             box-shadow: 0 0 0 0 #deddde;
-          //             background-color: #ffffff;
-          //         }
-          //     }
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+        }
 
-          //     .bscBox {
-          //         display: none;
-          //     }
+        .tokenBox {
+          border-bottom: solid 1px #e5e5e5;
+          display: flex;
+          padding: 16px 0;
+          &:nth-last-child(1) {
+            border: 0px;
+          }
 
-          //     .mNetworkName {
-          //         display: block;
-          //         font-family: Gilroy;
-          //         font-size: 12px;
-          //         font-weight: 500;
-          //         font-stretch: normal;
-          //         font-style: normal;
-          //         line-height: 32px;
-          //         letter-spacing: normal;
-          //         color: #99999a;
-          //         position: absolute;
-          //         padding-left: 29px;
-          //         left: 0;
-          //         top: 0px;
-          //     }
-          // }
+          .tokenIcon {
+            width: 40px;
+            height: 40px;
+            margin-right: 8px;
+          }
 
-          .mNetwork {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            box-shadow: 0 2px 6px 0 #deddde;
-            background-color: #ffffff;
-            border-radius: 16px;
-
-            #ethereumSvg,
-            #binanceSvg {
-              width: 16px;
-              height: 16px;
-              margin-right: 4px;
-            }
-
-            .mNetworkName {
+          .box {
+            flex: 1;
+            .tokenItems {
               font-family: Gilroy;
               font-size: 12px;
               font-weight: 500;
@@ -2693,681 +3119,174 @@ export default {
               font-style: normal;
               line-height: 1.33;
               letter-spacing: normal;
-              color: #99999a;
-              margin: 0 4px;
-            }
-          }
-
-          .mMenu {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px 0 #deddde;
-            background-color: #ffffff;
-            .app-dark & {
-              border: 1px solid #ffffff;
-            }
-          }
-        }
-
-        .walletAndAddressBoxLight {
-          height: 44px;
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
-          margin-top: 10px;
-          margin-right: 16px;
-          position: absolute;
-          right: 0px;
-          top: 0;
-
-          .info {
-            width: 294px;
-            padding: 3px 16px;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            border-radius: 20px;
-            background: #f6f5f6;
-            display: none;
-
-            .wallet {
-              margin-right: 8px;
-              font-family: Gilroy-Bold;
-              font-size: 14px;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.29;
-              letter-spacing: normal;
               color: #5a575c;
+              display: flex;
+              justify-content: space-between;
 
               .app-dark & {
-                color: $darkFontColorLight;
+                color: #9d9d9d;
               }
-            }
-
-            .address {
-              flex: 1;
-              font-family: Gilroy-Regular;
-              font-size: 14px;
-              margin-right: 4px;
-              text-align: center;
-              // white-space: nowrap;
-              // overflow: hidden;
-              // text-overflow: ellipsis;
-              font-weight: normal;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.29;
-              letter-spacing: normal;
-              color: #99999a;
-            }
-
-            .copyBtn {
-              width: 16px;
-              height: 16px;
-              cursor: pointer;
-              margin: 2px 8px 0 4px;
-
-              &:hover {
-                #Combined-Shape {
-                  fill: #1a38f8;
-                  stroke: #1a38f8;
-                }
-              }
-            }
-          }
-
-          // .chainChange {
-          //     width: 90px;
-          //     height: 32px;
-          //     display: flex;
-          //     border-radius: 20px;
-          //     background: #fff;
-          //     box-shadow: 0 2px 6px 0 #deddde;
-          //     padding: 0 0;
-          //     position: relative;
-
-          //     &.chainChanging {
-          //         .ethBox,
-          //         .bscBox {
-          //             opacity: 0.2 !important;
-          //             cursor: not-allowed !important;
-          //         }
-          //     }
-
-          //     .ethBox,
-          //     .bscBox {
-          //         width: 32px;
-          //         height: 32px;
-          //         border-radius: 50%;
-          //         display: flex;
-          //         justify-content: center;
-          //         align-items: center;
-          //         transition: $animete-time linear;
-
-          //         &.selected {
-          //             box-shadow: 0 0 0 0 #deddde;
-          //             background-color: #ffffff;
-          //         }
-          //     }
-
-          //     .bscBox {
-          //         display: none;
-          //     }
-
-          //     .mNetworkName {
-          //         display: block;
-          //         font-family: Gilroy;
-          //         font-size: 12px;
-          //         font-weight: 500;
-          //         font-stretch: normal;
-          //         font-style: normal;
-          //         line-height: 32px;
-          //         letter-spacing: normal;
-          //         color: #99999a;
-          //         position: absolute;
-          //         padding-left: 29px;
-          //         left: 0;
-          //         top: 0px;
-          //     }
-          // }
-
-          .mNetwork {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            box-shadow: 0 2px 6px 0 #deddde;
-            background-color: #ffffff;
-            border-radius: 16px;
-
-            #ethereumSvg,
-            #binanceSvg {
-              width: 16px;
-              height: 16px;
-              margin-right: 4px;
-            }
-
-            .mNetworkName {
-              font-family: Gilroy-Medium;
-              font-size: 12px;
-              font-weight: 500;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 12px;
-              letter-spacing: normal;
-              color: #99999a;
-              margin: 0 4px;
-            }
-          }
-
-          .mMenu {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px 0 #deddde;
-            background-color: #ffffff;
-            .app-dark & {
-              border: 1px solid #ffffff;
-            }
-          }
-        }
-        .mShowWalletClass {
-          display: block !important;
-        }
-        .walletDetailsBox {
-          width: 100%;
-          height: 1000px;
-          display: none;
-          background-color: #ffffff;
-
-          .mWalletHead {
-            width: 100%;
-            height: 64px;
-            padding: 16px 24px;
-            display: flex;
-            margin-bottom: 16px;
-
-            .networkIcon {
-              width: 32px;
-              height: 32px;
-              padding: 8px 8px 8px 8px;
-              box-shadow: 0 2px 6px 0 #deddde;
-              background-color: #ffffff;
-              text-align: center;
-              border-radius: 16px;
-              span {
-                width: 100%;
-                height: 100%;
-                display: block;
-              }
-              img {
-                width: 16px;
-                height: 16px;
-                left: 50%;
-                transform: translateX(-50%);
-              }
-            }
-            .mInfo {
-              width: 65.3333333317vw;
-              padding: 7px 16px;
-              display: flex;
-              justify-content: space-evenly;
-              align-items: center;
-              border-radius: 20px;
-              background: #f6f5f6;
-              margin-left: 10px;
-
-              .wallet {
-                margin-right: 8px;
-                font-family: Gilroy-Bold;
-                font-size: 14px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #5a575c;
-
-                .app-dark & {
-                  color: $darkFontColorLight;
-                }
-              }
-
-              .address {
-                flex: 1;
-                font-family: Gilroy-Regular;
-                font-size: 14px;
-                text-align: center;
-                // white-space: nowrap;
-                // overflow: hidden;
-                // text-overflow: ellipsis;
-                font-weight: normal;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #99999a;
-                .app-dark & {
-                  color: #ffffff !important;
-                }
-              }
-
-              .copyBtn {
-                width: 16px;
-                height: 16px;
-                cursor: pointer;
-                margin: 2px 8px 0 4px;
-
-                &:hover {
-                  #Combined-Shape {
-                    fill: #1a38f8;
-                    stroke: #1a38f8;
-                  }
-                }
-                .app-dark & {
-                  #Combined-Shape {
-                    fill: #ffffff;
-                    stroke: #ffffff;
-                  }
-                }
-              }
-            }
-
-            .mClose {
-              position: relative;
-              left: 16px;
-            }
-          }
-          .actionsBox {
-            display: flex;
-            justify-content: space-around;
-
-            .box {
-              .boxItem {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                color: #99999a;
-                text-align: center;
-                text-transform: uppercase;
-                cursor: pointer;
-                transition: $animete-time linear;
-                font-weight: bold;
-                letter-spacing: 1.5px;
-                font-family: Gilroy-bold;
-                font-size: 12px;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.33;
-
-                .placeholder {
-                  width: 40px;
-                  height: 40px;
-                  margin-bottom: 8px;
-                  position: relative;
-
-                  img {
-                    left: 0;
-                    width: 40px;
-                    position: absolute;
-                    transform: translateZ(0);
-                  }
-                }
-
-                &:hover,
-                &.selected {
-                  color: #1a38f8;
-                }
-              }
-            }
-          }
-
-          .ratioBox {
-            margin: 12px 0;
-            border-top: none;
-            border-bottom: solid 1px #e5e5e5;
-            padding: 16px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0;
-
-            .context {
-              width: 100%;
-              .pRatioTitle {
-                .showInfoMobile {
-                  width: 16px;
-                }
-              }
-            }
-
-            .percentBox {
-              width: 100%;
-              .colorBlock {
-                .leftBlock,
-                .centerBlock,
-                .rightBlock {
-                  height: 12px;
-                }
-              }
-
-              .flag {
-                margin-top: 10px;
-
-                .item {
-                  &:first-child {
-                    margin-left: 15vw;
-                  }
-                  &:last-child {
-                    margin-left: 10vw;
-                  }
-                }
-              }
-            }
-
-            .title {
-              width: 100%;
-              display: flex;
-              align-items: center;
-              margin-bottom: 27px;
-              font-family: Gilroy-bold;
-              font-size: 14px;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.29;
-              letter-spacing: normal;
-              color: #5a575c;
-
-              .app-dark & {
+              .app-dark &:first-child {
                 color: $darkFontColorLight;
               }
 
-              .ivu-tooltip {
-                margin-left: 8px;
-              }
-            }
-
-            .ratio {
-              display: flex;
-              width: 100%;
-
-              .box {
-                flex: 1;
-                font-family: Gilroy-bold;
-                font-size: 24px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.25;
-                letter-spacing: normal;
-                text-align: center;
-                color: #5a575c;
-
-                .app-dark & {
-                  color: $darkFontColorLight;
-                }
-
-                .context {
-                  font-size: 14px;
+              &.obtrusive {
+                .left {
+                  color: #5a575c;
                   font-family: Gilroy;
-                  line-height: 1.29;
-                  font-weight: 100;
+                  font-size: 16px;
+                  font-style: normal;
+                  font-weight: 700;
+                  line-height: 24px;
                 }
 
-                &:nth-child(1) {
-                  border-right: solid 1px #eae9ea;
-                }
+                // .tokenItemTop {
+                //   font-size: 12px;
+                // }
 
-                &:nth-child(2) {
-                  color: #99999a;
-                }
-              }
-            }
-
-            .ivu-progress {
-              margin-top: 4px;
-              width: 87.46666666448vw;
-              .ivu-progress-outer {
-                .ivu-progress-inner {
-                  .ivu-progress-bg {
-                    background-color: rgba(#7eb5ff, 0.2) !important;
-                  }
-                  .ivu-progress-success-bg {
-                    background-color: #1a38f8;
-                  }
-                }
-              }
-            }
-          }
-
-          .walletInfo {
-            margin-bottom: 24px;
-            padding: 0 24px 100px;
-
-            .tokenIcon {
-              border-radius: 50%;
-            }
-
-            .title {
-              font-family: Gilroy-bold;
-              font-size: 14px;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.29;
-              letter-spacing: normal;
-              color: #5a575c;
-              margin-bottom: 8px;
-
-              .app-dark & {
-                color: $darkFontColorLight;
-              }
-            }
-
-            .tokenBox {
-              border-bottom: solid 1px #e5e5e5;
-              display: flex;
-              padding: 16px 0;
-              &:nth-last-child(1) {
-                border: 0px;
-              }
-
-              .tokenIcon {
-                width: 40px;
-                height: 40px;
-                margin-right: 8px;
-              }
-
-              .box {
-                flex: 1;
-                .tokenItems {
+                .right {
                   font-family: Gilroy;
                   font-size: 12px;
-                  font-weight: 500;
-                  font-stretch: normal;
-                  font-style: normal;
-                  line-height: 1.33;
-                  letter-spacing: normal;
-                  color: #5a575c;
-                  display: flex;
-                  justify-content: space-between;
+                  text-align: right;
+                }
 
-                  .app-dark & {
-                    color: #9d9d9d;
-                  }
-                  .app-dark &:first-child {
-                    color: $darkFontColorLight;
+                &.singer {
+                  height: 100%;
+                  .left {
+                    display: flex;
+                    align-items: center;
+
+                    .ivu-tooltip {
+                      margin-left: 8px;
+                    }
                   }
 
-                  &.obtrusive {
-                    .left {
-                      color: #5a575c;
+                  .right {
+                    font-family: Gilroy;
+                    font-weight: 500;
+                    font-stretch: normal;
+                    font-style: normal;
+                    letter-spacing: normal;
+                    color: #5a575c;
+
+                    .app-dark & {
+                      color: $darkFontColorLight;
+                    }
+                    .top {
+                      font-size: 16px;
+                      line-height: 1.5;
                       font-family: Gilroy;
                       font-size: 16px;
                       font-style: normal;
                       font-weight: 700;
                       line-height: 24px;
                     }
-
-                    // .tokenItemTop {
-                    //   font-size: 12px;
-                    // }
-
-                    .right {
-                      font-family: Gilroy;
+                    .bottom {
                       font-size: 12px;
-                      text-align: right;
+                      line-height: 1.33;
                     }
-
-                    &.singer {
-                      height: 100%;
-                      .left {
-                        display: flex;
-                        align-items: center;
-
-                        .ivu-tooltip {
-                          margin-left: 8px;
-                        }
-                      }
-
-                      .right {
-                        font-family: Gilroy;
-                        font-weight: 500;
-                        font-stretch: normal;
-                        font-style: normal;
-                        letter-spacing: normal;
-                        color: #5a575c;
-
-                        .app-dark & {
-                          color: $darkFontColorLight;
-                        }
-                        .top {
-                          font-size: 16px;
-                          line-height: 1.5;
-                          font-family: Gilroy;
-                          font-size: 16px;
-                          font-style: normal;
-                          font-weight: 700;
-                          line-height: 24px;
-                        }
-                        .bottom {
-                          font-size: 12px;
-                          line-height: 1.33;
-                        }
-                      }
-                    }
-                  }
-
-                  &.unobtrusive {
-                    color: #99999a;
-                    margin-top: 8px;
                   }
                 }
+              }
+
+              &.unobtrusive {
+                color: #99999a;
+                margin-top: 8px;
               }
             }
           }
-
-          .totalBalanceToUSD {
-            height: 90px;
-            width: 100vw;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px;
-            box-shadow: 0 -2px 6px 0 #deddde;
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            background-color: #ffffff;
-
-            .box {
-              .title {
-                font-family: $BodyTextFontFamily;
-                font-size: 14px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #1d2639;
-                margin-bottom: 8px;
-
-                .app-dark & {
-                  color: $darkFontColorLight;
-                }
-              }
-
-              .amount {
-                font-family: $BodyTextFontFamily;
-                font-size: 24px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.25;
-                letter-spacing: normal;
-                color: #1d2639;
-
-                .app-dark & {
-                  color: $darkFontColorLight;
-                }
-              }
-            }
-
-            .refreshBtn {
-              cursor: pointer;
-              .border,
-              .shape {
-                transition: fill $animete-time linear;
-              }
-
-              &:hover {
-                &:not(.selected) {
-                  .border {
-                    stroke: #1a38f8;
-                  }
-                  .shape {
-                    fill: #1a38f8;
-                  }
-                }
-              }
-
-              &.selected {
-                .border {
-                  stroke: #1a38f8;
-                  fill: #1a38f8;
-                }
-                .shape {
-                  fill: #fff;
-                }
-              }
-
-              &.refreshing {
-                -webkit-animation: spin 1s linear 1s 5 alternate;
-                animation: spin 1s linear infinite;
-                cursor: not-allowed;
-              }
-            }
-          }
-        }
-        .mNavigate {
-          width: 100vw;
-          position: fixed;
-          height: 100%;
-          position: fixed;
-          left: 0;
-          top: 0;
         }
       }
+
+      .totalBalanceToUSD {
+        height: 90px;
+        width: 100vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 24px;
+        box-shadow: 0 -2px 6px 0 #deddde;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        background-color: #ffffff;
+
+        .box {
+          .title {
+            font-family: $BodyTextFontFamily;
+            font-size: 14px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.29;
+            letter-spacing: normal;
+            color: #1d2639;
+            margin-bottom: 8px;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
+          }
+
+          .amount {
+            font-family: $BodyTextFontFamily;
+            font-size: 24px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.25;
+            letter-spacing: normal;
+            color: #1d2639;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
+          }
+        }
+
+        .refreshBtn {
+          cursor: pointer;
+          .border,
+          .shape {
+            transition: fill $animete-time linear;
+          }
+
+          &:hover {
+            &:not(.selected) {
+              .border {
+                stroke: #1a38f8;
+              }
+              .shape {
+                fill: #1a38f8;
+              }
+            }
+          }
+
+          &.selected {
+            .border {
+              stroke: #1a38f8;
+              fill: #1a38f8;
+            }
+            .shape {
+              fill: #fff;
+            }
+          }
+
+          &.refreshing {
+            -webkit-animation: spin 1s linear 1s 5 alternate;
+            animation: spin 1s linear infinite;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+    .mNavigate {
+      width: 100vw;
+      position: fixed;
+      height: 100%;
+      position: fixed;
+      left: 0;
+      top: 0;
     }
   }
 }

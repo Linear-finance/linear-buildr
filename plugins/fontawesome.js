@@ -10,6 +10,5 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 // Add icons to the library
 library.add(faTwitterSquare, faDiscord, faMedium, faBars, faTimes);
-
 // Register FontAwesomeIcon component globally
 Vue.component("font-awesome-icon", FontAwesomeIcon);

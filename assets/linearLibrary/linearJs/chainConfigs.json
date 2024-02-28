@@ -2,7 +2,6 @@
   {
     "name": "Mainnet",
     "networkId": 1,
-    "hexChainId": "0x1",
     "wormholeNetworkId": 2,
     "chainType": "ethereum",
     "networkType": "mainnet",
@@ -12,8 +11,6 @@
     "blockchainBrowser": "https://etherscan.io/tx/",
     "blockExplorerUrls": "https://etherscan.io",
     "blockchainBrowserApi": "https://api.etherscan.io/api",
-    "rewardApiBase": "https://api.rewards.linear.finance/",
-    "nativeCurrency": "ETH",
     "addresses": {
       "system": {
         "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
@@ -66,6 +63,30 @@
           "LnBuildBurnSystem": "0x4B1356cf2068030924dBD8FcA1144AFBe847Af5F",
           "LnLiquidation": "0x4f6b688Ad01777Db42Ef65e64BB392D3b24a77A8",
           "LnRewardSystem": "0x9C86c4764E59A336C108A6F85be48F8a9a7FaD85"
+        },
+        "BTCB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x5a292Bf482402620c120564126d0D89ABE3D56A9",
+          "LnCollateralSystem": "0x4D96c77ab8b2634F99660933A4Dbf3D28C44229b",
+          "LnBuildBurnSystem": "0x1686CdAbd3CdB2A8B47e5C13eD1ef3C8E6817131",
+          "LnLiquidation": "0xaeEc5aD580455B1Ea4793d30B3d1F3a2561e2A57",
+          "LnRewardSystem": "0x2BaA827Be2b061F5947408B349AbDa337Cad4e8e"
+        },
+        "WBNB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x31b6521f4a038807BFd26749F537352B6a1ebF4d",
+          "LnCollateralSystem": "0xdA46C9119BDdA8A62A3482892693882511b610A5",
+          "LnBuildBurnSystem": "0x5a56aE3ee66185Fe09ca103104B102E32C9BF109",
+          "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
+          "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
+        },
+        "BETH": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
+          "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
+          "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
+          "LnLiquidation": "0x3E2Aa024c0Cf081cFba850959A45E069c89Dc6A4",
+          "LnRewardSystem": "0x05ddFC35902095A17C3899bF82259628106e0539"
         }
       }
     }
@@ -137,6 +158,30 @@
           "LnBuildBurnSystem": "0x4B1356cf2068030924dBD8FcA1144AFBe847Af5F",
           "LnLiquidation": "0x4f6b688Ad01777Db42Ef65e64BB392D3b24a77A8",
           "LnRewardSystem": "0x9C86c4764E59A336C108A6F85be48F8a9a7FaD85"
+        },
+        "BTCB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x5a292Bf482402620c120564126d0D89ABE3D56A9",
+          "LnCollateralSystem": "0x4D96c77ab8b2634F99660933A4Dbf3D28C44229b",
+          "LnBuildBurnSystem": "0x1686CdAbd3CdB2A8B47e5C13eD1ef3C8E6817131",
+          "LnLiquidation": "0xaeEc5aD580455B1Ea4793d30B3d1F3a2561e2A57",
+          "LnRewardSystem": "0x2BaA827Be2b061F5947408B349AbDa337Cad4e8e"
+        },
+        "WBNB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x31b6521f4a038807BFd26749F537352B6a1ebF4d",
+          "LnCollateralSystem": "0xdA46C9119BDdA8A62A3482892693882511b610A5",
+          "LnBuildBurnSystem": "0x5a56aE3ee66185Fe09ca103104B102E32C9BF109",
+          "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
+          "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
+        },
+        "BETH": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
+          "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
+          "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
+          "LnLiquidation": "0x3E2Aa024c0Cf081cFba850959A45E069c89Dc6A4",
+          "LnRewardSystem": "0x05ddFC35902095A17C3899bF82259628106e0539"
         }
       }
     }
@@ -208,6 +253,30 @@
           "LnBuildBurnSystem": "0x0000000000000000000000000000000000000000",
           "LnLiquidation": "0x0000000000000000000000000000000000000000",
           "LnRewardSystem": "0x0000000000000000000000000000000000000000"
+        },
+        "BTCB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x5a292Bf482402620c120564126d0D89ABE3D56A9",
+          "LnCollateralSystem": "0x4D96c77ab8b2634F99660933A4Dbf3D28C44229b",
+          "LnBuildBurnSystem": "0x1686CdAbd3CdB2A8B47e5C13eD1ef3C8E6817131",
+          "LnLiquidation": "0xaeEc5aD580455B1Ea4793d30B3d1F3a2561e2A57",
+          "LnRewardSystem": "0x2BaA827Be2b061F5947408B349AbDa337Cad4e8e"
+        },
+        "WBNB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x31b6521f4a038807BFd26749F537352B6a1ebF4d",
+          "LnCollateralSystem": "0xdA46C9119BDdA8A62A3482892693882511b610A5",
+          "LnBuildBurnSystem": "0x5a56aE3ee66185Fe09ca103104B102E32C9BF109",
+          "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
+          "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
+        },
+        "BETH": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
+          "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
+          "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
+          "LnLiquidation": "0x3E2Aa024c0Cf081cFba850959A45E069c89Dc6A4",
+          "LnRewardSystem": "0x05ddFC35902095A17C3899bF82259628106e0539"
         }
       }
     }
@@ -279,6 +348,30 @@
           "LnBuildBurnSystem": "0xc5a5C42992dECbae36851359345FE25997F5C42d",
           "LnLiquidation": "0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00",
           "LnRewardSystem": "0x276C216D241856199A83bf27b2286659e5b877D3"
+        },
+        "BTCB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x5a292Bf482402620c120564126d0D89ABE3D56A9",
+          "LnCollateralSystem": "0x4D96c77ab8b2634F99660933A4Dbf3D28C44229b",
+          "LnBuildBurnSystem": "0x1686CdAbd3CdB2A8B47e5C13eD1ef3C8E6817131",
+          "LnLiquidation": "0xaeEc5aD580455B1Ea4793d30B3d1F3a2561e2A57",
+          "LnRewardSystem": "0x2BaA827Be2b061F5947408B349AbDa337Cad4e8e"
+        },
+        "WBNB": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0x31b6521f4a038807BFd26749F537352B6a1ebF4d",
+          "LnCollateralSystem": "0xdA46C9119BDdA8A62A3482892693882511b610A5",
+          "LnBuildBurnSystem": "0x5a56aE3ee66185Fe09ca103104B102E32C9BF109",
+          "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
+          "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
+        },
+        "BETH": {
+          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
+          "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
+          "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
+          "LnLiquidation": "0x3E2Aa024c0Cf081cFba850959A45E069c89Dc6A4",
+          "LnRewardSystem": "0x05ddFC35902095A17C3899bF82259628106e0539"
         }
       }
     }

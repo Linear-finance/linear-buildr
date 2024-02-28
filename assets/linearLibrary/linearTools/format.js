@@ -1,25 +1,30 @@
 import numbro from "numbro";
 import { BigNumber, utils } from "ethers";
-import { DECIMAL_PRECISION } from "@/common/bnCalc";
+import { DECIMAL_PRECISION, n2bn, n2bnForAsset } from "@/common/bnCalc";
+import { collateralAssets } from "./collateralAssets";
 import _ from "lodash";
 
-//格式化bigNumber到number
-// export const formatEtherToNumber = val => {
-//     if (_.isArray(val)) {
-//         return val.map(item => Number(utils.formatEther(item)));
-//     } else {
-//         if (!val || !Number(val)) return 0;
-//         return Number(utils.formatEther(val));
-//     }
-// };
-
 //格式化bigNumber到number(向下取数值)
-export const formatEtherToNumber = (val) => {
+export const formatEtherToNumber = (val, unit = undefined) => {
   if (_.isArray(val)) {
-    return val.map((item) => floorBigNumber(item));
+    return val.map((item) => floorBigNumber(item, unit));
   } else {
     if (!val || !Number(val)) return 0;
-    return floorBigNumber(val);
+    return floorBigNumber(val, unit);
+  }
+};
+
+// For build/burn pages in replacement of formatEtherToNumber - format decimal by collateral decimal places
+export const formatByStoreCollateral = (val) => {
+  const multiCollateralAsset = $nuxt.$store.state?.multiCollateralAsset;
+  let unit = undefined;
+  if (multiCollateralAsset)
+    unit = getAssetObjectInfo(multiCollateralAsset).decimal;
+  if (_.isArray(val)) {
+    return val.map((item) => floorBigNumber(item, unit));
+  } else {
+    if (!val || !Number(val)) return 0;
+    return floorBigNumber(val, unit);
   }
 };
 
@@ -56,10 +61,20 @@ export const abbreviateAddress = (address, omit = 4) => {
   return address.substr(0, 6) + ".".repeat(omit) + address.substr(-4, 4);
 };
 
+export const abbreviateAddressMobile = (address, omit = 3) => {
+  if (!address) return "";
+  return address.substr(0, 6) + ".".repeat(omit);
+};
+
 //将大数向下取指定位数(防止过长小数导致精度的问题)
-export const floorBigNumber = (val) => {
+export const floorBigNumber = (val, unit = undefined) => {
   if (!BigNumber.isBigNumber(val) || val.isZero()) return 0;
-  val = utils.formatEther(val.toString());
+  if (unit == 18 || !unit) {
+    val = utils.formatEther(val.toString());
+  } else {
+    val = utils.formatUnits(val.toString(), unit);
+  }
+
   let arr = val.split("."),
     res;
   let MAX_LENGTH = 16;
@@ -73,3 +88,48 @@ export const floorBigNumber = (val) => {
   }
   return Number(res);
 };
+
+// for multicollateral, pass in asset key for the asset object within collateral assets
+export const getAssetObjectInfo = (assetKey) => {
+  const assetObj = collateralAssets.filter(
+    (asset) => asset.key == assetKey || asset.contractKey == assetKey
+  );
+  return assetObj[0];
+};
+
+// Get original value of asset then reformat to big number
+export const parseUnitAndReformat = (
+  val,
+  toCollateral = true,
+  assetKey = undefined
+) => {
+  if (toCollateral) {
+    return n2bnForAsset(formatByStoreCollateral(val), assetKey);
+  } else if (!toCollateral) {
+    return n2bnForAsset(formatEtherToNumber(val), assetKey);
+  } else {
+    console.error("parseUnitAndReformat error");
+  }
+};
+
+export function roundCryptoValueString(str, assetKey) {
+  if (!str.includes(".")) {
+    return str;
+  } else {
+    const decimalPlaces = getAssetObjectInfo(assetKey).decimal;
+    const arr = str.split(".");
+    const fraction = arr[1].substr(0, decimalPlaces);
+    return arr[0] + "." + fraction;
+  }
+}
+
+export function replaceWaitProcessString(processKey, replacementKey) {
+  collateralAssets.forEach((string) => {
+    if (processKey.includes(string.name)) {
+      processKey = _.replace(processKey, string.name, replacementKey);
+    } else {
+      console.error("cannot find name and replace");
+    }
+  });
+  return processKey;
+}

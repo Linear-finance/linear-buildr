@@ -28,6 +28,7 @@ import {
   Select,
   Notice,
   Option,
+  Card,
 } from "view-design";
 import "view-design/dist/styles/iview.css";
 import lang from "view-design/dist/locale/en-US";
@@ -36,6 +37,7 @@ import watingEnhance from "@/components/transferStatus/watingEnhance";
 import wrong from "@/components/transferStatus/wrong";
 import success from "@/components/transferStatus/success";
 import thumbnail from "@/components/thumbnail";
+import linkModal from "@/components/linkModal";
 
 locale(lang);
 
@@ -74,6 +76,8 @@ Vue.component("Panel", Panel);
 Vue.component("Table", Table);
 
 Vue.component("thumbnail", thumbnail);
+Vue.component("linkModal", linkModal);
+Vue.component("Card", Card);
 
 Vue.prototype.$Notice = Notice;
 

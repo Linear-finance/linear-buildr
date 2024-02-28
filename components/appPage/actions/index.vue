@@ -103,7 +103,7 @@
             Burn ℓUSD to unlock staked LINA
           </div>
           <div class="context" v-if="currentAction == 3">
-            Claim rewards from staking LINA and building ℓUSD
+            Claim rewards from staking your assets and building ℓUSD
           </div>
           <div class="context" v-if="currentAction == 4">
             Transfer different currencies to specified wallet address
@@ -288,18 +288,9 @@ export default {
         { name: "Bridge", url: "https://buildr.linear.finance/bridge" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
         { name: "Dashboard", url: "https://dashboard.linear.finance/" },
-        { name: "Vault", url: "https://dashboard.linear.finance/" },
+        { name: "Vault", url: "https://vault.linear.finance/" },
+        { name: "Liquidator", url: "https://liquidator.linear.finance/" },
         { name: "DAO", url: "https://dashboard.linear.finance/" },
-      ],
-      external: [
-        {
-          label: "Blog",
-          url: "https://linear-finance.medium.com/",
-        },
-        {
-          label: "Instagram",
-          url: "https://www.instagram.com/accounts/suspended/?next=https%3A%2F%2Fwww.instagram.com%2Flinear%2F%3F__coig_ufac%3D1",
-        },
       ],
     };
   },

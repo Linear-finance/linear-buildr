@@ -163,18 +163,19 @@
             <div class="line"></div>
             What is Buildr?
             <p slot="content">
-              Buildr is part of the Linear's dApp suite. You can pledge and
-              stake your LINA tokens to build ℓUSD, the base currency of Linear
-              Exchange.
+              Buildr is part of the Linear’s dApp suite. You can pledge and
+              stake supported on-chain assets to build ℓUSD, the base currency
+              of Linear Exchange.
             </p>
           </Panel>
           <Panel name="3">
             <div class="line"></div>
             Why stake LINA?
             <p slot="content">
-              By staking LINA to build ℓUSD for self use / provide liquidity for
-              traders, users are entitled to staking rewards and a split of the
-              transaction fees generated on our exchange.
+              By staking supported on-chain assets to build ℓUSD for self use /
+              provide liquidity for traders, users are entitled to staking
+              rewards and a split of the transaction fees generated on our
+              exchange.
             </p>
           </Panel>
           <Panel name="4">

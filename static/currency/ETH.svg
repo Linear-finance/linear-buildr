@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-  <desc>Created with Lunacy</desc>
-  <g id="Logo/LNR-Filled-Copy-2">
-    <g id="Setup/Icon-Button/Outline">
-      <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z" id="Oval" fill="#FFFFFF" stroke="none" />
-    </g>
-    <g id="Logo/Crypto/ETH" transform="translate(8 8)">
-      <path d="M0 10L5.96745 0L11.9349 10L5.96745 13.6539L0 10ZM6 15.0893L0.670809 12L6 19.2889L11.1536 12L6 15.0893Z" transform="translate(6 2)" id="Combined-Shape" fill="#3C3A3E" fill-rule="evenodd" stroke="none" />
-    </g>
-    <g id="Setup/Icon-Button/Outline-Copy" />
-  </g>
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="20" r="19.5" fill="white" stroke="#E5E5E5" />
+  <path d="M19.9981 5L19.7969 5.68366V25.5203L19.9981 25.7211L29.2059 20.2783L19.9981 5Z"
+    fill="#343434" />
+  <path d="M19.9971 5L10.7891 20.2783L19.9971 25.7211V16.0929V5Z" fill="#8C8C8C" />
+  <path
+    d="M19.9982 27.4654L19.8848 27.6037V34.6698L19.9982 35.0009L29.2116 22.0254L19.9982 27.4654Z"
+    fill="#3C3C3B" />
+  <path d="M19.9971 35.0009V27.4654L10.7891 22.0254L19.9971 35.0009Z" fill="#8C8C8C" />
+  <path d="M19.998 25.7219L29.2058 20.2791L19.998 16.0938V25.7219Z" fill="#141414" />
+  <path d="M10.7891 20.2791L19.9971 25.7219V16.0938L10.7891 20.2791Z" fill="#393939" />
 </svg>
+  

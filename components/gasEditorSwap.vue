@@ -608,7 +608,6 @@ export default {
         if (sourceNetwork) {
           await getNetworkSpeeds(sourceNetworkId)
             .then((res) => {
-              // console.log(res, "source");
               this.sourceNetworkSpeeds = res;
               this.sourceSelectedType =
                 this.$store.state.sourceGasDetails?.type;
@@ -629,7 +628,6 @@ export default {
         if (targetNetwork) {
           await getNetworkSpeeds(targetNetworkId)
             .then((res) => {
-              // console.log(res, "target");
               this.targetNetworkSpeeds = res;
               this.targetSelectedType =
                 this.$store.state.targetGasDetails?.type;

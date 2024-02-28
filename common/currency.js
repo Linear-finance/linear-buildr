@@ -237,4 +237,5 @@ requireIcon();
 
 export const sourceKey = "lUSD";
 
+export const LINA = "LINA";
 export default currencies;

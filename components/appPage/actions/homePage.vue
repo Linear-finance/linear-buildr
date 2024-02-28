@@ -1,125 +1,18 @@
 <template>
   <div id="homePage">
-    <div
-      class="attentionBox"
-      :class="{
-        attention: currentRatioStatus == 1,
-        urgent: currentRatioStatus == 2,
-        liquidated: currentRatioStatus == 3,
-      }"
-      v-if="currentRatioStatus != 0"
-    >
-      <div class="colorBlock"></div>
-      <div class="container">
-        <img
-          class="icon"
-          src="@/static/info_orange.svg"
-          alt=""
-          app-
-          v-if="currentRatioStatus == 1"
-        />
-        <img
-          class="icon"
-          src="@/static/error.svg"
-          alt=""
-          v-if="currentRatioStatus == 2"
-        />
-        <img
-          class="icon"
-          src="@/static/close_blue.svg"
-          alt=""
-          v-if="currentRatioStatus == 3"
-        />
-        <div class="content">
-          <div class="title">
-            <template v-if="currentRatioStatus == 1"
-              >Attention required</template
-            >
-            <template v-if="currentRatioStatus == 2"
-              >Urgent: Action required</template
-            >
-            <template v-if="currentRatioStatus == 3"
-              >Accout Liquidated</template
-            >
-          </div>
-          <div class="context">
-            <template v-if="currentRatioStatus == 1">
-              Your P-ratio is below the target ratio. To prevent being
-              liquidated, please either
-              <span v-if="needBuyLINA"
-                >buy and stake {{ formatNumber(needLINANum) }} LINA</span
-              ><span v-else>stake {{ formatNumber(needLINANum) }} LINA</span> or
-              <span v-if="needBuylUSD"
-                >buy and burn {{ formatNumber(needlUSDNum) }} ℓUSD</span
-              ><span v-else>burn {{ formatNumber(needlUSDNum) }} ℓUSD</span> to
-              raise up to target ratio to be able to claim rewards.
-            </template>
-            <template v-if="currentRatioStatus == 2">
-              Your P-ratio has reached the minimum maintainence level. Please
-              <span v-if="needBuyLINA"
-                >buy and stake {{ formatNumber(needLINANum) }} LINA</span
-              ><span v-else>stake {{ formatNumber(needLINANum) }} LINA</span> or
-              <span v-if="needBuylUSD"
-                >buy and burn {{ formatNumber(needlUSDNum) }} ℓUSD</span
-              ><span v-else>burn {{ formatNumber(needlUSDNum) }} ℓUSD</span> to
-              raise up to target ratio.
-            </template>
-            <template v-if="currentRatioStatus == 3">
-              Your P-raio has fallen below the minimum required level for more
-              than 3 days, your LINA has been liquidated. Please view in the
-              transaction history for more information.
-            </template>
-          </div>
-          <div class="btnBox">
-            <div
-              class="btn"
-              v-if="needBuyLINA && currentRatioStatus != 3"
-              @click.stop="toggleModal"
-            >
-              Buy LINA →
-            </div>
-            <div
-              class="btn"
-              v-if="!needBuyLINA && currentRatioStatus != 3"
-              @click="actionLink(2)"
-            >
-              Stake now →
-            </div>
-            <div
-              class="btn"
-              v-if="needBuylUSD && currentRatioStatus != 3"
-              @click="actionLink(3)"
-            >
-              Buy ℓUSD →
-            </div>
-            <div
-              class="btn"
-              v-if="!needBuylUSD && currentRatioStatus != 3"
-              @click="actionLink(4)"
-            >
-              Burn now →
-            </div>
-            <div
-              class="btn"
-              v-if="currentRatioStatus == 3"
-              @click="actionLink(5)"
-            >
-              View Details →
-            </div>
-          </div>
-        </div>
-        <img
-          class="close"
-          src="@/static/icon-cancel.svg"
-          alt=""
-          @click="colseAttention"
-        />
+    <div class="alertStacking" v-if="multiCollateralValuesRatios">
+      <div
+        v-for="(item, index) in collateralAssets"
+        :key="index"
+        class="alertContainer"
+      >
+        <attentionBox :assetInfo="item" assetImg="any" />
       </div>
     </div>
     <div class="title">Welcome to Buildr</div>
     <div class="context">
-      Our native Linear Token (LINA) serves the purpose of staking in our
-      collateral pool with infinite liquidity and no slippage
+      Supported on-chain assets are staked in our collateral pool to build ℓUSD.
+      The collateral pool enables infinite liquidity and no slippage.
     </div>
     <div class="actionsBox">
       <div class="boxItem" :class="{ isMobile }" @click.stop="toggleModal">
@@ -191,7 +84,8 @@ import { LIQUIDATION_NETWORKS } from "@/assets/linearLibrary/linearTools/network
 import { BigNumber, utils } from "ethers";
 
 import { getPriceRates } from "@/assets/linearLibrary/linearTools/request";
-
+import attentionBox from "@/components/attentionBox.vue";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 import {
   formatEtherToNumber,
   formatNumber,
@@ -214,31 +108,21 @@ import {
 
 export default {
   name: "homePage",
-  components: { linkModal },
   data() {
     return {
       formatNumber,
-      currentRatioStatus: 0, //0正常 1低于500警告 2低于200清算窗口 3爆仓
-      needBuyLINA: false,
-      needLINANum: 0,
-      needBuylUSD: false,
-      needlUSDNum: 0,
-      walletData: {
-        avaliableLINA: 0,
-        LINA2USD: 0,
-        staked: 0,
-        lock: 0,
-        amountlUSD: 0,
-        debt: 0,
-        targetRatio: 350,
-        currentRatio: 0,
-      },
+      collateralAssets: collateralAssets,
       showPopup: false,
     };
+  },
+  components: {
+    attentionBox,
+    linkModal,
   },
   watch: {
     isMobile() {},
     walletAddress() {},
+    multiCollateralValuesRatios() {},
   },
   computed: {
     isMobile() {
@@ -253,6 +137,9 @@ export default {
     theme() {
       return this.$store.state.theme;
     },
+    multiCollateralValuesRatios() {
+      return this.$store.state?.multiCollateralValues.currentRatio;
+    },
   },
   created() {
     //订阅钱包账户改变事件
@@ -263,9 +150,6 @@ export default {
     this.$pub.subscribe("onWalletChainChange", (msg, params) => {
       this.walletStatusChange();
     });
-  },
-  mounted() {
-    this.checkLiquidation();
   },
   methods: {
     toggleModal() {
@@ -443,14 +327,11 @@ export default {
   padding: 200px 193px 207px;
   position: relative;
 
-  .app-dark & {
-    background: $darkBackgroundColor;
-  }
-
-  .attentionBox {
-    width: 600px;
+  .alertStacking {
     position: absolute;
-    top: 48px;
+    top: 10px;
+    z-index: 2;
+    margin: 10px 0;
     left: 50%;
     transform: translateX(-300px);
     display: flex;
@@ -691,6 +572,12 @@ export default {
     background: #fff;
     text-align: center;
     padding: 163px 0 0 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .alertStacking {
+      left: 50%;
+    }
 
     .title {
       font-family: $HeadingsFontFamily;

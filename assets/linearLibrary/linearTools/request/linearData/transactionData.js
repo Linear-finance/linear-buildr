@@ -1,7 +1,7 @@
 "use strict";
 const { BigNumber } = require("ethers");
 const pageResults = require("graph-results-pager");
-const { bn2n } = require("@/common/bnCalc");
+const { bn2n, bn2nForAsset } = require("@/common/bnCalc");
 
 const maxRequest = 1000;
 
@@ -27,6 +27,7 @@ module.exports = {
       max = maxRequest,
       account = undefined,
       minBlock = undefined,
+      collateralCurrency = undefined,
       networkId = $nuxt.$store.state?.walletNetworkId,
     } = {}) {
       return pageResults({
@@ -39,6 +40,9 @@ module.exports = {
             orderDirection: "desc",
             where: {
               account: account ? `\\"${account}\\"` : undefined,
+              collateralCurrency: collateralCurrency
+                ? `\\"${collateralCurrency}\\"`
+                : undefined,
               block_gte: minBlock || undefined,
             },
           },
@@ -48,20 +52,22 @@ module.exports = {
             "timestamp", // the timestamp when this transaction happened
             "block", // the block in which this transaction happened
             "value", // the issued amount in lUSD
-            "source", //符号
+            "collateralCurrency", //符号
           ],
         },
       })
         .then((results) =>
-          results.map(({ id, account, timestamp, block, value, source }) => ({
-            hash: id.split("-")[0],
-            account,
-            timestamp: Number(timestamp * 1000),
-            block: Number(block),
-            value: bn2n(BigNumber.from(value)),
-            source: source,
-            symbol: "+",
-          }))
+          results.map(
+            ({ id, account, timestamp, block, value, collateralCurrency }) => ({
+              hash: id.split("-")[0],
+              account,
+              timestamp: Number(timestamp * 1000),
+              block: Number(block),
+              value: bn2n(BigNumber.from(value)),
+              source: collateralCurrency,
+              symbol: "+",
+            })
+          )
         )
         .catch((err) => console.error(err));
     },
@@ -69,6 +75,7 @@ module.exports = {
       max = maxRequest,
       account = undefined,
       minBlock = undefined,
+      collateralCurrency = undefined,
       networkId = $nuxt.$store.state?.walletNetworkId,
     } = {}) {
       return pageResults({
@@ -81,6 +88,9 @@ module.exports = {
             orderDirection: "desc",
             where: {
               account: account ? `\\"${account}\\"` : undefined,
+              collateralCurrency: collateralCurrency
+                ? `\\"${collateralCurrency}\\"`
+                : undefined,
               block_gte: minBlock || undefined,
             },
           },
@@ -90,20 +100,22 @@ module.exports = {
             "timestamp", // the timestamp when this transaction happened
             "block", // the block in which this transaction happened
             "value", // the burned amount in lUSD
-            "source", //符号
+            "collateralCurrency", //符号
           ],
         },
       })
         .then((results) =>
-          results.map(({ id, account, timestamp, block, value, source }) => ({
-            hash: id.split("-")[0],
-            account,
-            timestamp: Number(timestamp * 1000),
-            block: Number(block),
-            value: bn2n(BigNumber.from(value)),
-            source: source,
-            symbol: "-",
-          }))
+          results.map(
+            ({ id, account, timestamp, block, value, collateralCurrency }) => ({
+              hash: id.split("-")[0],
+              account,
+              timestamp: Number(timestamp * 1000),
+              block: Number(block),
+              value: bn2n(BigNumber.from(value)),
+              source: collateralCurrency,
+              symbol: "-",
+            })
+          )
         )
         .catch((err) => console.error(err));
     },
@@ -197,6 +209,7 @@ module.exports = {
       max = maxRequest,
       account = undefined,
       networkId = $nuxt.$store.state?.walletNetworkId,
+      minPeriodId = undefined,
     } = {}) {
       return pageResults({
         api: graphAPIEndpoints[networkId],
@@ -208,6 +221,7 @@ module.exports = {
             orderDirection: "desc",
             where: {
               account: account ? `\\"${account}\\"` : undefined,
+              periodId_gte: minPeriodId ? `\\"${minPeriodId}\\"` : undefined,
             },
           },
           properties: [
@@ -217,18 +231,31 @@ module.exports = {
             "block", // the block in which this transaction happened
             "rewardslusd",
             "rewardsLina",
+            "collateralCurrency",
+            "periodId",
           ],
         },
       })
         .then((results) =>
           results.map(
-            ({ id, account, timestamp, block, rewardslusd, rewardsLina }) => ({
+            ({
+              id,
+              account,
+              timestamp,
+              block,
+              rewardslusd,
+              rewardsLina,
+              collateralCurrency,
+              periodId,
+            }) => ({
               hash: id.split("-")[0],
               account,
               timestamp: Number(timestamp * 1000),
               block: Number(block),
               rewardslusd: bn2n(BigNumber.from(rewardslusd)),
               rewardsLina: bn2n(BigNumber.from(rewardsLina)),
+              collateralCurrency: collateralCurrency,
+              periodId: Number(periodId),
             })
           )
         )
@@ -257,20 +284,22 @@ module.exports = {
             "timestamp",
             "block",
             "value",
-            "currency",
+            "collateralCurrency",
           ],
         },
       })
         .then((results) =>
-          results.map(({ id, account, timestamp, block, value, currency }) => ({
-            hash: id.split("-")[0],
-            account,
-            timestamp: Number(timestamp * 1000),
-            block: Number(block),
-            value: bn2n(BigNumber.from(value)),
-            source: currency,
-            symbol: "-",
-          }))
+          results.map(
+            ({ id, account, timestamp, block, value, collateralCurrency }) => ({
+              hash: id.split("-")[0],
+              account,
+              timestamp: Number(timestamp * 1000),
+              block: Number(block),
+              value: bn2nForAsset(BigNumber.from(value), collateralCurrency),
+              source: collateralCurrency,
+              symbol: "-",
+            })
+          )
         )
         .catch((err) => console.error(err));
     },
@@ -328,20 +357,22 @@ module.exports = {
             "timestamp",
             "block",
             "value",
-            "currency",
+            "collateralCurrency",
           ],
         },
       })
         .then((results) =>
-          results.map(({ id, account, timestamp, block, value, currency }) => ({
-            hash: id.split("-")[0],
-            account,
-            timestamp: Number(timestamp * 1000),
-            block: Number(block),
-            value: bn2n(BigNumber.from(value)),
-            source: currency,
-            symbol: "+",
-          }))
+          results.map(
+            ({ id, account, timestamp, block, value, collateralCurrency }) => ({
+              hash: id.split("-")[0],
+              account,
+              timestamp: Number(timestamp * 1000),
+              block: Number(block),
+              value: bn2nForAsset(BigNumber.from(value), collateralCurrency),
+              source: collateralCurrency,
+              symbol: "+",
+            })
+          )
         )
         .catch((err) => console.error(err));
     },
@@ -361,15 +392,28 @@ module.exports = {
               user: account ? `\\"${account}\\"` : undefined,
             },
           },
-          properties: ["user", "markertimestamp", "positionMarkedState"],
+          properties: [
+            "user",
+            "markertimestamp",
+            "positionMarkedState",
+            "collateralCurrency",
+          ],
         },
       })
         .then((results) =>
-          results.map(({ user, markertimestamp, positionMarkedState }) => ({
-            account: user,
-            timestamp: Number(markertimestamp * 1000),
-            state: positionMarkedState == 1 ? true : false,
-          }))
+          results.map(
+            ({
+              user,
+              markertimestamp,
+              positionMarkedState,
+              collateralCurrency,
+            }) => ({
+              account: user,
+              timestamp: Number(markertimestamp * 1000),
+              state: positionMarkedState == 1 ? true : false,
+              collateralCurrency: collateralCurrency,
+            })
+          )
         )
         .catch((err) => console.error(err));
     },
@@ -435,16 +479,22 @@ module.exports = {
               value_gt: value || undefined,
             },
           },
-          properties: ["id", "user", "value", "timestamp", "currency"],
+          properties: [
+            "id",
+            "user",
+            "value",
+            "timestamp",
+            "collateralCurrency",
+          ],
         },
       })
         .then((results) =>
-          results.map(({ id, user, value, timestamp, currency }) => ({
+          results.map(({ id, user, value, timestamp, collateralCurrency }) => ({
             hash: id.split("-")[0],
             account: user,
             timestamp: Number(timestamp * 1000),
-            value: bn2n(BigNumber.from(value)),
-            source: currency,
+            value: bn2nForAsset(BigNumber.from(value), collateralCurrency),
+            source: collateralCurrency,
             symbol: "-",
           }))
         )
@@ -469,16 +519,22 @@ module.exports = {
               value_gt: value || undefined,
             },
           },
-          properties: ["id", "user", "value", "timestamp", "currency"],
+          properties: [
+            "id",
+            "user",
+            "value",
+            "timestamp",
+            "collateralCurrency",
+          ],
         },
       })
         .then((results) =>
-          results.map(({ id, user, value, timestamp, currency }) => ({
+          results.map(({ id, user, value, timestamp, collateralCurrency }) => ({
             hash: id.split("-")[0],
             account: user,
             timestamp: Number(timestamp * 1000),
-            value: bn2n(BigNumber.from(value)),
-            source: currency,
+            value: bn2nForAsset(BigNumber.from(value), collateralCurrency),
+            source: collateralCurrency,
             symbol: "-",
           }))
         )
@@ -549,8 +605,8 @@ module.exports = {
           properties: [
             "debtProportion",
             "debtFactor",
-            "totalAssetSupplyInUsd",
             "timestamp",
+            "collateralCurrency",
           ],
         },
       })
@@ -559,15 +615,42 @@ module.exports = {
             ({
               debtProportion,
               debtFactor,
-              totalAssetSupplyInUsd,
+              collateralCurrency,
               timestamp,
             }) => ({
               debtProportion: debtProportion,
               debtFactor: debtFactor,
-              totalAssetSupplyInUsd: totalAssetSupplyInUsd,
+              collateralCurrency: collateralCurrency,
               timestamp: Number(timestamp * 1000),
             })
           )
+        )
+        .catch((err) => console.error(err));
+    },
+    PoolDebtLog({
+      max = maxRequest,
+      filter = {},
+      networkId = $nuxt.$store.state?.walletNetworkId,
+    } = {}) {
+      return pageResults({
+        api: graphAPIEndpoints[networkId],
+        max,
+        query: {
+          entity: "poolDebtLogs",
+          selection: {
+            orderBy: "timestamp",
+            orderDirection: "desc",
+            where: filter,
+          },
+          properties: ["debtFactor", "timestamp", "collateraPoolBalance"],
+        },
+      })
+        .then((results) =>
+          results.map(({ debtFactor, collateraPoolBalance, timestamp }) => ({
+            debtFactor: debtFactor,
+            collateraPoolBalance: collateraPoolBalance,
+            timestamp: Number(timestamp * 1000),
+          }))
         )
         .catch((err) => console.error(err));
     },

@@ -867,6 +867,7 @@ import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/trans
 import ThemeSwitch from "~/components/themeSwitch.vue";
 import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 import { LINA } from "~/common/currency";
+import { intlFormat } from "date-fns";
 
 export default {
   name: "walletDetails",
@@ -995,40 +996,6 @@ export default {
         Object.values(collateralValue).reduce((a, b) => a + b)
       );
     },
-    // walletDetails() {
-    //   if (this.$store.state?.walletDetails.currentRatioPercent > 700) {
-    //     this.cursorPosition = 98;
-    //   } else {
-    //     console.log(this.$store.state?.walletDetails.currentRatioPercent);
-    //     this.cursorPosition =
-    //       (this.$store.state?.walletDetails.currentRatioPercent / 700) * 100;
-    //   }
-    //   return _.clone(this.$store.state?.walletDetails);
-    // },
-    //当前抵押率占目标抵押率的百分比
-    currentRatio(currencyName, ratio) {
-      var info = collateralAssets.find((asset) => asset.name === currencyName);
-      var currentRatio = 0;
-
-      if (ratio < 200) {
-        return 1 / 3;
-      } else if (200 < ratio < info.targetRatio * 100) {
-        return 2 / 3;
-      } else if (info.targetRatio < ration < 600) {
-        return 2.5 / 3;
-      } else {
-        return 3 / 3;
-      }
-      // if (Object.keys(this.walletDetails).length !== 0) {
-      //   currentRatio =
-      //     (this.walletDetails.currentRatioPercent /
-      //       this.walletDetails.targetRatioPercent) *
-      //     100;
-      //   if (currentRatio > 100) currentRatio = 100;
-      // }
-
-      return currentRatio;
-    },
     theme() {
       return this.$store.state.theme;
     },
@@ -1041,29 +1008,61 @@ export default {
       const liquidatedRatio = 200;
       const assetArr = ["ETH", "BTCB"];
 
-      if (asset == LINA || asset == "WBNB") {
-        currentRatio > 600
-          ? (this.cursorPosition = 98)
-          : (this.cursorPosition = (currentRatio / 600) * 100);
-        console.log((currentRatio / 600) * 100);
-      } else if (assetArr.includes(asset)) {
-        if (currentRatio > maxRatio || currentRatio < 50) {
-          currentRatio < 50
-            ? (this.cursorPosition = 0)
-            : (this.cursorPosition = 98);
-        } else if (currentRatio <= 200) {
-          const pxAway = (200 - currentRatio) / (150 / 33.3);
-          this.cursorPosition = 33.3 - pxAway;
-        } else if (currentRatio >= targetRatio) {
-          const pxAway = (maxRatio - currentRatio) / (150 / 33.3);
-          this.cursorPosition = 100 - pxAway;
-        } else {
-          this.cursorPosition =
-            33.3 + 33.3 * ((currentRatio - liquidatedRatio) / yellowRatio);
-        }
-      } else {
+      var info = collateralAssets.find((listAsset) => listAsset.name === asset);
+
+      if (info == null) {
         console.error("unsupported asset");
       }
+
+      if (currentRatio <= 200) {
+        //Finding relative position in the red section
+        this.cursorPosition = (currentRatio / 200) * (1 / 3) * 100;
+      } else if (200 < currentRatio && currentRatio <= info.targetRatio * 100) {
+        //Finding relative position in yellow section
+        this.cursorPosition =
+          (1 / 3) * 100 +
+          (((currentRatio - 200) / (info.targetRatio * 100 - 200)) * 100 * 1) /
+            3;
+      } else if (
+        info.targetRatio * 100 <= currentRatio &&
+        currentRatio <= info.maxTotalPRatio * 0.95
+      ) {
+        //Finding relative position in blue section, limiting it to maximum 95%
+        this.cursorPosition =
+          (2 / 3) * 100 +
+          (((currentRatio - info.targetRatio * 100) /
+            (info.maxTotalPRatio - info.targetRatio * 100)) *
+            100 *
+            1) /
+            3;
+      } else {
+        this.cursorPosition = 98;
+      }
+
+      // if (asset == LINA || asset == "WBNB") {
+      //   console.log(ratioPosition(this.currentRatio, asset));
+      //   currentRatio > 600
+      //     ? (this.cursorPosition = 98)
+      //     : (this.cursorPosition = (currentRatio / 600) * 100);
+      //   console.log((currentRatio / 600) * 100);
+      // } else if (assetArr.includes(asset)) {
+      //   if (currentRatio > maxRatio || currentRatio < 50) {
+      //     currentRatio < 50
+      //       ? (this.cursorPosition = 0)
+      //       : (this.cursorPosition = 98);
+      //   } else if (currentRatio <= 200) {
+      //     const pxAway = (200 - currentRatio) / (150 / 33.3);
+      //     this.cursorPosition = 33.3 - pxAway;
+      //   } else if (currentRatio >= targetRatio) {
+      //     const pxAway = (maxRatio - currentRatio) / (150 / 33.3);
+      //     this.cursorPosition = 100 - pxAway;
+      //   } else {
+      //     this.cursorPosition =
+      //       33.3 + 33.3 * ((currentRatio - liquidatedRatio) / yellowRatio);
+      //   }
+      // } else {
+      //   console.error("unsupported asset");
+      // }
       return _.clone(this.$store.state?.walletDetails);
     },
   },
@@ -1822,7 +1821,7 @@ export default {
     }
 
     .loadingImg {
-      height: 330px;
+      // height: 330px;
     }
     .loading-page {
       top: 0;
@@ -1855,7 +1854,7 @@ export default {
     .ratioBox {
       border-top: solid 1px #e5e5e5;
       border-bottom: solid 1px #e5e5e5;
-      padding: 24px 0;
+      padding: 12px 0;
 
       .title {
         font-family: Gilroy-bold;
@@ -2053,7 +2052,7 @@ export default {
       margin: 24px 0px;
 
       .portfolioSection {
-        min-height: 380px;
+        // min-height: 380px;
         border: 1px solid #5a575c;
         border-radius: 10px;
         padding: 5px 15px;

@@ -33,12 +33,6 @@
             class="linearBuildrlogo"
             src="@/static/linear_buildr_logo_dark.svg"
           />
-          <img
-            class="logoWhenAction"
-            src="@/static/logo-crypto-linear-colour.svg"
-            style="height: 32px"
-            v-show="currentAction != 0 || othersAction != 0"
-          />
         </a>
         <div class="internalRouting" v-if="!isMobile">
           <div

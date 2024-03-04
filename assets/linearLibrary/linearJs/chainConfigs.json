@@ -11,6 +11,7 @@
     "blockchainBrowser": "https://etherscan.io/tx/",
     "blockExplorerUrls": "https://etherscan.io",
     "blockchainBrowserApi": "https://api.etherscan.io/api",
+    "rewardApiBase": "",
     "addresses": {
       "system": {
         "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",

@@ -9,7 +9,7 @@
         <attentionBox :assetInfo="item" assetImg="any" />
       </div>
     </div>
-    <div class="title">Welcome to Buildr</div>
+    <div class="title">Welcome to Builder</div>
     <div class="context">
       Supported on-chain assets are staked in our collateral pool to build ℓUSD.
       The collateral pool enables infinite liquidity and no slippage.

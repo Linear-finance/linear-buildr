@@ -1,7 +1,7 @@
 <template>
   <div id="maintenance">
     <div class="content">
-      <img class="logo" src="@/static/linear_buildr_logo.svg" />
+      <img class="logo" src="@/static/logo/linear_builder_logo.svg" />
 
       <img class="bg" src="@/static/maintenance.svg" />
 

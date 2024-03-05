@@ -6,18 +6,18 @@
           <img
             v-if="$store.getters.isDarkTheme"
             class="linearBuildrlogo"
-            src="@/static/linear_buildr_logo_dark.svg"
+            src="@/static/logo/linear_builder_logo_dark.svg"
           />
           <img
             v-else
             class="linearBuildrlogo"
-            src="@/static/linear_buildr_logo.svg"
+            src="@/static/logo/linear_builder_logo.svg"
           />
         </a>
         <a href="/" class="mobileLogo">
           <img
             class="linearBuildrlogo"
-            src="@/static/linear_buildr_logo.svg"
+            src="@/static/logo/linear_builder_logo.svg"
             v-show="
               currentAction == 0 &&
               othersAction == 0 &&
@@ -31,7 +31,7 @@
               $store.getters.isDarkTheme
             "
             class="linearBuildrlogo"
-            src="@/static/linear_buildr_logo_dark.svg"
+            src="@/static/logo/linear_builder_logo_dark.svg"
           />
         </a>
         <div class="internalRouting" v-if="!isMobile">

@@ -4,12 +4,12 @@
       <img
         v-if="$store.getters.isDarkTheme"
         class="linearBuildrlogo"
-        src="@/static/linear_buildr_logo_dark.svg"
+        src="@/static/logo/linear_builder_logo_dark.svg"
       />
       <img
         v-else
         class="linearBuildrlogo"
-        src="@/static/linear_buildr_logo.svg"
+        src="@/static/logo/linear_builder_logo.svg"
       />
       <theme-switch v-if="!isMobile" />
       <div class="mBuyLINA mobileShow">
@@ -161,9 +161,9 @@
           </Panel>
           <Panel name="2">
             <div class="line"></div>
-            What is Buildr?
+            What is Builder?
             <p slot="content">
-              Buildr is part of the Linear’s dApp suite. You can pledge and
+              Builder is part of the Linear’s dApp suite. You can pledge and
               stake supported on-chain assets to build ℓUSD, the base currency
               of Linear Exchange.
             </p>

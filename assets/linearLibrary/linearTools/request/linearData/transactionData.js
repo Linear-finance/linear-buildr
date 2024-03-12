@@ -10,6 +10,7 @@ const graphAPIEndpoints = {
   56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
   10001: process.env.GRAPH_BUILDR_ETHDEV,
   10056: process.env.GRAPH_BUILDR_BSCDEV,
+  31337: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
 };
 
 const swapGraphAPIEndpoints = {
@@ -17,6 +18,7 @@ const swapGraphAPIEndpoints = {
   56: process.env.GRAPH_BUILDR_SWAP_BINANCE_MAINNET,
   10001: process.env.GRAPH_BUILDR_SWAP_ETHDEV,
   10056: process.env.GRAPH_BUILDR_BSCDEV,
+  31337: process.env.GRAPH_BUILDR_SWAP_BINANCE_MAINNET,
 };
 
 module.exports = {

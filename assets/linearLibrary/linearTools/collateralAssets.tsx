@@ -41,8 +41,8 @@ export const collateralAssets: collateral[] = [
     minCollateral: 0.0001,
   },
   {
-    name: "ETH",
-    key: "ETH",
+    name: "BETH",
+    key: "BETH",
     contractKey: "ETH",
     targetRatio: 3.5,
     img: "currency/ETH.svg",

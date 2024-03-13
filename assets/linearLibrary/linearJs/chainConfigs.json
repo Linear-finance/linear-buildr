@@ -387,9 +387,9 @@
     "isLiquidationEnable": true,
     "isRewardable": true,
     "rpcUrl": "https://rpc.multicollateral1.linear.finance",
-    "blockchainBrowser": "https://scan.multicollateral.linear.finance",
-    "blockExplorerUrls": "https://scan.multicollateral.linear.finance",
-    "blockchainBrowserApi": "https://scan.multicollateral.linear.finance/api",
+    "blockchainBrowser": "https://scan.multicollateral1.linear.finance",
+    "blockExplorerUrls": "https://scan.multicollateral1.linear.finance",
+    "blockchainBrowserApi": "https://scan.multicollateral1.linear.finance/api",
     "rewardApiBase": "https://reward-api.dev.linear.finance/",
     "nativeCurrency": "GO",
     "addresses": {
@@ -439,10 +439,10 @@
       "collateral": {
         "LINA": {
           "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
-          "LnDebtSystem": "0x7285F770Ed861F22dCa4C7429FCe9B3b30407b96",
-          "LnCollateralSystem": "0x6fdC5f54415D854268b18e32041296A03a2d6232",
-          "LnBuildBurnSystem": "0x0c296b37d848029a4449CFf5f8372F5423E5F06c",
-          "LnLiquidation": "0x9d50fb8148D11d518b918410144e83DA5117E0C0",
+          "LnDebtSystem": "0xd5C594FB9055E34926CdB46b32D427c09146e96A",
+          "LnCollateralSystem": "0xcE2c94d40e289915d4401c3802D75f6cA5FEf57E",
+          "LnBuildBurnSystem": "0x4B1356cf2068030924dBD8FcA1144AFBe847Af5F",
+          "LnLiquidation": "0x4f6b688Ad01777Db42Ef65e64BB392D3b24a77A8",
           "LnRewardSystem": "0x9C86c4764E59A336C108A6F85be48F8a9a7FaD85"
         },
         "BTCB": {

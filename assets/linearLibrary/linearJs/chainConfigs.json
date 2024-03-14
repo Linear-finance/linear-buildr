@@ -446,7 +446,7 @@
           "LnRewardSystem": "0x9C86c4764E59A336C108A6F85be48F8a9a7FaD85"
         },
         "BTCB": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LinearFinance": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c",
           "LnDebtSystem": "0x60529b4dCE0407f9fCEf8a9dBdc52B3996b67260",
           "LnCollateralSystem": "0xA6Ed07925353068D504e7B72E8A8eA536558D8FB",
           "LnBuildBurnSystem": "0x13098b05948E2addc375dCD116Da6570dd786067",
@@ -454,7 +454,7 @@
           "LnRewardSystem": "0xaFAfC6055921b740965c1E85616f878A83b772b3"
         },
         "WBNB": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LinearFinance": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
           "LnDebtSystem": "0x8aEc3072b59004384128BeC0A0B9611fF0cBBA52",
           "LnCollateralSystem": "0x79dC32e6CCAFf44195e75Fd9f05dDa6f3e62953a",
           "LnBuildBurnSystem": "0x59f4c8445e4472168D923478B86fa4eBF195E2d0",
@@ -462,7 +462,7 @@
           "LnRewardSystem": "0x19E483ca1904B6E22c0dA8F3D8d51Ea612a4C86d"
         },
         "BETH": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+          "LinearFinance": "0x250632378e573c6be1ac2f97fcdf00515d0aa91b",
           "LnDebtSystem": "0xAf20d6889af1e13342A552053f3120636C3fc401",
           "LnCollateralSystem": "0x869bec4369BD6DC83ef0d5dd13dd794476227156",
           "LnBuildBurnSystem": "0x6fCE24a6ee880382D48533665991d731365D8E36",

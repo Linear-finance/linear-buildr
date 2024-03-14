@@ -2083,6 +2083,10 @@ export default {
         border-bottom: solid 1px #e5e5e5;
       }
 
+      .portfolioBox {
+        flex-direction: column;
+      }
+
       .portfolioBox,
       .tokenBox {
         display: flex;
@@ -2093,7 +2097,8 @@ export default {
         }
 
         .allAssets {
-          display: flex;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
           overflow-x: scroll;
           padding: 0 0 15px 0;
 

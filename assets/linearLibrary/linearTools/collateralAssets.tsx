@@ -30,7 +30,7 @@ export const collateralAssets: collateral[] = [
   {
     name: "WBNB",
     key: "WBNB",
-    contractKey: "BNB",
+    contractKey: "WBNB",
     targetRatio: 4,
     img: "currency/BNB.svg",
     darkimg: "currency/BNB.svg",

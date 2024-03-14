@@ -2084,6 +2084,7 @@ export default {
       }
 
       .portfolioBox {
+        padding: 12px 0;
         flex-direction: column;
       }
 

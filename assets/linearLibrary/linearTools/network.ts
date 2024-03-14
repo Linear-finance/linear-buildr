@@ -138,9 +138,12 @@ export const isSupportNetwork = (walletNetworkId: number) => {
 export const getOtherNetworks = (walletNetworkId: number) => {
   let other: number[] = [];
   if (isMainnetNetwork(walletNetworkId)) {
-    other = MAINNET_NETWORKS.filter(
-      (networkId) => networkId != walletNetworkId
-    );
+    if (walletNetworkId == 1) return 56;
+    else if (walletNetworkId == 56) return 1;
+    else if (walletNetworkId == 31337) return 1;
+    // other = MAINNET_NETWORKS.filter(
+    //   (networkId) => networkId != walletNetworkId
+    // );
   } else if (isDevNetwork(walletNetworkId)) {
     other = DEV_NETWORKS.filter((networkId) => networkId != walletNetworkId);
   } else if (isTestnetNetwork(walletNetworkId)) {

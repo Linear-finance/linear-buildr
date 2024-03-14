@@ -2,16 +2,29 @@
   <div id="actions">
     <div class="header">
       <div class="headerBox">
-        <a href="/" class="webLogo">
+        <a v-if="!isBridge()" href="/" class="webLogo">
           <img
             v-if="$store.getters.isDarkTheme"
             class="linearBuildrlogo"
             src="@/static/logo/linear_builder_logo_dark.svg"
           />
+
           <img
             v-else
             class="linearBuildrlogo"
             src="@/static/logo/linear_builder_logo.svg"
+          />
+        </a>
+        <a v-else href="/bridge" class="webLogo">
+          <img
+            v-if="$store.getters.isDarkTheme"
+            class="linearBuildrlogo"
+            src="@/static/logo/linear_bridge_logo_dark.svg"
+          />
+          <img
+            v-else
+            class="linearBuildrlogo"
+            src="@/static/logo/linear_bridge_logo.svg"
           />
         </a>
         <a href="/" class="mobileLogo">
@@ -34,7 +47,7 @@
             src="@/static/logo/linear_builder_logo_dark.svg"
           />
         </a>
-        <div class="internalRouting" v-if="!isMobile">
+        <div class="internalRouting" v-if="!isMobile && !isBridge()">
           <div
             class="action"
             v-for="(item, index) in actions"
@@ -142,7 +155,7 @@
           </div>
         </div>
       </div>
-      <div class="internalRouting" v-if="isMobile">
+      <div class="internalRouting" v-if="isMobile && !isBridge()">
         <div
           class="action"
           v-for="(item, index) in actions"
@@ -363,9 +376,14 @@ export default {
       html.classList.add(theme);
       body.classList.add(theme);
     },
+    isBridge() {
+      const currentUrl = window.location.href;
+      return currentUrl.endsWith("/bridge");
+    },
     //切换功能
     //Switch between features
     actionChange(action) {
+      console.log(action);
       //正在交易中无法点击其他按钮
       if (!this.isTransaction) {
         this.$store.commit("setIsShowTooltipModle", false);

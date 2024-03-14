@@ -81,8 +81,8 @@
           "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
           "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
         },
-        "BETH": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+        "ETH": {
+          "LinearFinance": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
           "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
           "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
           "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
@@ -176,8 +176,8 @@
           "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
           "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
         },
-        "BETH": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+        "ETH": {
+          "LinearFinance": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
           "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
           "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
           "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
@@ -271,8 +271,8 @@
           "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
           "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
         },
-        "BETH": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+        "ETH": {
+          "LinearFinance": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
           "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
           "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
           "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
@@ -366,8 +366,8 @@
           "LnLiquidation": "0x63628d926832d700E221Ab394Fd3cDf650E648d3",
           "LnRewardSystem": "0x763321F43D66f6032C1902c954f3E8b259aaCb55"
         },
-        "BETH": {
-          "LinearFinance": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
+        "ETH": {
+          "LinearFinance": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
           "LnDebtSystem": "0xd158B731e5e426164FdC311C8f9391dbB588e8D2",
           "LnCollateralSystem": "0xE0D0c999D0bb2091F7cfc1936C320c11E702dEa4",
           "LnBuildBurnSystem": "0x355EfD0Aa78C0883E9A6E2eDAEeD8a64707E05E7",
@@ -461,8 +461,8 @@
           "LnLiquidation": "0x2AF86FA0E45ec36fE21D1BE8A411f5fd32172812",
           "LnRewardSystem": "0x19E483ca1904B6E22c0dA8F3D8d51Ea612a4C86d"
         },
-        "BETH": {
-          "LinearFinance": "0x250632378e573c6be1ac2f97fcdf00515d0aa91b",
+        "ETH": {
+          "LinearFinance": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
           "LnDebtSystem": "0xAf20d6889af1e13342A552053f3120636C3fc401",
           "LnCollateralSystem": "0x869bec4369BD6DC83ef0d5dd13dd794476227156",
           "LnBuildBurnSystem": "0x6fCE24a6ee880382D48533665991d731365D8E36",

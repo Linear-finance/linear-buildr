@@ -71,7 +71,7 @@ module.exports = {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxt/typescript-build", "@nuxtjs/fontawesome"],
+  buildModules: ["@nuxt/typescript-build"],
   /*
    ** Nuxt.js modules
    */

@@ -35,7 +35,8 @@ export const collateralAssets: collateral[] = [
     img: "currency/BNB.svg",
     darkimg: "currency/BNB.svg",
     inactive: "currency/BNB.svg",
-    buyLink: "https://pancakeswap.finance/swap?outputCurrency=BNB",
+    buyLink:
+      "https://pancakeswap.finance/swap?outputCurrency=0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
     decimal: 18,
     maxTotalPRatio: 600,
     minCollateral: 0.0001,

@@ -39,7 +39,7 @@ export const collateralAssets: collateral[] = [
       "https://pancakeswap.finance/swap?outputCurrency=0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
     decimal: 18,
     maxTotalPRatio: 600,
-    minCollateral: 0.0001,
+    minCollateral: 0.001,
   },
   {
     name: "ETH",

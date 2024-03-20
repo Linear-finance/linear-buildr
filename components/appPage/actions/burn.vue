@@ -805,10 +805,7 @@ export default {
           );
         }
 
-        const targetRatioPercent =
-          this.selectedCollateral.key == LINA
-            ? 100 / formatEtherToNumber(buildRatio)
-            : 100 * buildRatio;
+        const targetRatioPercent = 100 / formatEtherToNumber(buildRatio);
 
         const priceRateKey = this.selectedCollateral.contractKey;
         const priceRates = await getPriceRates([priceRateKey, "lUSD"]);
@@ -1420,9 +1417,7 @@ export default {
             //lUSD < debt
             this.inputData.amount = formatEtherToNumber(this.burnData.lUSDBN);
             this.actionDatas.amount = this.burnData.lUSDBN;
-
             let ratioAfterBurn = n2bnForAsset("0");
-
             //lUSD不足还清所有债务，则计算销毁所有lUSD后的抵押率，大于目标则解锁大于部分，小于等于则不解锁LINA
             ratioAfterBurn = bnMul(
               bnDiv(

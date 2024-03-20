@@ -1014,7 +1014,7 @@ export default {
         console.error("unsupported asset");
       }
 
-      if (currentRatio <= 200) {
+      if (currentRatio <= 200 || currentRatio == null) {
         //Finding relative position in the red section
         this.cursorPosition = (currentRatio / 200) * (1 / 3) * 100;
       } else if (200 < currentRatio && currentRatio <= info.targetRatio * 100) {
@@ -1039,30 +1039,6 @@ export default {
         this.cursorPosition = 98;
       }
 
-      // if (asset == LINA || asset == "WBNB") {
-      //   console.log(ratioPosition(this.currentRatio, asset));
-      //   currentRatio > 600
-      //     ? (this.cursorPosition = 98)
-      //     : (this.cursorPosition = (currentRatio / 600) * 100);
-      //   console.log((currentRatio / 600) * 100);
-      // } else if (assetArr.includes(asset)) {
-      //   if (currentRatio > maxRatio || currentRatio < 50) {
-      //     currentRatio < 50
-      //       ? (this.cursorPosition = 0)
-      //       : (this.cursorPosition = 98);
-      //   } else if (currentRatio <= 200) {
-      //     const pxAway = (200 - currentRatio) / (150 / 33.3);
-      //     this.cursorPosition = 33.3 - pxAway;
-      //   } else if (currentRatio >= targetRatio) {
-      //     const pxAway = (maxRatio - currentRatio) / (150 / 33.3);
-      //     this.cursorPosition = 100 - pxAway;
-      //   } else {
-      //     this.cursorPosition =
-      //       33.3 + 33.3 * ((currentRatio - liquidatedRatio) / yellowRatio);
-      //   }
-      // } else {
-      //   console.error("unsupported asset");
-      // }
       return _.clone(this.$store.state?.walletDetails);
     },
   },

@@ -112,14 +112,9 @@ export const getBuildRatio = async (multiCollateralAsset) => {
     lnrJS: { LnConfig },
     utils,
   } = lnrJSConnector;
-  if (multiCollateralAsset == LINA) {
-    const BUILD_RATIO = ethers.utils.formatBytes32String("BuildRatio");
-    const uint = await LnConfig.getUint(BUILD_RATIO);
-    return uint;
-  } else if (multiCollateralAsset !== LINA) {
-    const uint = getAssetObjectInfo(multiCollateralAsset).targetRatio;
-    return uint;
-  }
+  const BUILD_RATIO = ethers.utils.formatBytes32String("BuildRatio");
+  const uint = await LnConfig.getUint(BUILD_RATIO);
+  return uint;
 };
 
 /**

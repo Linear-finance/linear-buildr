@@ -900,10 +900,7 @@ export default {
             );
           }
 
-          const targetRatioPercent =
-            this.selectedCollateral.key == LINA
-              ? 100 / formatEtherToNumber(buildRatio)
-              : 100 * buildRatio;
+          const targetRatioPercent = 100 / formatEtherToNumber(buildRatio);
           const priceRateKey = this.selectedCollateral.contractKey;
           const priceRates = await getPriceRates([priceRateKey, "lUSD"]);
           const LINAPrice = priceRates[priceRateKey] / priceRates.lUSD;
@@ -971,8 +968,7 @@ export default {
                   bnAdd(
                     bnAdd(
                       parseUnitAndReformat(this.buildData.LINABN),
-                      parseUnitAndReformat(this.buildData.stakedBN),
-                      parseUnitAndReformat(this.buildData.lockBN)
+                      parseUnitAndReformat(this.buildData.stakedBN)
                     ),
                     parseUnitAndReformat(this.buildData.lockBN)
                   )

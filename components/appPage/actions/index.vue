@@ -598,6 +598,10 @@ export default {
       background-size: 100% 100%;
       z-index: 2;
 
+      @media (min-width: 1921px) {
+        max-width: 1300px;
+      }
+
       &-close {
         position: absolute;
         top: 0px;
@@ -620,7 +624,7 @@ export default {
       &-content {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-around;
         // transform: translateX(200px);
         height: 100vh;
         max-height: 90%;
@@ -657,10 +661,13 @@ export default {
               line-height: 4rem !important;
               font-weight: 100 !important;
             }
-            cursor: pointer;
-            transition: color 0.5s;
-            &:hover {
-              color: #1a38f8;
+
+            & > a {
+              cursor: pointer;
+              transition: color 0.5s;
+              &:hover {
+                color: #1a38f8 !important;
+              }
             }
           }
         }

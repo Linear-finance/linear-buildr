@@ -295,7 +295,7 @@ export default {
         { name: "Bridge", url: "https://buildr.linear.finance/bridge" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
         { name: "Dashboard", url: "https://dashboard.linear.finance/" },
-        { name: "Vault", url: "https://vault.linear.finance/" },
+        // { name: "Vault", url: "https://vault.linear.finance/" },
         { name: "Liquidator", url: "https://liquidator.linear.finance/" },
         { name: "DAO", url: "https://dashboard.linear.finance/" },
       ],

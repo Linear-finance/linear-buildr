@@ -377,13 +377,11 @@ export default {
       body.classList.add(theme);
     },
     isBridge() {
-      const currentUrl = window.location.href;
-      return currentUrl.endsWith("/bridge");
+      return this.currentAction == 5;
     },
     //切换功能
     //Switch between features
     actionChange(action) {
-      console.log(action);
       //正在交易中无法点击其他按钮
       if (!this.isTransaction) {
         this.$store.commit("setIsShowTooltipModle", false);

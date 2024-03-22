@@ -476,7 +476,7 @@ export default {
   .attentionBox {
     width: 600px;
     position: relative;
-    transform: translateX(-300px);
+    // transform: translateX(-300px);
     display: flex;
     border-radius: 16px;
     background-color: white;

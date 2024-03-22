@@ -2,6 +2,7 @@
   {
     "name": "Mainnet",
     "networkId": 1,
+    "hexChainId": "0x1",
     "wormholeNetworkId": 2,
     "chainType": "ethereum",
     "networkType": "mainnet",

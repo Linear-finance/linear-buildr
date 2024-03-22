@@ -728,18 +728,12 @@ export default {
       if (currency === "LINA") {
         let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
         return LnProxy.transfer(destination, amount, settings);
-      } else if (["ETH", "BNB"].includes(currency)) {
-        if (currency == "ETH" && this.isEthereumNetwork == "ETH") {
-          return lnrJSConnector.signer.sendTransaction({
-            value: amount,
-            to: destination,
-            ...settings,
-          });
-        } else {
-          return lnrJSConnector.multiCollateral[
-            currency
-          ].LinearFinance.transfer(destination, amount, settings);
-        }
+      } else if (currency === "BNB") {
+        return lnrJSConnector.signer.sendTransaction({
+          value: amount,
+          to: destination,
+          ...settings,
+        });
       } else if (currency === "lUSD") {
         return lnrJSConnector.lnrJS[currency].transfer(
           destination,

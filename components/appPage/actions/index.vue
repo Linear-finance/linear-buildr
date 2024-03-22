@@ -291,8 +291,8 @@ export default {
         { name: "Transfer", url: "/transfer" },
       ],
       menuActions: [
-        { name: "Builder", url: "https://buildr.linear.finance/" },
-        { name: "Bridge", url: "https://buildr.linear.finance/bridge" },
+        { name: "Builder", url: "https://builder.linear.finance/" },
+        { name: "Bridge", url: "https://builder.linear.finance/bridge" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
         { name: "Dashboard", url: "https://dashboard.linear.finance/" },
         // { name: "Vault", url: "https://vault.linear.finance/" },

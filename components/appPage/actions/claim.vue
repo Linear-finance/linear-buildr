@@ -469,7 +469,7 @@ export default {
           multiCollateral["LINA"].LnRewardSystem.userLastClaimPeriodIds(
             walletAddress
           ),
-          multiCollateral["LINA"].LnRewardSystem.CLAIM_WINDOW_PERIOD_COUNT(),
+          multiCollateral["LINA"].LnRewardSystem.claimWindowPeriodCount(),
           fetch(apiUrl),
         ]);
 

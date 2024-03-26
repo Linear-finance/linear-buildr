@@ -477,16 +477,15 @@ export default {
         const lastClaimPeriodId = lastClaimPeriodIdRes.toNumber();
         const claimWindowPeriodCount = claimWindowPeriodCountRes.toNumber();
         const allRewardEntries = await allRewardEntriesRes.json();
-
         const minClaimPeriod =
           currentPeriodId < claimWindowPeriodCount
             ? 1
             : currentPeriodId - claimWindowPeriodCount;
-        const claimedReward = await lnr.feesClaimed(
-          this.walletAddress,
-          this.walletNetworkId,
-          minClaimPeriod
-        );
+        const claimedRewards = await lnr.feesClaimed({
+          account: this.walletAddress,
+          networkId: this.walletNetworkId,
+          minPeriodId: minClaimPeriod,
+        });
         const pendingRewardEntries = [];
         allRewardEntries.map((entry) => {
           // entry must between claimable period
@@ -494,18 +493,18 @@ export default {
             entry.periodId >= minClaimPeriod &&
             entry.periodId < currentPeriodId
           ) {
-            // check is reward already been claimed
-            const isRewardCLaimed = claimedReward.find(
-              (claim) =>
-                claim.collateralCurrency === entry.collateralCurrency &&
-                claim.periodId === entry.periodId
-            );
-            if (isRewardCLaimed === undefined) {
+            if (
+              claimedRewards === undefined ||
+              !claimedRewards.some(
+                (x) =>
+                  x.periodId === entry.periodId &&
+                  x.collateralCurrency === entry.collateralCurrency
+              )
+            ) {
               pendingRewardEntries.push(entry);
             }
           }
         });
-
         if (lastClaimPeriodId >= minClaimPeriod) {
           this.hasClaim = true;
         }

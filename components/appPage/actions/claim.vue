@@ -530,37 +530,6 @@ export default {
         } else {
           this.closeIn = "N/A";
         }
-
-        // this.feesAreClaimable = true;
-        // this.claimableReward = 1111000000;
-        // this.totalTradingRewards = 10000;
-        // this.totalStakingRewards = 11110000;
-        // this.staticStakingRewards = [
-        //   {
-        //     asset: "BNB",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: false,
-        //   },
-        //   {
-        //     asset: "LINA",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: true,
-        //   },
-        //   {
-        //     asset: "ETH",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: true,
-        //   },
-        //   {
-        //     asset: "WBTC",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: true,
-        //   },
-        // ];
       } catch (e) {
         console.log(e);
       } finally {

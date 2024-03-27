@@ -813,17 +813,21 @@ export default {
 
                 .multiCollateralContainer {
                   font-family: Gilroy;
-
+                  margin-bottom: 16px;
+                  margin-top: 12px;
+                  margin-left: 20px;
+                  margin-right: 20px;
+                  .stakedAssetContainer {
+                    font-weight: bold;
+                  }
                   .assetsTable,
                   .stakedAssetContainer {
                     display: flex;
                     justify-content: space-between;
-                    margin: 5px 20px;
+                    margin-top: 5px;
                     color: #5a575c;
                     font-family: $BodyTextFontFamily;
-                    font-size: 32px;
-                    font-weight: bold;
-                    margin-right: 6px;
+                    font-size: 16px;
                   }
                 }
 

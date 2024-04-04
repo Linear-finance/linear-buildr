@@ -477,16 +477,15 @@ export default {
         const lastClaimPeriodId = lastClaimPeriodIdRes.toNumber();
         const claimWindowPeriodCount = claimWindowPeriodCountRes.toNumber();
         const allRewardEntries = await allRewardEntriesRes.json();
-
         const minClaimPeriod =
           currentPeriodId < claimWindowPeriodCount
             ? 1
             : currentPeriodId - claimWindowPeriodCount;
-        const claimedReward = await lnr.feesClaimed(
-          this.walletAddress,
-          this.walletNetworkId,
-          minClaimPeriod
-        );
+        const claimedRewards = await lnr.feesClaimed({
+          account: this.walletAddress,
+          networkId: this.walletNetworkId,
+          minPeriodId: minClaimPeriod,
+        });
         const pendingRewardEntries = [];
         allRewardEntries.map((entry) => {
           // entry must between claimable period
@@ -494,18 +493,18 @@ export default {
             entry.periodId >= minClaimPeriod &&
             entry.periodId < currentPeriodId
           ) {
-            // check is reward already been claimed
-            const isRewardCLaimed = claimedReward.find(
-              (claim) =>
-                claim.collateralCurrency === entry.collateralCurrency &&
-                claim.periodId === entry.periodId
-            );
-            if (isRewardCLaimed === undefined) {
+            if (
+              claimedRewards === undefined ||
+              !claimedRewards.some(
+                (x) =>
+                  x.periodId === entry.periodId &&
+                  x.collateralCurrency === entry.collateralCurrency
+              )
+            ) {
               pendingRewardEntries.push(entry);
             }
           }
         });
-
         if (lastClaimPeriodId >= minClaimPeriod) {
           this.hasClaim = true;
         }
@@ -531,37 +530,6 @@ export default {
         } else {
           this.closeIn = "N/A";
         }
-
-        // this.feesAreClaimable = true;
-        // this.claimableReward = 1111000000;
-        // this.totalTradingRewards = 10000;
-        // this.totalStakingRewards = 11110000;
-        // this.staticStakingRewards = [
-        //   {
-        //     asset: "BNB",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: false,
-        //   },
-        //   {
-        //     asset: "LINA",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: true,
-        //   },
-        //   {
-        //     asset: "ETH",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: true,
-        //   },
-        //   {
-        //     asset: "WBTC",
-        //     stakingReward: 1,
-        //     tradingRewards: 1,
-        //     available: true,
-        //   },
-        // ];
       } catch (e) {
         console.log(e);
       } finally {
@@ -845,17 +813,21 @@ export default {
 
                 .multiCollateralContainer {
                   font-family: Gilroy;
-
+                  margin-bottom: 16px;
+                  margin-top: 12px;
+                  margin-left: 20px;
+                  margin-right: 20px;
+                  .stakedAssetContainer {
+                    font-weight: bold;
+                  }
                   .assetsTable,
                   .stakedAssetContainer {
                     display: flex;
                     justify-content: space-between;
-                    margin: 5px 20px;
+                    margin-top: 5px;
                     color: #5a575c;
                     font-family: $BodyTextFontFamily;
-                    font-size: 32px;
-                    font-weight: bold;
-                    margin-right: 6px;
+                    font-size: 16px;
                   }
                 }
 

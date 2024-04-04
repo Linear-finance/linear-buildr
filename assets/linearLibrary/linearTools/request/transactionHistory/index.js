@@ -30,8 +30,7 @@ export const fetchTransactionHistory = async (
   networkId = undefined
 ) => {
   try {
-    const [
-      Build,
+    let Build,
       burned,
       feesClaimed,
       collaterals,
@@ -39,21 +38,107 @@ export const fetchTransactionHistory = async (
       transfers,
       referrals,
       freeZes,
-      unfreezes,
-    ] = await Promise.all([
-      linearData.lnr.minted({ account: walletAddress, networkId }),
-      linearData.lnr.burned({ account: walletAddress, networkId }),
-      linearData.lnr.feesClaimed({ account: walletAddress, networkId }),
-      linearData.lnr.collateral({ account: walletAddress, networkId }),
-      linearData.lnr.redeemCollateral({
-        account: walletAddress,
-        networkId,
-      }),
-      linearData.lnr.transfer({ account: walletAddress, networkId }),
-      linearData.lnr.referral({ to: walletAddress, networkId }),
-      linearData.lnr.freeZe({ depositor: walletAddress, networkId }),
-      linearData.lnr.unfreeze({ recipient: walletAddress, networkId }),
-    ]);
+      unfreezes;
+
+    if (networkId == 1) {
+      [
+        Build,
+        burned,
+        feesClaimed,
+        collaterals,
+        redeemCollaterals,
+        transfers,
+        referrals,
+        freeZes,
+        unfreezes,
+      ] = await Promise.all([
+        linearData.lnr_eth.minted({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.burned({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.feesClaimed({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.collateral({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.redeemCollateral({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.transfer({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.referral({
+          to: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.freeZe({
+          depositor: walletAddress,
+          networkId,
+        }),
+        linearData.lnr_eth.unfreeze({
+          recipient: walletAddress,
+          networkId,
+        }),
+      ]);
+    } else {
+      [
+        Build,
+        burned,
+        feesClaimed,
+        collaterals,
+        redeemCollaterals,
+        transfers,
+        referrals,
+        freeZes,
+        unfreezes,
+      ] = await Promise.all([
+        linearData.lnr.minted({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.burned({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.feesClaimed({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.collateral({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.redeemCollateral({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.transfer({
+          account: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.referral({
+          to: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.freeZe({
+          depositor: walletAddress,
+          networkId,
+        }),
+        linearData.lnr.unfreeze({
+          recipient: walletAddress,
+          networkId,
+        }),
+      ]);
+    }
 
     let tempDataArr = [
       Build,

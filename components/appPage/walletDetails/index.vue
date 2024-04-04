@@ -2223,7 +2223,7 @@ export default {
             font-weight: 500;
             font-stretch: normal;
             font-style: normal;
-            line-height: 1.33;
+            // line-height: 1.33;
             letter-spacing: normal;
             color: #475a75;
             display: flex;
@@ -2231,10 +2231,10 @@ export default {
 
             .app-dark &:first-child {
               color: $darkFontColorLight;
-              font-size: 16px;
+              font-size: 12px;
               font-style: normal;
-              font-weight: 700;
-              line-height: 28px; /* 175% */
+              font-weight: 500;
+              // line-height: 28px; /* 175% */
             }
 
             &.obtrusive {

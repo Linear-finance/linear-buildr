@@ -902,7 +902,7 @@ export default {
       variant: "desktop",
       loading: false,
       ratioObj: {},
-      selectedAsset: collateralAssets[0],
+      selectedAsset: this.checkSelectedAsset(),
       showCollaterals: false,
       collateralAssets: collateralAssets,
       perAssetCurrentRatio: {},
@@ -1119,12 +1119,38 @@ export default {
     formatCollateral(value) {
       return formatNumber(value);
     },
+    checkSelectedAsset() {
+      if (!window.sessionStorage.getItem("selectedAsset")) {
+        window.sessionStorage.setItem("selectedAsset", 0);
+        this.$store.commit("setPortfolioAsset", collateralAssets[0].name);
+        this.selectedAsset = collateralAssets[0];
+        this.getdata();
+        this.checkLiquidation();
+        return this.selectedAsset;
+      } else {
+        const assetIndex = parseInt(
+          window.sessionStorage.getItem("selectedAsset")
+        );
+        this.$store.commit(
+          "setPortfolioAsset",
+          collateralAssets[assetIndex].name
+        );
+        this.selectedAsset = collateralAssets[assetIndex];
+        this.getdata();
+        this.checkLiquidation();
+        return this.selectedAsset;
+      }
+    },
     async onAssetSelect(item) {
       if (this.onDrag) return;
       const assetObj = collateralAssets.filter((asset) => asset.key == item)[0];
       this.loading = true;
       // this.$store.commit("setMultiCollateralAsset", item);
       this.$store.commit("setPortfolioAsset", item);
+      window.sessionStorage.setItem(
+        "selectedAsset",
+        collateralAssets.indexOf(assetObj)
+      );
       await this.getdata();
       this.selectedAsset = assetObj;
       await this.checkLiquidation();
@@ -1190,17 +1216,6 @@ export default {
         console.log(e, "wallet details check liquidation err");
       }
     },
-    async onAssetSelect(item) {
-      if (this.onDrag) return;
-      const assetObj = collateralAssets.filter((asset) => asset.key == item)[0];
-      this.loading = true;
-      // this.$store.commit("setMultiCollateralAsset", item);
-      this.$store.commit("setPortfolioAsset", item);
-      await this.getdata();
-      this.selectedAsset = assetObj;
-      await this.checkLiquidation();
-      this.loading = false;
-    },
 
     //liquidated清算倒计时
     liquidationCal() {
@@ -1261,13 +1276,6 @@ export default {
       staus &&
         this.$pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.WALLET);
       this.chainChanging = false;
-    },
-
-    //获取当前钱包详情数据
-    async getdata() {
-      // this.refreshing = true;
-      await storeDetailsData();
-      // this.refreshing = false;
     },
 
     //历史记录窗口状态改变

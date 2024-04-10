@@ -1,7 +1,7 @@
 {
-  "name": "linear-buildr",
+  "name": "linear-builder",
   "version": "1.0.0",
-  "description": "linear-buildr",
+  "description": "linear-builder",
   "author": "liquefy",
   "private": true,
   "scripts": {

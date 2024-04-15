@@ -223,7 +223,7 @@ export const INFURA_JSON_RPC_URLS = {
 export const ETHEREUM_CHAIN_OPTIONS: { [k: number]: any } = {
   56: {
     chainName: "BSC Mainnet",
-    rpcUrls: ["https://bsc-dataseed1.binance.org/"],
+    rpcUrls: ["https://bsc-dataseed3.ninicoin.io"],
     chainId: "0x38",
     nativeCurrency: {
       name: "BNB",

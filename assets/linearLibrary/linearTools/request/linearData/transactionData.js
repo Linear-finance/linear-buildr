@@ -392,6 +392,7 @@ module.exports = {
           selection: {
             where: {
               user: account ? `\\"${account}\\"` : undefined,
+              positionMarkedState: "1",
             },
           },
           properties: [

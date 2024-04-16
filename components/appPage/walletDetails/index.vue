@@ -464,7 +464,7 @@
                   class="countDown"
                   v-if="
                     multiCollateralValuesRatios &&
-                    multiCollateralValuesRatios[this.selectedAsset.key] < 200 &&
+                    multiCollateralValuesRatios[this.selectedAsset.key] < 350 &&
                     liquidationStatus &&
                     liquidationStatus.status &&
                     liquidationStatus.collateralCurrency ==
@@ -1197,6 +1197,7 @@ export default {
             this.$store.commit("setLiquidationStatus", {
               status: liquidationStatus[0].state,
               timestamp: liquidationStatus[0].timestamp / 1000,
+              collateralCurrency: liquidationStatus[0].collateralCurrency,
             });
 
             this.liquidationCal();
@@ -1209,6 +1210,7 @@ export default {
             this.$store.commit("setLiquidationStatus", {
               status: false,
               timestamp: 0,
+              collateralCurrency: "",
             });
           }
         }

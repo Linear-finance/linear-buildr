@@ -471,7 +471,7 @@
                       this.selectedAsset.contractKey
                   "
                 >
-                  Liquidating in {{ liquidationCountDown }}
+                  {{ liquidationCountDown }}
                 </div>
                 <div class="countDown" v-else></div>
               </div>
@@ -1224,13 +1224,13 @@ export default {
       let currentTimstamp = Math.round(new Date() / 1000);
       let liquidationWindow =
         this.$store.state?.liquidationStatus.timestamp +
-        172800 -
+        342800 -
         currentTimstamp;
 
       if (liquidationWindow < 0) {
         //已经过了三天窗口
         clearInterval(this.liquidationCountDownId);
-        this.liquidationCountDown = "0h 0m";
+        this.liquidationCountDown = "Open for liquidation";
         return;
       }
 
@@ -1239,9 +1239,14 @@ export default {
 
       if (liquidationWindowHour != 0) {
         this.liquidationCountDown =
-          liquidationWindowHour + "h " + liquidationWindowMinute + "m";
+          "Liquidating in " +
+          liquidationWindowHour +
+          "h " +
+          liquidationWindowMinute +
+          "m";
       } else {
-        this.liquidationCountDown = liquidationWindowMinute + "m";
+        this.liquidationCountDown =
+          "Liquidating in " + liquidationWindowMinute + "m";
       }
     },
 

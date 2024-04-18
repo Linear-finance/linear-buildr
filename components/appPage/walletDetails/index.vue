@@ -1224,7 +1224,7 @@ export default {
       let currentTimstamp = Math.round(new Date() / 1000);
       let liquidationWindow =
         this.$store.state?.liquidationStatus.timestamp +
-        342800 -
+        172800 -
         currentTimstamp;
 
       if (liquidationWindow < 0) {

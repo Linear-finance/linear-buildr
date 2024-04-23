@@ -80,8 +80,12 @@ export const getLiquids = async (wallet, all = false) => {
     for (const index in assetKeys) {
       const key = assetKeys[index]; //资产名称
       const balance = assetBalances[index]; //余额
-      let price = key == "lUSD" ? (price = n2bnForAsset(1)) : assetPrices[key]; //价格
-
+      try {
+        let price =
+          key == "lUSD" ? (price = n2bnForAsset(1)) : assetPrices[key]; //价格
+      } catch {
+        console.error("Failed to fetch price for: " + key);
+      }
       //如果不是获取所有且余额为0则跳过
       if (!all && balance.isZero()) {
         continue;
@@ -131,32 +135,33 @@ export const getPriceRates = async (currency) => {
 
   let contract,
     pricesPromise = [];
-  if (isEthereum) {
-    rates = await band.pricesLast({ sources: currency });
-  } else if (isBinance) {
-    contract = lnrJSConnector.lnrJS.LnOracleRouter;
-    if (_.isString(currency)) {
-      ["ETH", "BNB"].includes(currency) && (currency = "l" + currency);
-      rates[currency] = await contract.getPrice(
-        utils.formatBytes32String(currency)
-      );
-    } else if (_.isArray(currency)) {
-      for (let index = 0; index < currency.length; index++) {
-        let name = currency[index];
-        ["ETH", "BNB"].includes(name) && (name = "l" + name);
-        pricesPromise.push(contract.getPrice(utils.formatBytes32String(name)));
-      }
+  // if (isEthereum) {
+  //   console.log("happy")
+  //   rates = await band.pricesLast({ sources: currency });
+  //   console.log("happy1")
+  // } else if (isBinance) {
+  contract = lnrJSConnector.lnrJS.LnOracleRouter;
+  if (_.isString(currency)) {
+    ["ETH", "BNB"].includes(currency) && (currency = "l" + currency);
+    rates[currency] = await contract.getPrice(
+      utils.formatBytes32String(currency)
+    );
+  } else if (_.isArray(currency)) {
+    for (let index = 0; index < currency.length; index++) {
+      let name = currency[index];
+      ["ETH", "BNB"].includes(name) && (name = "l" + name);
+      pricesPromise.push(contract.getPrice(utils.formatBytes32String(name)));
+    }
 
-      let prices = await Promise.all(pricesPromise);
+    let prices = await Promise.all(pricesPromise);
 
-      for (let index = 0; index < currency.length; index++) {
-        const name = currency[index];
-        let price = prices[index];
-        rates[name] = price;
-      }
+    for (let index = 0; index < currency.length; index++) {
+      const name = currency[index];
+      let price = prices[index];
+      rates[name] = price;
     }
   }
-
+  // }
   return rates;
 };
 
@@ -223,14 +228,22 @@ export const getAllCollaterals = async (walletAddress) => {
   let amountDebtArrCollateral = [];
 
   const { multiCollateral } = lnrJSConnector;
-  for (let index = 0; index < collateralAssets.length; index++) {
-    const contract = multiCollateral[collateralAssets[index].key];
-    promiseArrCollateral.push(
-      contract.LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress)
-    );
-    amountDebtArrCollateral.push(
-      contract.LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
-    );
+  if (isEthereumNetwork) {
+    console.log("getAllCOllaterals");
+    const contract = multiCollateral[collateralAssets[0].key];
+    console.log(contract, "promiseArrCollateral", promiseArrCollateral);
+    promiseArrCollateral.push(0);
+    amountDebtArrCollateral.push(0);
+  } else {
+    for (let index = 0; index < collateralAssets.length; index++) {
+      const contract = multiCollateral[collateralAssets[index].key];
+      promiseArrCollateral.push(
+        contract.LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress)
+      );
+      amountDebtArrCollateral.push(
+        contract.LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
+      );
+    }
   }
 
   const totalCollaterals = await Promise.all(promiseArrCollateral);
@@ -324,15 +337,29 @@ export const storeDetailsData = async () => {
 
     let totalBalanceWithoutLusd = 0;
     let arr = [];
-    for (let index = 0; index < collateralAssets.length; index++) {
+
+    if (isEthereumNetwork) {
       let liquidsData = await getLiquids(walletAddress);
       const liquids2USD = formatEtherToNumber(liquidsData.liquids);
-      let totalCrypto = await totalCryptoBalanceInUSD(collateralAssets[index]);
+      let totalCrypto = await totalCryptoBalanceInUSD(collateralAssets[0]);
       arr.push(totalCrypto);
       totalBalanceWithoutLusd = arr.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
         liquids2USD
       );
+    } else {
+      for (let index = 0; index < collateralAssets.length; index++) {
+        let liquidsData = await getLiquids(walletAddress);
+        const liquids2USD = formatEtherToNumber(liquidsData.liquids);
+        let totalCrypto = await totalCryptoBalanceInUSD(
+          collateralAssets[index]
+        );
+        arr.push(totalCrypto);
+        totalBalanceWithoutLusd = arr.reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          liquids2USD
+        );
+      }
     }
     try {
       await store.commit("mergeWallet", {
@@ -361,10 +388,15 @@ export const storeDetailsData = async () => {
         provider.getBalance(walletAddress),
       ];
 
-      let promiseArrayTwo = [
-        lUSD.balanceOf(walletAddress),
-        LnRewardLocker.balanceOf(walletAddress),
-      ];
+      let promiseArrayTwo;
+      if (isEthereum) {
+        promiseArrayTwo = [0, 0];
+      } else {
+        promiseArrayTwo = [
+          lUSD.balanceOf(walletAddress),
+          LnRewardLocker.balanceOf(walletAddress),
+        ];
+      }
 
       const contractKey = getAssetObjectInfo(portfolioAsset).contractKey;
 

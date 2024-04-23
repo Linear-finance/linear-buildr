@@ -2,6 +2,7 @@ import _ from "lodash";
 
 // export const CRYPTO_CURRENCIES = ["ETH", "BNB", "LINA", "lUSD", "BTCB"];
 export const CRYPTO_CURRENCIES = ["ETH", "BNB", "LINA", "lUSD", "WBNB", "BTCB"];
+export const CRYPTO_CURRENCIES_ETH = ["ETH", "BNB", "LINA", "lUSD"];
 export const CRYPTO_CURRENCIES_API = {
   ETH: {
     id: "ethereum",

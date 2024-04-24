@@ -730,9 +730,7 @@ export default {
       this.confirmTransactionStep = unfreezeDatas.confirmTransactionStep;
       this.freezeSuccessHash = unfreezeDatas.freezeSuccessHash;
       this.sourceWalletType = unfreezeDatas.sourceWalletType;
-      this.sourceNetworkId = getOtherNetworks(
-        this.walletNetworkId
-      )[0].toString();
+      this.sourceNetworkId = getOtherNetworks(this.walletNetworkId).toString();
       this.confirmTransactionNetworkId = unfreezeDatas.targetNetworkId;
       this.sourceWalletAddress = this.walletAddress;
       this.targetNetworkId = this.walletNetworkId;

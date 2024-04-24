@@ -81,9 +81,9 @@ export const getLiquids = async (wallet, all = false) => {
     for (const index in assetKeys) {
       const key = assetKeys[index]; //资产名称
       const balance = assetBalances[index]; //余额
+      let price;
       try {
-        let price =
-          key == "lUSD" ? (price = n2bnForAsset(1)) : assetPrices[key]; //价格
+        price = key == "lUSD" ? (price = n2bnForAsset(1)) : assetPrices[key]; //价格
       } catch {
         console.error("Failed to fetch price for: " + key);
       }
@@ -224,6 +224,8 @@ async function totalCryptoBalanceInUSD(multiCollateralAsset) {
 }
 
 export const getAllCollaterals = async (walletAddress) => {
+  const walletNetworkId = $nuxt.$store.state.walletNetworkId;
+  const isEthereum = isEthereumNetwork(walletNetworkId);
   let globalAssetObj = {};
   let collateralObj = {};
   let amountDebtObj = {};
@@ -232,10 +234,14 @@ export const getAllCollaterals = async (walletAddress) => {
   let amountDebtArrCollateral = [];
 
   const { multiCollateral } = lnrJSConnector;
-  if (isEthereumNetwork) {
+  if (isEthereum) {
     const contract = multiCollateral[collateralAssets[0].key];
-    promiseArrCollateral.push(0);
-    amountDebtArrCollateral.push(0);
+    promiseArrCollateral.push(
+      contract.LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress)
+    );
+    amountDebtArrCollateral.push(
+      contract.LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
+    );
   } else {
     for (let index = 0; index < collateralAssets.length; index++) {
       const contract = multiCollateral[collateralAssets[index].key];

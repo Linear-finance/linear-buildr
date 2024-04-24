@@ -493,7 +493,6 @@ export default {
             entry.periodId >= minClaimPeriod &&
             entry.periodId < currentPeriodId
           ) {
-            console.log(claimedRewards);
             if (
               claimedRewards === undefined ||
               !claimedRewards.some(

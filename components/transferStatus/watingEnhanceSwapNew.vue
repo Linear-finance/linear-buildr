@@ -794,13 +794,13 @@ export default {
         this.checkStatus.stepType = -1;
         if (this.swapUnfreezeContinue) {
           this.targetNetworkId = this.walletNetworkId;
-          this.sourceNetworkId = getOtherNetworks(this.walletNetworkId)[0];
+          this.sourceNetworkId = getOtherNetworks(this.walletNetworkId);
         } else {
           //记录原始网络类型
           this.sourceNetworkId = this.walletNetworkId;
 
           //记录目标网络id
-          this.targetNetworkId = getOtherNetworks(this.walletNetworkId)[0];
+          this.targetNetworkId = getOtherNetworks(this.walletNetworkId);
         }
 
         //记录原始钱包类型

@@ -493,12 +493,15 @@ export default {
             entry.periodId >= minClaimPeriod &&
             entry.periodId < currentPeriodId
           ) {
+            console.log(claimedRewards);
             if (
               claimedRewards === undefined ||
               !claimedRewards.some(
                 (x) =>
                   x.periodId === entry.periodId &&
-                  x.collateralCurrency === entry.collateralCurrency
+                  (x.collateralCurrency === entry.collateralCurrency ||
+                    (x.collateralCurrency == "BNB" &&
+                      entry.collateralCurrency == "WBNB"))
               )
             ) {
               pendingRewardEntries.push(entry);

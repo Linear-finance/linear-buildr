@@ -6,6 +6,7 @@ import { band } from "@/assets/linearLibrary/linearTools/request/linearData/band
 import {
   CRYPTO_CURRENCIES,
   CRYPTO_CURRENCIES_API,
+  CRYPTO_CURRENCIES_ETH,
 } from "../constants/currency";
 import currencies, { LINA } from "@/common/currency";
 import {
@@ -135,33 +136,31 @@ export const getPriceRates = async (currency) => {
 
   let contract,
     pricesPromise = [];
-  // if (isEthereum) {
-  //   console.log("happy")
-  //   rates = await band.pricesLast({ sources: currency });
-  //   console.log("happy1")
-  // } else if (isBinance) {
-  contract = lnrJSConnector.lnrJS.LnOracleRouter;
-  if (_.isString(currency)) {
-    ["ETH", "BNB"].includes(currency) && (currency = "l" + currency);
-    rates[currency] = await contract.getPrice(
-      utils.formatBytes32String(currency)
-    );
-  } else if (_.isArray(currency)) {
-    for (let index = 0; index < currency.length; index++) {
-      let name = currency[index];
-      ["ETH", "BNB"].includes(name) && (name = "l" + name);
-      pricesPromise.push(contract.getPrice(utils.formatBytes32String(name)));
-    }
+  if (isEthereum) {
+    rates = await band.pricesLast({ sources: currency });
+  } else if (isBinance) {
+    contract = lnrJSConnector.lnrJS.LnOracleRouter;
+    if (_.isString(currency)) {
+      ["ETH", "BNB"].includes(currency) && (currency = "l" + currency);
+      rates[currency] = await contract.getPrice(
+        utils.formatBytes32String(currency)
+      );
+    } else if (_.isArray(currency)) {
+      for (let index = 0; index < currency.length; index++) {
+        let name = currency[index];
+        ["ETH", "BNB"].includes(name) && (name = "l" + name);
+        pricesPromise.push(contract.getPrice(utils.formatBytes32String(name)));
+      }
 
-    let prices = await Promise.all(pricesPromise);
+      let prices = await Promise.all(pricesPromise);
 
-    for (let index = 0; index < currency.length; index++) {
-      const name = currency[index];
-      let price = prices[index];
-      rates[name] = price;
+      for (let index = 0; index < currency.length; index++) {
+        const name = currency[index];
+        let price = prices[index];
+        rates[name] = price;
+      }
     }
   }
-  // }
   return rates;
 };
 
@@ -206,7 +205,12 @@ async function totalCryptoBalanceInUSD(multiCollateralAsset) {
   }
 
   const priceRateKey = multiCollateralAsset.contractKey;
-  const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
+  let priceRates;
+  if (isEthereum) {
+    priceRates = await getPriceRates(CRYPTO_CURRENCIES_ETH);
+  } else {
+    priceRates = await getPriceRates(CRYPTO_CURRENCIES);
+  }
   const LINA2USDRate = priceRates[priceRateKey] / 1e18 || 0;
   const amountLINA = avaliableLINA + stakedLina + formatEtherToNumber(lockLINA);
   const amountLINA2USD = amountLINA * LINA2USDRate;
@@ -229,9 +233,7 @@ export const getAllCollaterals = async (walletAddress) => {
 
   const { multiCollateral } = lnrJSConnector;
   if (isEthereumNetwork) {
-    console.log("getAllCOllaterals");
     const contract = multiCollateral[collateralAssets[0].key];
-    console.log(contract, "promiseArrCollateral", promiseArrCollateral);
     promiseArrCollateral.push(0);
     amountDebtArrCollateral.push(0);
   } else {
@@ -388,15 +390,10 @@ export const storeDetailsData = async () => {
         provider.getBalance(walletAddress),
       ];
 
-      let promiseArrayTwo;
-      if (isEthereum) {
-        promiseArrayTwo = [0, 0];
-      } else {
-        promiseArrayTwo = [
-          lUSD.balanceOf(walletAddress),
-          LnRewardLocker.balanceOf(walletAddress),
-        ];
-      }
+      const promiseArrayTwo = [
+        lUSD.balanceOf(walletAddress),
+        LnRewardLocker.balanceOf(walletAddress),
+      ];
 
       const contractKey = getAssetObjectInfo(portfolioAsset).contractKey;
 

@@ -21,7 +21,8 @@
         "LnAccessControl": "0x7b260D7851d9DC9EE27Dc8d6fAbDB2d568711708",
         "LnOracleRouter": "0x5Fc41756F83c30DAcEd47d1CE050081A21d95b8a",
         "LnRewardLocker": "0x6707e1B78DE157Aac4115ce09dBC4b699d89E331",
-        "LnErc20Bridge": "0x6546454a1C120A7D7a142C6FA9ba9Ef5E9B6185C",
+        "LnErc20Bridge": "0x2AF7cfAC4f6de78A8A9D4cFDe1fF17BC778fECD3",
+        "LnErc20MessageBroker": "0xc5F63CBBD6Dd02112C9d96F4AF2E7619Cd9e3c14",
         "LnExchangeSystem": "0x2C33d6Fa54bB6Fa81B3a569D639Fe23ab36cca7f",
         "LnPerpExchange": "0x22B822b0d0F1f282d28018aC3e319E3CB0c3F0ff",
         "LnPerpPositionToken": "0x0000000000000000000000000000000000000000"
@@ -117,6 +118,7 @@
         "LnOracleRouter": "0x475aa5fCdf2eAEAecE4F6E83121324cB293911AB",
         "LnRewardLocker": "0x66D60EDc3876b8aFefD324d4edf105fd5c4aBeDc",
         "LnErc20Bridge": "0xF6a9bAfBc505a4Bc25888dc6aeAc57184eb2685B",
+        "LnErc20MessageBroker": "0x5E9DFCeF9417B1c1366c3aFf2D0C39558d1232dD",
         "LnExchangeSystem": "0x2C33d6Fa54bB6Fa81B3a569D639Fe23ab36cca7f",
         "LnPerpExchange": "0x22B822b0d0F1f282d28018aC3e319E3CB0c3F0ff",
         "LnPerpPositionToken": "0x0000000000000000000000000000000000000000"
@@ -213,6 +215,7 @@
         "LnOracleRouter": "0x475aa5fCdf2eAEAecE4F6E83121324cB293911AB",
         "LnRewardLocker": "0x66D60EDc3876b8aFefD324d4edf105fd5c4aBeDc",
         "LnErc20Bridge": "0xF6a9bAfBc505a4Bc25888dc6aeAc57184eb2685B",
+        "LnErc20MessageBroker": "0x0000000000000000000000000000000000000000",
         "LnExchangeSystem": "0x2C33d6Fa54bB6Fa81B3a569D639Fe23ab36cca7f",
         "LnPerpExchange": "0x22B822b0d0F1f282d28018aC3e319E3CB0c3F0ff",
         "LnPerpPositionToken": "0x0000000000000000000000000000000000000000"
@@ -308,6 +311,7 @@
         "LnOracleRouter": "0x475aa5fCdf2eAEAecE4F6E83121324cB293911AB",
         "LnRewardLocker": "0x66D60EDc3876b8aFefD324d4edf105fd5c4aBeDc",
         "LnErc20Bridge": "0xF6a9bAfBc505a4Bc25888dc6aeAc57184eb2685B",
+        "LnErc20MessageBroker": "0x0000000000000000000000000000000000000000",
         "LnExchangeSystem": "0x2C33d6Fa54bB6Fa81B3a569D639Fe23ab36cca7f",
         "LnPerpExchange": "0x22B822b0d0F1f282d28018aC3e319E3CB0c3F0ff",
         "LnPerpPositionToken": "0x0000000000000000000000000000000000000000"
@@ -403,6 +407,7 @@
         "LnOracleRouter": "0x475aa5fCdf2eAEAecE4F6E83121324cB293911AB",
         "LnRewardLocker": "0x66D60EDc3876b8aFefD324d4edf105fd5c4aBeDc",
         "LnErc20Bridge": "0xF6a9bAfBc505a4Bc25888dc6aeAc57184eb2685B",
+        "LnErc20MessageBroker": "0x0000000000000000000000000000000000000000",
         "LnExchangeSystem": "0x2C33d6Fa54bB6Fa81B3a569D639Fe23ab36cca7f",
         "LnPerpExchange": "0x22B822b0d0F1f282d28018aC3e319E3CB0c3F0ff",
         "LnPerpPositionToken": "0x0000000000000000000000000000000000000000"

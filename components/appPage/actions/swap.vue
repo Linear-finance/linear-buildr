@@ -161,7 +161,7 @@
             }"
             @click="clickSwap"
           >
-            SWAP <template v-if="!isMobile">NOW</template>
+            Bridge is currently under construction<!-- SWAP <template v-if="!isMobile">NOW</template> -->
           </div>
 
           <Spin fix v-if="processing"></Spin>
@@ -280,7 +280,7 @@ export default {
     },
 
     swapDisabled() {
-      return !this.swapNumber || this.processing;
+      return true; //!this.swapNumber || this.processing;
     },
 
     walletType() {
@@ -1098,11 +1098,14 @@ export default {
             }
             .swapBtn {
               height: 48px;
-              font-size: 16px;
+              font-size: 14px;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.5;
               letter-spacing: 2px;
+              padding-left: 5px;
+              padding-right: 5px;
+              text-align: center;
             }
           }
         }

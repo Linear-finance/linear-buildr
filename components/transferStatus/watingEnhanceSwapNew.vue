@@ -193,7 +193,7 @@
             src="@/static/transferProgress/wellet_metamask.svg"
           />
           <!-- 需要approve -->
-
+          <!-- TODO New Picture of spending cap request -->
           <template v-else-if="shouldApprove">
             <thumbnail
               class="course"
@@ -248,7 +248,9 @@
           <template v-if="confirmTransactionStep > waitProcessArray.length - 1">
             Congratulations!</template
           >
-
+          <template v-else-if="confirmingBridging">
+            Awaiting Bridging confirmation
+          </template>
           <!-- 有错误 -->
           <template v-else-if="transactionErrMsg">
             Oops! Something is wrong.
@@ -257,7 +259,7 @@
           <template v-else-if="confirmTransactionStatus"> Loading... </template>
           <!-- 需要approve -->
           <template v-else-if="shouldApprove">
-            Approve address with Metamask</template
+            Set spending cap with Metamask</template
           >
           <!-- 在切链状态 -->
           <template v-else-if="confirmTransactionChainChanging">
@@ -279,6 +281,9 @@
           <template v-if="confirmTransactionStep > waitProcessArray.length - 1">
             Your transaction has been processed.</template
           >
+          <template v-else-if="confirmingBridging">
+            This may take a few minutes
+          </template>
 
           <!-- 有错误 -->
           <template v-else-if="transactionErrMsg">
@@ -522,7 +527,7 @@
             </div>
           </div>
 
-          <div class="dividerBox">
+          <!-- <div class="dividerBox">
             <ul>
               <li
                 v-for="(item, index) in waitProcessArray"
@@ -537,7 +542,7 @@
                 }"
               ></li>
             </ul>
-          </div>
+          </div> -->
         </div>
       </TabPane>
     </Tabs>
@@ -668,6 +673,7 @@ export default {
       chainChangedStatus: false, //是否已完成切链
       confirmTransactionChainChanging: false, //是否在切链状态
       confirmTransactionStatus: false, //确认交易状态
+      confirmingBridging: false,
       shouldApprove: false, //是否需要approve
       startWaitingBlocks: false, //开始的等待获取blocks
       canRefreshBlocks: true, //是否可以刷新blocks
@@ -726,12 +732,12 @@ export default {
     this.initStep();
   },
   mounted() {
+    if (this.swapUnfreezeContinue) {
+      this.confirmBridging();
+    }
+
     this.checkPrepare();
     // this.swapUnfreezeContinue = this.$store.state?.swapUnfreezeContinue;
-
-    if (this.swapUnfreezeContinue) {
-      this.checkContract();
-    }
   },
   methods: {
     //初始化进度信息
@@ -802,18 +808,6 @@ export default {
           if (this.checkStatus.stepType != -1) return;
         }
 
-        //双钱包连接
-        // if (currentStep < 2) {
-        //     //连接目标钱包
-        //     await this.connectToTargetWallet();
-        //     if (this.checkStatus.stepType != -1) return;
-        // }
-        // this.checkStatus.stepIndex++;
-
-        if (currentStep < 1) {
-          await this.checkSourceBalance();
-          if (this.checkStatus.stepType != -1) return;
-        }
         await this.checkContract();
       } catch (error) {
         //自定义错误
@@ -1098,7 +1092,7 @@ export default {
     },
 
     async startBridgeContract(swapNumber) {
-      this.confirmTransactionStatus = false;
+      this.confirmTransactionStatus = true;
 
       let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
         SETUP;
@@ -1113,7 +1107,12 @@ export default {
       const transactionSettings = {
         gasPrice: this.sourceGasPrice,
         gasLimit: DEFAULT_GAS_LIMIT.freeze,
-        value: this.ccipFee,
+        value: await lnrJSConnector.lnrJS.LnErc20MessageBroker.getFee(
+          utils.formatBytes32String("LINA"),
+          this.swapNumber.toString(),
+          getOtherNetworks(this.walletNetworkId),
+          this.walletAddress
+        ),
       };
 
       this.confirmTransactionNetworkId = this.walletNetworkId;
@@ -1127,7 +1126,7 @@ export default {
         utils.formatBytes32String(this.currency),
         swapNumber,
         this.targetNetworkId,
-        formatAddressToByte32(this.targetWalletAddress),
+        this.targetWalletAddress,
         transactionSettings
       );
 
@@ -1180,7 +1179,7 @@ export default {
         }
 
         const { utils } = lnrJSConnector;
-        console.log("formatNumber", formatNumber(swapNumber, 18));
+
         let gasEstimate = await LnBridge.estimateGas.deposit(
           utils.formatBytes32String(this.currency),
           swapNumber,
@@ -1196,12 +1195,13 @@ export default {
 
     async confirmBridging() {
       this.confirmTransactionStatus = false;
+      this.confirmingBridging = true;
 
       //清除自动进入流程
       this.swapUnfreezeContinue &&
         this.$store.commit("setSwapUnfreezeContinue", false);
 
-      let walletStatus;
+      let walletStatus = true;
 
       //监听手动切换事件
       // this.chainChangeTokenFromUnfreeze = this.$pub.subscribe(
@@ -1241,17 +1241,11 @@ export default {
             }`,
           });
         }
-        console.log(
-          "this.confirmTransactionStep: Unfreeze",
-          this.confirmTransactionStep
-        );
+
         this.confirmTransactionStep += 1;
-        console.log(
-          "this.confirmTransactionStep: Finished",
-          this.confirmTransactionStep
-        );
 
         this.$store.commit("setSwapUnfreezeDatas", {});
+        this.confirmingBridging = false;
       } else {
         throw {
           code: 6100004,
@@ -1346,7 +1340,7 @@ export default {
             }),
           ]);
 
-          console.log(sourceArray, targetArray, ++count);
+          // console.log(sourceArray, targetArray, ++count);
 
           //有存数据
           if (sourceArray.length) {
@@ -1392,10 +1386,7 @@ export default {
         this.walletAddress
       );
       const { utils } = lnrJSConnector;
-      console.log(utils.formatBytes32String("LINA"));
-      console.log(this.swapNumber.toString());
-      console.log(getOtherNetworks(this.walletNetworkId));
-      console.log(this.walletAddress);
+
       const ccipFee = formatEtherToNumber(
         await lnrJSConnector.lnrJS.LnErc20MessageBroker.getFee(
           utils.formatBytes32String("LINA"),
@@ -1404,10 +1395,8 @@ export default {
           this.walletAddress
         )
       );
-      console.log("ccipFee", ccipFee, utils.formatBytes32String("LINA"));
+
       const depositFee = await this.getDepositFee();
-      // console.log(freezeFee, "freezeFee");
-      // console.log(sourceBalance / 1e18, "sourceBalance");
 
       if (sourceBalance.lt(n2bn(depositFee + ccipFee))) {
         this.checkStatus.stepType = 1;
@@ -1461,7 +1450,7 @@ export default {
     //获取冻结手续费
     async getDepositFee() {
       let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-      const gasLimit = await this.getGasEstimateFromFreeze(
+      const gasLimit = await this.getGasEstimateDeposit(
         LnBridge,
         n2bn(this.swapNumber)
       );

@@ -161,7 +161,7 @@
             }"
             @click="clickSwap"
           >
-            Bridge is currently under construction<!-- SWAP <template v-if="!isMobile">NOW</template> -->
+            SWAP <template v-if="!isMobile">NOW</template>
           </div>
 
           <Spin fix v-if="processing"></Spin>
@@ -280,7 +280,7 @@ export default {
     },
 
     swapDisabled() {
-      return true; //!this.swapNumber || this.processing;
+      return !this.swapNumber || this.processing;
     },
 
     walletType() {
@@ -573,30 +573,21 @@ export default {
         lnr.freeZe({
           depositor: this.walletAddress,
           recipient: this.walletAddress,
-          networkId: getOtherNetworks(this.walletNetworkId),
+          networkId: this.walletNetworkId,
         }),
         lnr.unfreeze({
           depositor: this.walletAddress,
           recipient: this.walletAddress,
-          networkId: this.walletNetworkId,
+          networkId: getOtherNetworks(this.walletNetworkId),
         }),
       ]);
       //取不同存储记录
       const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
       if (diffArray.length) {
-        if (diffArray[0].destChainId === this.walletNetworkId) {
-          // Use contract to double check withdrawn result in case of subgraph delays
-          const contractResult =
-            await lnrJSConnector.lnrJS.LnErc20Bridge.withdrawnDeposits(
-              diffArray[0].destChainId,
-              diffArray[0].depositId
-            );
-          console.log(contractResult, "contractResult");
-          if (!contractResult) {
-            this.$store.commit("setSwapUnfreezeContinue", true);
-            this.frozenTokens = diffArray[0].source;
-            this.actionTabs = "m1";
-          }
+        if (diffArray[0].srcChainId === this.walletNetworkId) {
+          this.$store.commit("setSwapUnfreezeContinue", true);
+          this.frozenTokens = diffArray[0].source;
+          this.actionTabs = "m1";
         } else {
           this.initData();
         }

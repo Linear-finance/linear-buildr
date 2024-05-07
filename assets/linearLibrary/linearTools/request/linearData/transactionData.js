@@ -673,18 +673,7 @@ module.exports = {
             orderBy: "index",
             orderDirection: "desc",
             where: {
-              depositor: depositor
-                ? `\\"${depositor.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
-              recipient: recipient
-                ? `\\"${recipient.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
+              depositor_contains: depositor ? `\\"${depositor}\\"` : undefined,
               currency: source ? `\\"${source}\\"` : undefined,
             },
           },
@@ -748,18 +737,7 @@ module.exports = {
             orderBy: "index",
             orderDirection: "desc",
             where: {
-              depositor: depositor
-                ? `\\"${depositor.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
-              recipient: recipient
-                ? `\\"${recipient.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
+              depositor_contains: depositor ? `\\"${depositor}\\"` : undefined,
               currency: source ? `\\"${source}\\"` : undefined,
             },
           },
@@ -1444,18 +1422,7 @@ module.exports = {
             orderBy: "index",
             orderDirection: "desc",
             where: {
-              depositor: depositor
-                ? `\\"${depositor.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
-              recipient: recipient
-                ? `\\"${recipient.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
+              depositor_contains: depositor ? `\\"${depositor}\\"` : undefined,
               currency: source ? `\\"${source}\\"` : undefined,
             },
           },
@@ -1519,18 +1486,7 @@ module.exports = {
             orderBy: "index",
             orderDirection: "desc",
             where: {
-              depositor: depositor
-                ? `\\"${depositor.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
-              recipient: recipient
-                ? `\\"${recipient.replace(
-                    "0x",
-                    "0x000000000000000000000000"
-                  )}\\"`
-                : undefined,
+              depositor_contains: depositor ? `\\"${depositor}\\"` : undefined,
               currency: source ? `\\"${source}\\"` : undefined,
             },
           },

@@ -85,7 +85,7 @@ export const fetchTransactionHistory = async (
           networkId,
         }),
         linearData.lnr_eth.unfreeze({
-          recipient: walletAddress,
+          depositor: walletAddress,
           networkId,
         }),
       ]);
@@ -134,7 +134,7 @@ export const fetchTransactionHistory = async (
           networkId,
         }),
         linearData.lnr.unfreeze({
-          recipient: walletAddress,
+          depositor: walletAddress,
           networkId,
         }),
       ]);

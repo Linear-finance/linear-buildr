@@ -1,8 +1,9 @@
 <template>
   <div id="mainPage">
     <div class="container">
-      <landingPage v-if="!walletAddress"></landingPage>
-      <appPage v-else></appPage>
+      <!-- <landingPage v-if="!walletAddress"></landingPage> -->
+      <!-- <appPage v-else></appPage> -->
+      <appPage />
     </div>
   </div>
 </template>
@@ -25,8 +26,18 @@ export default {
      */
     if (params.sub) {
       if (common.SUBPAGE_OPTIONS[params.sub]) {
+        console.log("params.sub", params.sub);
+        console.log(
+          "common.WALLET_DETAILS_OPTIONS[params.sub]",
+          common.WALLET_DETAILS_OPTIONS[params.sub]
+        );
         store.commit("setCurrentAction", common.SUBPAGE_OPTIONS[params.sub]);
       } else if (common.WALLET_DETAILS_OPTIONS[params.sub]) {
+        console.log("params.sub", params.sub);
+        console.log(
+          "common.WALLET_DETAILS_OPTIONS[params.sub]",
+          common.WALLET_DETAILS_OPTIONS[params.sub]
+        );
         store.commit("setCurrentAction", 0);
 
         switch (params.sub) {

@@ -451,3 +451,30 @@ export {
   BRIDGE_ADDRESSES,
   WORMHOLE_NETWORK_IDS,
 };
+
+export async function getMetamaskNetwork() {
+  if (!window.ethereum) {
+    window.open(WALLET_EXTENSIONS.METAMASK);
+    return { name: "BSCMAINNET", networkId: 56 };
+  }
+  let networkId = 56;
+  try {
+    if (window.ethereum?.chainId) {
+      networkId = Number(window.ethereum?.chainId);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId,
+      };
+    } else if (window.ethereum?.networkVersion) {
+      networkId = Number(window.ethereum?.networkVersion);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId,
+      };
+    }
+    return { name: "BSCMAINNET", networkId };
+  } catch (e) {
+    console.log(e);
+    return { name: "BSCMAINNET", networkId };
+  }
+}

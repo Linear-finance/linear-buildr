@@ -9,7 +9,7 @@
       v-if="!mShowWallet"
     >
       <div
-        v-if="!isMobile"
+        v-if="walletAddress && !isMobile"
         class="chainChange"
         @click="isShowChainList = !isShowChainList"
       >
@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="info">
+      <div v-if="walletAddress" class="info">
         <div class="address">
           {{ abbreviateAddress }}
         </div>
@@ -97,7 +97,9 @@
 
         <div class="disconnect" @click.stop="disconnect">Disconnect</div>
       </div>
-
+      <div v-if="!walletAddress">
+        <ConnectWalletButton />
+      </div>
       <div class="info-themeSwitch">
         <theme-switch :variant="variant" />
       </div>
@@ -855,7 +857,7 @@ import lnrJSConnector, {
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
-
+import ConnectWalletButton from "@/components/appPage/walletDetails/connect/connectWalletButton";
 import expandMoreSvg from "@/components/svg/more";
 import {
   abbreviateAddress,
@@ -913,6 +915,7 @@ export default {
     };
   },
   components: {
+    ConnectWalletButton,
     ethereumSvg,
     binanceSvg,
     expandMoreSvg,
@@ -1401,7 +1404,7 @@ export default {
   .walletAndAddressBox {
     height: 120px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 
     // transform: translateX(-80px);
@@ -1575,7 +1578,7 @@ export default {
   .walletAndAddressBoxLight {
     height: 120px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     // transform: translateX(-80px);
 
@@ -2586,7 +2589,7 @@ export default {
     .walletAndAddressBox {
       height: 44px;
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-end;
       align-items: center;
       margin-top: 10px;
       margin-right: 16px;
@@ -2699,7 +2702,7 @@ export default {
     .walletAndAddressBoxLight {
       height: 44px;
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-end;
       align-items: center;
       margin-top: 10px;
       margin-right: 16px;

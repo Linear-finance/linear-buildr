@@ -298,7 +298,11 @@
             <gasEditor v-if="isMobile"></gasEditor>
           </div>
 
+          <div v-if="!this.walletAddress" class="transferBtn switchToBSC">
+            Please connect you wallet to use this feature
+          </div>
           <div
+            v-else
             class="transferBtn"
             :class="{ disabled: transferDisabled || walletError }"
             @click="clickTransfer"
@@ -442,13 +446,15 @@ export default {
     },
 
     canSendEthAmount() {
-      return (
-        this.currentSelectCurrency.balance -
-        lnrJSConnector.utils.formatEther(
-          this.$store.state?.gasDetails?.price.toString()
-        ) *
-          this.ethGasLimit
-      );
+      if (!this.walletAddress) return false;
+      else
+        return (
+          this.currentSelectCurrency.balance -
+          lnrJSConnector.utils.formatEther(
+            this.$store.state?.gasDetails?.price.toString()
+          ) *
+            this.ethGasLimit
+        );
     },
 
     isEthereumNetwork() {
@@ -510,6 +516,8 @@ export default {
 
     //初始化liquids列表
     async initLiquidsList() {
+      if (!this.walletAddress) return;
+
       this.processing = true;
       const { multiCollateral } = lnrJSConnector;
       const [linaBalance, walletBalance, liquids] = await Promise.all([
@@ -1300,6 +1308,25 @@ export default {
             &.disabled {
               cursor: not-allowed;
               opacity: 0.1;
+            }
+
+            &.switchToBSC {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              color: #1a38f8;
+              cursor: not-allowed;
+              background-color: #eff6ff;
+              text-transform: none;
+              &:hover {
+                &:not(.disabled) {
+                  background-color: #eff6ff;
+                }
+              }
             }
           }
         }

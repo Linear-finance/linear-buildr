@@ -163,8 +163,11 @@
             </div>
           </div>
 
+          <div v-if="!this.walletAddress" class="claimBtn switchToBSC">
+            Please connect you wallet to use this feature
+          </div>
           <div
-            v-if="!isEthereumNetwork"
+            v-else-if="!isEthereumNetwork"
             class="claimBtn"
             :class="{
               disabled: claimDisabled || isEthereumNetwork,

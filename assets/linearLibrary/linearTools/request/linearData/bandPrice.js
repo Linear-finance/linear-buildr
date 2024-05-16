@@ -5,6 +5,7 @@ const pageResults = require("graph-results-pager");
 const maxRequest = 1000;
 
 const graphAPIEndpoints = {
+  undefined: process.env.GRAPH_BAND_BINANCE_MAINNET,
   1: process.env.GRAPH_BAND_BINANCE_MAINNET,
   56: process.env.GRAPH_BAND_BINANCE_MAINNET,
   10001: process.env.GRAPH_BAND_BSCDEV,

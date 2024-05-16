@@ -292,9 +292,8 @@ export default {
         // } = lnrJSConnector;
 
         let trackData = { issuedDebt: 0, currentDebt: [] };
-        console.log(this.walletAddress);
+
         if (!this.walletAddress) {
-          console.log("no wallet");
           return {
             chartData: 0,
             tableData: [],

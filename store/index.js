@@ -144,7 +144,6 @@ export const mutations = {
   },
 
   setIsWalletOpen(state, status) {
-    console.log("setIsWalletOpen", state, status);
     state.isWalletOpen = status;
   },
 

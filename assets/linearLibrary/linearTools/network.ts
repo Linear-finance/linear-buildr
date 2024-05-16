@@ -290,8 +290,22 @@ export async function getBinanceNetwork() {
 export const getNetworkSpeeds = async (walletNetworkId: number) => {
   !walletNetworkId &&
     (walletNetworkId = window.$nuxt.$store.state?.walletNetworkId);
-
-  if (isDevNetwork(walletNetworkId)) {
+  if (!walletNetworkId) {
+    return {
+      [NETWORK_SPEEDS_TO_KEY.SLOW]: {
+        price: 0,
+        time: 0,
+      },
+      [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
+        price: 0,
+        time: 0,
+      },
+      [NETWORK_SPEEDS_TO_KEY.FAST]: {
+        price: 0,
+        time: 0,
+      },
+    };
+  } else if (isDevNetwork(walletNetworkId)) {
     return {
       [NETWORK_SPEEDS_TO_KEY.SLOW]: {
         price: 10,

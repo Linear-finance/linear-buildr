@@ -100,16 +100,19 @@
       <div v-if="!walletAddress">
         <ConnectWalletButton />
       </div>
-      <div class="info-themeSwitch">
-        <theme-switch :variant="variant" />
-      </div>
-
-      <div v-if="isMobile" class="mNetwork" @click="mShowWallet = true">
+      <div
+        v-if="isMobile && walletAddress"
+        class="mNetwork"
+        @click="mShowWallet = true"
+      >
         <ethereumSvg v-if="isEthereumNetwork" :selected="true" />
         <binanceSvg v-else :selected="true" />
         <div class="mNetworkName">
           {{ walletNetworkName }}
         </div>
+      </div>
+      <div class="info-themeSwitch">
+        <theme-switch :variant="variant" />
       </div>
       <div v-if="isMobile" @click="showTooltipModle" class="menu">
         <font-awesome-icon
@@ -1218,7 +1221,7 @@ export default {
           }
         }
       } catch (e) {
-        console.log(e, "wallet details check liquidation err");
+        console.error(e, "wallet details check liquidation err");
       }
     },
 
@@ -1592,7 +1595,8 @@ export default {
       border: 1px solid #475a75;
 
       &-themeSwitch {
-        margin-left: 16px;
+        margin-left: 8px;
+        margin-right: 8px;
       }
 
       .app-dark & {

@@ -498,7 +498,9 @@
           >
             BURN NOW
           </div>
-
+          <div v-else-if="!this.walletAddress" class="burnBtn switchToBSC">
+            Please connect your wallet to use this feature
+          </div>
           <div v-else class="burnBtn switchToBSC">
             Please switch to BSC network to burn your ℓ<span>USD</span>
           </div>
@@ -682,7 +684,9 @@ export default {
         this.errors.amountMsg ||
         this.errors.ratioMsg ||
         this.processing ||
-        (!this.burnData.staked && !this.burnData.lock)
+        (!this.burnData.staked && !this.burnData.lock) ||
+        !this.walletAddress ||
+        !this.selectedCollateral
       );
     },
 
@@ -858,11 +862,10 @@ export default {
 
     //点击 burn
     async clickBurn() {
-      const minCollateral = getAssetObjectInfo(
-        this.selectedCollateral.key
-      ).minCollateral;
-
       if (!this.burnDisabled) {
+        const minCollateral = getAssetObjectInfo(
+          this.selectedCollateral.key
+        ).minCollateral;
         try {
           if (this.isEthereumNetwork) {
             return;
@@ -2475,6 +2478,7 @@ export default {
 
             &.disabled {
               cursor: not-allowed;
+              opacity: 0.2;
             }
 
             &.switchToBSC {
@@ -2823,6 +2827,7 @@ export default {
 
               &.disabled {
                 cursor: not-allowed;
+                opacity: 0.2;
               }
             }
           }

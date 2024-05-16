@@ -201,6 +201,7 @@ export default {
 
     openQrcodeDisplay() {
       selectedWallet(SUPPORTED_WALLETS.WALLET_CONNECT);
+      window.location.reload();
     },
 
     //检查网络
@@ -211,23 +212,18 @@ export default {
     },
 
     async checkConnectToMetamask() {
-      console.log("Herro");
       const isSupported = await this.isNetworkSupported();
-      console.log("Herro1");
       if (isSupported) {
-        console.log("Herro2");
         await selectedWallet(SUPPORTED_WALLETS.METAMASK);
-        console.log("Herro3");
       } else {
         try {
-          console.log("Herro4");
           await addEthereumChain(56);
-          console.log("Herro5");
         } catch (error) {
           this.$store.commit("setSetupModal", true);
         }
       }
       this.$store.commit("setIsWalletOpen", false);
+      window.location.reload();
     },
   },
 };

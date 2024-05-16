@@ -513,7 +513,15 @@
             <gasEditor v-else-if="isMobile"></gasEditor>
           </div>
 
+          <div v-if="!this.walletAddress" class="buildBtn switchToBSC">
+            Please connect you wallet to use this feature
+          </div>
+          <div v-else-if="!isBinanceNetwork" class="buildBtn switchToBSC">
+            Please switch to BSC network to build your ℓ<span>USD</span>
+          </div>
+
           <div
+            v-else
             class="buildBtn"
             :class="{ disabled: buildDisabled }"
             @click="clickBuild"
@@ -730,7 +738,9 @@ export default {
         this.errors.amountMsg ||
         this.errors.ratioMsg ||
         this.processing ||
-        (this.isEthereumNetwork && _.lt(this.inputData.stake, 1))
+        (this.isEthereumNetwork && _.lt(this.inputData.stake, 1)) ||
+        !this.walletAddress ||
+        !this.selectedCollateral
       );
     },
 
@@ -1502,12 +1512,11 @@ export default {
      * 点击build
      */
     async clickBuild() {
-      const minCollateral = getAssetObjectInfo(
-        this.selectedCollateral.key
-      ).minCollateral;
-
       try {
         if (!this.buildDisabled) {
+          const minCollateral = getAssetObjectInfo(
+            this.selectedCollateral.key
+          ).minCollateral;
           if (this.isEthereumNetwork) {
             this.actionTabs = "m1"; //进入swap流程
           } else if (this.isBinanceNetwork) {
@@ -2412,7 +2421,10 @@ export default {
 
           .buildBtn {
             width: 100%;
+            display: flex;
             position: absolute;
+            align-items: center;
+            justify-content: center;
             bottom: 0px;
             height: 80px;
             line-height: 80px;
@@ -2439,6 +2451,26 @@ export default {
 
             &.disabled {
               cursor: not-allowed;
+              opacity: 0.2;
+            }
+
+            &.switchToBSC {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              color: #1a38f8;
+              cursor: not-allowed;
+              background-color: #eff6ff;
+              text-transform: none;
+              &:hover {
+                &:not(.disabled) {
+                  background-color: #eff6ff;
+                }
+              }
             }
           }
         }
@@ -2764,6 +2796,26 @@ export default {
 
               &.disabled {
                 cursor: not-allowed;
+                opacity: 0.2;
+              }
+
+              &.switchToBSC {
+                font-family: $BodyTextFontFamily;
+                font-size: 16px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.5;
+                letter-spacing: normal;
+                color: #1a38f8;
+                cursor: not-allowed;
+                background-color: #eff6ff;
+                text-transform: none;
+                &:hover {
+                  &:not(.disabled) {
+                    background-color: #eff6ff;
+                  }
+                }
               }
             }
           }

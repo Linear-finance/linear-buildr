@@ -76,13 +76,10 @@ export default {
   },
   async mounted() {
     try {
-      console.log(this.$store.state?.walletConnect);
-      console.log(this.$store.state?.autoConnect);
       if (
         !this.$store.state?.walletConnectStatus &&
         this.$store.state?.autoConnect
       ) {
-        console.log("running");
         if (this.$store.state?.walletType == SUPPORTED_WALLETS.METAMASK) {
           const status = await this.checkNetwork();
           if (status) {

@@ -43,7 +43,11 @@ export default {
 
 <style lang="scss" scoped>
 #connect-btn {
-  width: 300px;
+  min-width: 200px;
+  margin-right: 8px;
+  margin-left: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
   height: 32px;
   border-radius: 16px;
   display: flex;

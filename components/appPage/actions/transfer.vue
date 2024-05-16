@@ -299,7 +299,7 @@
           </div>
 
           <div v-if="!this.walletAddress" class="transferBtn switchToBSC">
-            Please connect you wallet to use this feature
+            Please connect your wallet to use this feature
           </div>
           <div
             v-else

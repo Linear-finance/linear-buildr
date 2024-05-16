@@ -514,7 +514,7 @@
           </div>
 
           <div v-if="!this.walletAddress" class="buildBtn switchToBSC">
-            Please connect you wallet to use this feature
+            Please connect your wallet to use this feature
           </div>
           <div v-else-if="!isBinanceNetwork" class="buildBtn switchToBSC">
             Please switch to BSC network to build your ℓ<span>USD</span>

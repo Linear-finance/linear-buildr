@@ -1,6 +1,6 @@
 <template>
   <div id="connect-btn" @click="openWallet()">
-    CONNECT WALLET
+    {{ isMobile ? "CONNECT" : "CONNECT WALLET" }}
     <Wallet />
   </div>
 </template>
@@ -22,8 +22,23 @@ export default {
       isWalletModalOpen: false,
     };
   },
-  watch: {},
-  computed: {},
+  watch: {
+    isMobile: {
+      handler(mobile) {
+        if (mobile === true) {
+          this.variant = "mobile";
+        } else {
+          this.variant = "desktop";
+        }
+      },
+      immediate: true,
+    },
+  },
+  computed: {
+    isMobile() {
+      return this.$store.state.isMobile;
+    },
+  },
   mounted() {},
   methods: {
     async checkNetwork() {
@@ -43,7 +58,7 @@ export default {
 
 <style lang="scss" scoped>
 #connect-btn {
-  min-width: 200px;
+  min-width: 100px;
   margin-right: 8px;
   margin-left: 8px;
   padding-left: 10px;

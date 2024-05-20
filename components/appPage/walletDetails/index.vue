@@ -107,7 +107,7 @@
       >
         <ethereumSvg v-if="isEthereumNetwork" :selected="true" />
         <binanceSvg v-else :selected="true" />
-        <div class="mNetworkName">
+        <div v-if="!isMobile" class="mNetworkName">
           {{ walletNetworkName }}
         </div>
       </div>
@@ -1426,7 +1426,8 @@ export default {
       border: 1px solid #fff;
 
       &-themeSwitch {
-        margin-left: 16px;
+        margin-left: 8px;
+        margin-right: 8px;
       }
 
       .app-dark & {
@@ -1578,6 +1579,7 @@ export default {
     }
     .menu {
       margin-left: 8px;
+      margin-right: 8px;
       cursor: pointer;
     }
   }
@@ -2667,7 +2669,9 @@ export default {
       .mNetwork {
         display: flex;
         align-items: center;
-        padding: 8px 12px;
+        padding: 8px 8px;
+        margin-right: 8px;
+        margin-left: 8px;
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
         border-radius: 16px;
@@ -2779,7 +2783,9 @@ export default {
       .mNetwork {
         display: flex;
         align-items: center;
-        padding: 8px 12px;
+        padding: 8px 8px;
+        margin-right: 8px;
+        margin-left: 8px;
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
         border-radius: 16px;
@@ -2788,7 +2794,7 @@ export default {
         #binanceSvg {
           width: 16px;
           height: 16px;
-          margin-right: 4px;
+          // margin-right: 4px;
         }
 
         .mNetworkName {

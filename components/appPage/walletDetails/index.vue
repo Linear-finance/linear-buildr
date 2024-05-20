@@ -1293,6 +1293,8 @@ export default {
 
     //历史记录窗口状态改变
     transactionModalClick() {
+      if (!this.walletAddress) return;
+
       this.transactionStatus = !this.transactionStatus;
       this.$pub.publish("transactionModalChange", this.transactionStatus);
 
@@ -1310,6 +1312,8 @@ export default {
 
     //踪迹窗口状态改变
     trackModalClick() {
+      if (!this.walletAddress) return;
+
       this.trackStatus = !this.trackStatus;
       this.$pub.publish("trackModalChange", this.trackStatus);
 

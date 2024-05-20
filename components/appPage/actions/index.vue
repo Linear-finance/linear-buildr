@@ -329,7 +329,7 @@ export default {
   },
   watch: {
     isMobile() {},
-
+    walletAddress() {},
     //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
     currentAction() {},
     theme: {
@@ -346,6 +346,10 @@ export default {
 
     isMobile() {
       return this.$store.state.isMobile;
+    },
+
+    walletAddress() {
+      return this.$store.state?.wallet?.address;
     },
 
     isTransaction() {
@@ -385,8 +389,10 @@ export default {
       //正在交易中无法点击其他按钮
       if (!this.isTransaction) {
         this.$store.commit("setIsShowTooltipModle", false);
-
-        if (this.currentAction != action) {
+        if (!this.walletAddress) {
+          this.$store.commit("setCurrentAction", 0);
+          this.$router.push("/");
+        } else if (this.currentAction != action) {
           this.$store.commit("setCurrentAction", action);
           const path = common.SUBPAGE_OPTIONS_MAP[action];
           if (path !== undefined) {

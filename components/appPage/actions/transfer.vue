@@ -298,8 +298,12 @@
             <gasEditor v-if="isMobile"></gasEditor>
           </div>
 
-          <div v-if="!this.walletAddress" class="transferBtn switchToBSC">
-            Please connect your wallet to use this feature
+          <div
+            v-if="!this.walletAddress"
+            class="transferBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            Buy Lina to get started!
           </div>
           <div
             v-else
@@ -330,6 +334,7 @@
         </div>
       </TabPane>
     </Tabs>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -391,7 +396,7 @@ export default {
       waitProcessArray: [],
       waitProcessFlow: Function,
       BUILD_PROCESS_SETUP: { ...BUILD_PROCESS_SETUP },
-
+      showPopup: false,
       currencyList: [
         {
           name: "LINA",
@@ -506,6 +511,9 @@ export default {
       this.errors.stakeMsg = "";
       this.errors.amountMsg = "";
       this.errors.ratioMsg = "";
+    },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
     async selectCurrencyFun(index) {
       this.transactionErrMsg = "";
@@ -1310,7 +1318,7 @@ export default {
               opacity: 0.1;
             }
 
-            &.switchToBSC {
+            &.noWallet {
               font-family: $BodyTextFontFamily;
               font-size: 16px;
               font-weight: bold;
@@ -1318,15 +1326,7 @@ export default {
               font-style: normal;
               line-height: 1.5;
               letter-spacing: normal;
-              color: #1a38f8;
-              cursor: not-allowed;
-              background-color: #eff6ff;
               text-transform: none;
-              &:hover {
-                &:not(.disabled) {
-                  background-color: #eff6ff;
-                }
-              }
             }
           }
         }

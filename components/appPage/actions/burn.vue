@@ -498,8 +498,12 @@
           >
             BURN NOW
           </div>
-          <div v-else-if="!this.walletAddress" class="burnBtn switchToBSC">
-            Please connect your wallet to use this feature
+          <div
+            v-if="!this.walletAddress"
+            class="burnBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            Buy Lina to get started!
           </div>
           <div v-else class="burnBtn switchToBSC">
             Please switch to BSC network to burn your ℓ<span>USD</span>
@@ -538,6 +542,7 @@
         fluctuations in pledge tokens.
       </div>
     </Modal>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -621,7 +626,7 @@ export default {
       transactionErrMsg: "", //交易错误信息
       waitProcessArray: [], //等待交易进度组
       waitProcessFlow: Function, //flow闭包函数
-
+      showPopup: false,
       introductActionModal: false,
 
       //输入框展示数据
@@ -741,6 +746,9 @@ export default {
       this.errors.stakeMsg = "";
       this.errors.amountMsg = "";
       this.errors.ratioMsg = "";
+    },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
     //获取数据
     async getBurnData(walletAddress) {
@@ -2498,6 +2506,17 @@ export default {
                   background-color: #eff6ff;
                 }
               }
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
             }
           }
         }

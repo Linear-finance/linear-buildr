@@ -513,8 +513,12 @@
             <gasEditor v-else-if="isMobile"></gasEditor>
           </div>
 
-          <div v-if="!this.walletAddress" class="buildBtn switchToBSC">
-            Please connect your wallet to use this feature
+          <div
+            v-if="!this.walletAddress"
+            class="buildBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            Buy Lina to get started!
           </div>
           <div v-else-if="!isBinanceNetwork" class="buildBtn switchToBSC">
             Please switch to BSC network to build your ℓ<span>USD</span>
@@ -2471,6 +2475,18 @@ export default {
                   background-color: #eff6ff;
                 }
               }
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              background-color: #eff6ff;
+              text-transform: none;
             }
           }
         }

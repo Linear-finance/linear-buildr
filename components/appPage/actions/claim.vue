@@ -163,8 +163,12 @@
             </div>
           </div>
 
-          <div v-if="!this.walletAddress" class="claimBtn switchToBSC">
-            Please connect your wallet to use this feature
+          <div
+            v-if="!this.walletAddress"
+            class="claimBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            Buy Lina to get started!
           </div>
           <div
             v-else-if="!isEthereumNetwork"
@@ -222,6 +226,7 @@
         {{ this.modalText }}
       </div>
     </Modal>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -268,6 +273,7 @@ export default {
       hasClaim: false, //有没有claim过
       claimableRewardEntries: undefined,
       modalText: "",
+      showPopup: false,
     };
   },
   created() {
@@ -335,6 +341,9 @@ export default {
           this.modalText =
             "Reward can only be claimed when target ratio is reached.";
       }
+    },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
     //点击 claim
     async clickClaim() {
@@ -994,6 +1003,23 @@ export default {
               color: #1a38f8;
               cursor: not-allowed;
               background-color: #eff6ff;
+              text-transform: none;
+
+              &:hover {
+                &:not(.disabled) {
+                  background-color: #eff6ff;
+                }
+              }
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
               text-transform: none;
 
               &:hover {

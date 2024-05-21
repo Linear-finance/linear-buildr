@@ -24,7 +24,7 @@ export default {
     /***
      * 设置子页
      */
-    if (params.sub && this.walletAddress) {
+    if (params.sub) {
       if (common.SUBPAGE_OPTIONS[params.sub]) {
         store.commit("setCurrentAction", common.SUBPAGE_OPTIONS[params.sub]);
       } else if (common.WALLET_DETAILS_OPTIONS[params.sub]) {

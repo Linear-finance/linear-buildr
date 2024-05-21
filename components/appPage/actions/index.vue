@@ -253,7 +253,7 @@
 <script>
 import homePage from "@/components/appPage/actions/homePage";
 import notificationQueue from "@/components/notification/notificationQueue.vue";
-
+import linkModal from "@/components/linkModal.vue";
 import build from "@/components/appPage/actions/build";
 import burn from "@/components/appPage/actions/burn";
 import claim from "@/components/appPage/actions/claim";
@@ -279,6 +279,7 @@ export default {
     notificationQueue,
     transactionModal,
     ThemeSwitch,
+    linkModal,
   },
   data() {
     return {
@@ -389,10 +390,7 @@ export default {
       //正在交易中无法点击其他按钮
       if (!this.isTransaction) {
         this.$store.commit("setIsShowTooltipModle", false);
-        if (!this.walletAddress) {
-          this.$store.commit("setCurrentAction", 0);
-          this.$router.push("/");
-        } else if (this.currentAction != action) {
+        if (this.currentAction != action) {
           this.$store.commit("setCurrentAction", action);
           const path = common.SUBPAGE_OPTIONS_MAP[action];
           if (path !== undefined) {

@@ -1337,12 +1337,12 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #transfer {
-    min-height: 550px;
+    min-height: 600px;
 
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
-      min-height: 550px;
+      min-height: 600px;
 
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -1357,8 +1357,8 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .transferBox,
           .waitingBox,
@@ -1366,7 +1366,7 @@ export default {
           .failBox {
             width: 100%;
             height: 100%;
-            min-height: 550px;
+            min-height: 600px;
             display: flex;
             justify-content: center;
             -webkit-justify-content: center;

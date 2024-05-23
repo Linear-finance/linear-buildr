@@ -159,6 +159,22 @@ export const findParents = ($el, $className) => {
   }
 };
 
+export const findChildren = ($el, $className) => {
+  try {
+    let childNodes = $el.childNodes;
+    for (let childNode of childNodes) {
+      if (
+        childNode.className &&
+        childNode.className.indexOf($className) !== -1
+      ) {
+        return childNode;
+      }
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};
 /**
  * 删除class
  * @param {Element} el  当前dom元素

@@ -1037,10 +1037,10 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #claim {
-    min-height: 550px;
+    min-height: 600px;
 
     .actionTabs {
-      min-height: 550px;
+      min-height: 600px;
 
       .ivu-tabs-bar {
         display: none;
@@ -1051,8 +1051,8 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .claimBox,
           .waitingBox,
@@ -1060,7 +1060,7 @@ export default {
           .failBox {
             width: 100%;
             height: 100%;
-            min-height: 550px;
+            min-height: 600px;
           }
 
           .claimBox {
@@ -1105,6 +1105,7 @@ export default {
             }
 
             .actionBody {
+              margin-top: 25px;
               display: flex;
               flex-direction: column;
               align-items: center;

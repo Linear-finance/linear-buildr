@@ -2556,7 +2556,7 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
   #walletDetails {
     width: 10vw;
-    position: fixed;
+    position: absolute;
     right: 0;
     top: 0;
     min-height: 100% !important;
@@ -2601,11 +2601,11 @@ export default {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      margin-top: 10px;
+      // margin-top: 10px;
       margin-right: 16px;
-      position: absolute;
+      position: relative;
       right: 0px;
-      top: 0;
+      top: 10px;
 
       .info {
         width: 294px;

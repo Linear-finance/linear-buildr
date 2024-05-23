@@ -92,12 +92,14 @@ export default {
 
 <style lang="scss">
 #appPage {
+  height: 100%;
   display: flex;
   padding: 0 120px 64px;
 }
 
 @media only screen and (max-width: $max-phone-width) {
   #appPage {
+    height: 100%;
     display: flex;
     padding: 0 16px 16px 16px;
   }

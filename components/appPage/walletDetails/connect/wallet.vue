@@ -201,7 +201,6 @@ export default {
 
     openQrcodeDisplay() {
       selectedWallet(SUPPORTED_WALLETS.WALLET_CONNECT);
-      window.location.reload();
     },
 
     //检查网络
@@ -239,6 +238,7 @@ export default {
 
       .ivu-modal {
         width: 716px !important;
+        max-width: 90vw;
         top: 0px;
 
         .ivu-modal-content {
@@ -252,10 +252,13 @@ export default {
 
               .walletSelectBox {
                 width: 716px;
-                height: 637px;
+                max-width: 90vw;
+                height: 100%;
+                max-height: 100vh;
                 border-radius: 16px;
                 background-color: #ffffff;
                 padding: 40px;
+                // margin: 20px;
 
                 .top {
                   display: flex;
@@ -263,6 +266,9 @@ export default {
                   width: 100%;
 
                   .button {
+                    position: absolute;
+                    right: 5px;
+                    top: 5px;
                     width: 40px;
                     height: 40px;
                     margin-left: 190px;
@@ -276,7 +282,9 @@ export default {
                   }
 
                   .title {
+                    width: 100%;
                     margin: 4px 0px 4px 0px;
+                    text-align: center;
                     font-family: $BodyTextFontFamily;
                     font-size: 24px;
                     font-weight: bold;
@@ -299,19 +307,30 @@ export default {
                   display: flex;
                   justify-content: space-between;
                   margin: 0 auto;
+                  flex-direction: column;
+                  align-items: center;
+                  @media (min-width: 500px) {
+                    flex-direction: row;
+                  }
 
                   .item {
                     display: flex;
                     cursor: pointer;
                     width: 306px;
-                    height: 461px;
+                    max-height: 461px;
+                    height: 100%;
                     border-radius: 8px;
                     border: solid 1px #e5e5e5;
                     align-items: center;
                     justify-content: flex-start;
                     transition: 1s linear;
-                    padding: 117px 32px 151px;
+                    padding: 20px 32px 20px;
                     flex-direction: column;
+                    margin-bottom: 20px;
+
+                    @media (min-width: 500px) {
+                      margin-bottom: 0px;
+                    }
 
                     .logo {
                       width: 80px;
@@ -330,7 +349,7 @@ export default {
                       text-align: center;
                       color: #5a575c;
                       margin-bottom: 8px;
-                      margin-top: 49px;
+                      margin-top: 20px;
                     }
 
                     .itemTitle {
@@ -360,21 +379,30 @@ export default {
               align-items: center;
 
               .walletConnectBox {
+                max-width: 90vw;
+                max-height: 100vh;
                 width: 716px;
                 height: 637px;
                 border-radius: 16px;
                 background-color: #ffffff;
-                padding: 40px;
+                padding: 50px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
 
                 .top {
                   display: flex;
                   flex-direction: row-reverse;
+                  justify-content: center;
                   width: 100%;
 
                   .closeButton {
+                    position: absolute;
+                    right: 5px;
+                    top: 5px;
                     width: 40px;
                     height: 40px;
-                    margin-left: 165px;
+                    // margin-left: 165px;
                     cursor: pointer;
 
                     &:hover {
@@ -389,15 +417,20 @@ export default {
                     font-weight: bold;
                     line-height: 1.33;
                     color: #5a575c;
+                    // width: 100%;
+                    text-align: center;
                   }
 
                   .logo {
                     width: 40px;
                     height: 40px;
-                    margin-left: 165px;
+                    // margin-left: 165px;
                   }
 
                   .returnButton {
+                    position: absolute;
+                    left: 5px;
+                    top: 5px;
                     width: 40px;
                     height: 40px;
                     cursor: pointer;
@@ -405,7 +438,8 @@ export default {
                 }
 
                 .boxTitle {
-                  margin-top: 8px;
+                  width: 100%;
+                  margin: 8px 0 8px 0;
                   font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   line-height: 1.5;
@@ -451,6 +485,9 @@ export default {
                 .canvas {
                   text-align: center;
                   margin: 32px 104px 40px;
+                  // height: auto !important;
+                  // width: inherit !important;
+                  max-width: 80vw;
                 }
               }
             }

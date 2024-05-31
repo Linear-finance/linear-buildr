@@ -864,7 +864,7 @@ export default {
     .tooltipModle {
       position: fixed;
       width: 100vw;
-      height: 100vh;
+      height: 100%;
       z-index: 9999;
       overflow-y: auto;
 
@@ -884,7 +884,7 @@ export default {
         right: 0;
         width: 106vw;
         max-width: 600px;
-        height: 100vh;
+        height: 100%;
         background-image: url("/img/menu/menu.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;

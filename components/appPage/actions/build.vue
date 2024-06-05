@@ -518,7 +518,7 @@
             class="buildBtn noWallet"
             @click.stop="toggleModal"
           >
-            Buy Lina to get started!
+            BUY LINA
           </div>
           <div v-else-if="!isBinanceNetwork" class="buildBtn switchToBSC">
             Please switch to BSC network to build your ℓ<span>USD</span>

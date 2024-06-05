@@ -168,7 +168,7 @@
             class="claimBtn noWallet"
             @click.stop="toggleModal"
           >
-            Buy Lina to get started!
+            BUY LINA
           </div>
           <div
             v-else-if="!isEthereumNetwork"

@@ -150,11 +150,19 @@
             <div v-if="!isMobile" class="someWrong" v-show="errors.amountMsg">
               {{ errors.amountMsg }}
             </div>
-            <gasEditorSwap></gasEditorSwap>
+            <gasEditorSwap v-if="walletAddress"></gasEditorSwap>
             <!-- v-if="actionTabs == 'm0'" -->
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="swapBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div
+            v-else
             class="swapBtn"
             :class="{
               disabled: swapDisabled,
@@ -948,6 +956,17 @@ export default {
             &.disabled {
               opacity: 0.1;
               cursor: not-allowed;
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
             }
 
             &.swapBtnActivited {

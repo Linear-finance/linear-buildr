@@ -303,7 +303,7 @@
             class="transferBtn noWallet"
             @click.stop="toggleModal"
           >
-            Buy Lina to get started!
+            BUY LINA
           </div>
           <div
             v-else

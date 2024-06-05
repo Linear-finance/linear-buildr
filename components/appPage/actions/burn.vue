@@ -479,7 +479,7 @@
             class="burnBtn noWallet"
             @click.stop="toggleModal"
           >
-            Buy Lina to get started!
+            BUY LINA
           </div>
           <div v-else-if="!isBinanceNetwork" class="burnBtn switchToBSC">
             Please switch to BSC network to burn your ℓ<span>USD</span>

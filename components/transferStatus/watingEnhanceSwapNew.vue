@@ -573,7 +573,7 @@ import {
 import api from "@/api";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";
-import { providers } from "ethers";
+import { ethers, providers } from "ethers";
 import Web3Connector from "~/assets/linearLibrary/linearJs/web3Connector";
 import signers from "~/assets/linearLibrary/linearJs/lib/signers";
 import {
@@ -1109,7 +1109,7 @@ export default {
         gasLimit: DEFAULT_GAS_LIMIT.freeze,
         value: await lnrJSConnector.lnrJS.LnErc20MessageBroker.getFee(
           utils.formatBytes32String("LINA"),
-          this.swapNumber.toString(),
+          ethers.utils.parseUnits(this.swapNumber.toString(), 18).toString(),
           getOtherNetworks(this.walletNetworkId),
           this.walletAddress
         ),
@@ -1390,7 +1390,7 @@ export default {
       const ccipFee = formatEtherToNumber(
         await lnrJSConnector.lnrJS.LnErc20MessageBroker.getFee(
           utils.formatBytes32String("LINA"),
-          this.swapNumber.toString(),
+          ethers.utils.parseUnits(this.swapNumber.toString(), 18).toString(),
           getOtherNetworks(this.walletNetworkId),
           this.walletAddress
         )

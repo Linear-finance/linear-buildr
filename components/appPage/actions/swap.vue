@@ -258,7 +258,10 @@ export default {
     };
   },
   watch: {
-    walletAddress() {},
+    walletAddress() {
+      this.initCurrencies();
+      this.initData();
+    },
     isEthereumNetwork() {},
     isBinanceNetwork() {},
     walletNetworkId() {},

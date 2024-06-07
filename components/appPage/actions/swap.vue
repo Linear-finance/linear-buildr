@@ -184,6 +184,7 @@
         ></watingEnhanceSwapNew>
       </TabPane>
     </Tabs>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -250,7 +251,7 @@ export default {
 
       selectCurrencyIndex: 0,
       selectCurrencyKey: "LINA",
-
+      showPopup: false,
       currencies: [],
 
       frozenTokens: undefined,
@@ -568,6 +569,10 @@ export default {
         let parentElement = findParents(currentElement, "swapInputBox");
         removeClass(parentElement, "active");
       });
+    },
+
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
 
     async close() {

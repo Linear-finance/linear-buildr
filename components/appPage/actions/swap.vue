@@ -353,7 +353,14 @@ export default {
 
   methods: {
     //设置初始列表
-    initCurrencies() {
+    async initCurrencies() {
+      let linaBalance = 0;
+      if (this.walletAddress) {
+        linaBalance = await lnrJSConnector.lnrJS.LinearFinance.balanceOf(
+          this.walletAddress
+        );
+      }
+
       this.currencies = [
         {
           name: "LINA",
@@ -362,7 +369,7 @@ export default {
             this.theme === "light"
               ? require("@/static/NEW_LINA_logo.svg")
               : require("@/static/dark-theme/NEW_LINA_logo.svg"),
-          balance: 0,
+          balance: _.floor(bn2n(linaBalance), 4),
           frozenBalance: 0,
           totalBalance: 0,
         },
@@ -372,13 +379,13 @@ export default {
 
     async initData() {
       try {
-        this.currencyDropDown = false;
-        await this.initLiquidsList();
-        await this.filterCurrencies();
+        // this.currencyDropDown = false;
+        // await this.initLiquidsList();
+        // await this.filterCurrencies();
+        this.initCurrencies();
       } catch (error) {
         this.initCurrencies();
         this.selectCurrencyKey = "LINA";
-        console.log("initData error", error);
         this.processing = false;
       }
     },
@@ -550,8 +557,7 @@ export default {
     //点击最大
     clickMaxAmount() {
       this.activeItemBtn = 0;
-      this.swapNumber = _.floor(this.currency.totalBalance, 4);
-
+      this.swapNumber = _.floor(this.currency.balance, 4);
       var el = document.getElementById("transfer_number_input");
       this.setCursorRange(el, 0, 0);
     },

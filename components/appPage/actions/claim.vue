@@ -164,7 +164,14 @@
           </div>
 
           <div
-            v-if="!isEthereumNetwork"
+            v-if="!this.walletAddress"
+            class="claimBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div
+            v-else-if="!isEthereumNetwork"
             class="claimBtn"
             :class="{
               disabled: claimDisabled || isEthereumNetwork,
@@ -219,6 +226,7 @@
         {{ this.modalText }}
       </div>
     </Modal>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -265,6 +273,7 @@ export default {
       hasClaim: false, //有没有claim过
       claimableRewardEntries: undefined,
       modalText: "",
+      showPopup: false,
     };
   },
   created() {
@@ -332,6 +341,9 @@ export default {
           this.modalText =
             "Reward can only be claimed when target ratio is reached.";
       }
+    },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
     //点击 claim
     async clickClaim() {
@@ -999,6 +1011,23 @@ export default {
                 }
               }
             }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
+
+              &:hover {
+                &:not(.disabled) {
+                  background-color: #eff6ff;
+                }
+              }
+            }
           }
         }
       }
@@ -1008,10 +1037,10 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #claim {
-    min-height: 550px;
+    min-height: 600px;
 
     .actionTabs {
-      min-height: 550px;
+      min-height: 600px;
 
       .ivu-tabs-bar {
         display: none;
@@ -1022,8 +1051,8 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .claimBox,
           .waitingBox,
@@ -1031,7 +1060,7 @@ export default {
           .failBox {
             width: 100%;
             height: 100%;
-            min-height: 550px;
+            min-height: 600px;
           }
 
           .claimBox {
@@ -1076,6 +1105,7 @@ export default {
             }
 
             .actionBody {
+              margin-top: 25px;
               display: flex;
               flex-direction: column;
               align-items: center;

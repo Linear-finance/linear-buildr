@@ -150,11 +150,19 @@
             <div v-if="!isMobile" class="someWrong" v-show="errors.amountMsg">
               {{ errors.amountMsg }}
             </div>
-            <gasEditorSwap></gasEditorSwap>
+            <gasEditorSwap v-if="walletAddress"></gasEditorSwap>
             <!-- v-if="actionTabs == 'm0'" -->
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="swapBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div
+            v-else
             class="swapBtn"
             :class="{
               disabled: swapDisabled,
@@ -176,6 +184,7 @@
         ></watingEnhanceSwapNew>
       </TabPane>
     </Tabs>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -242,14 +251,17 @@ export default {
 
       selectCurrencyIndex: 0,
       selectCurrencyKey: "LINA",
-
+      showPopup: false,
       currencies: [],
 
       frozenTokens: undefined,
     };
   },
   watch: {
-    walletAddress() {},
+    walletAddress() {
+      this.initCurrencies();
+      this.initData();
+    },
     isEthereumNetwork() {},
     isBinanceNetwork() {},
     walletNetworkId() {},
@@ -341,7 +353,14 @@ export default {
 
   methods: {
     //设置初始列表
-    initCurrencies() {
+    async initCurrencies() {
+      let linaBalance = 0;
+      if (this.walletAddress) {
+        linaBalance = await lnrJSConnector.lnrJS.LinearFinance.balanceOf(
+          this.walletAddress
+        );
+      }
+
       this.currencies = [
         {
           name: "LINA",
@@ -350,7 +369,7 @@ export default {
             this.theme === "light"
               ? require("@/static/NEW_LINA_logo.svg")
               : require("@/static/dark-theme/NEW_LINA_logo.svg"),
-          balance: 0,
+          balance: _.floor(bn2n(linaBalance), 4),
           frozenBalance: 0,
           totalBalance: 0,
         },
@@ -360,13 +379,13 @@ export default {
 
     async initData() {
       try {
-        this.currencyDropDown = false;
-        await this.initLiquidsList();
-        await this.filterCurrencies();
+        // this.currencyDropDown = false;
+        // await this.initLiquidsList();
+        // await this.filterCurrencies();
+        this.initCurrencies();
       } catch (error) {
         this.initCurrencies();
         this.selectCurrencyKey = "LINA";
-        console.log("initData error", error);
         this.processing = false;
       }
     },
@@ -538,8 +557,7 @@ export default {
     //点击最大
     clickMaxAmount() {
       this.activeItemBtn = 0;
-      this.swapNumber = _.floor(this.currency.totalBalance, 4);
-
+      this.swapNumber = _.floor(this.currency.balance, 4);
       var el = document.getElementById("transfer_number_input");
       this.setCursorRange(el, 0, 0);
     },
@@ -560,6 +578,10 @@ export default {
         let parentElement = findParents(currentElement, "swapInputBox");
         removeClass(parentElement, "active");
       });
+    },
+
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
 
     async close() {
@@ -948,6 +970,17 @@ export default {
             &.disabled {
               opacity: 0.1;
               cursor: not-allowed;
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
             }
 
             &.swapBtnActivited {

@@ -166,8 +166,5 @@ export default {
       // background: #f6f5f6;
     }
   }
-  &--mobile {
-    margin-right: 5px;
-  }
 }
 </style>

@@ -290,8 +290,22 @@ export async function getBinanceNetwork() {
 export const getNetworkSpeeds = async (walletNetworkId: number) => {
   !walletNetworkId &&
     (walletNetworkId = window.$nuxt.$store.state?.walletNetworkId);
-
-  if (isDevNetwork(walletNetworkId)) {
+  if (!walletNetworkId) {
+    return {
+      [NETWORK_SPEEDS_TO_KEY.SLOW]: {
+        price: 0,
+        time: 0,
+      },
+      [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
+        price: 0,
+        time: 0,
+      },
+      [NETWORK_SPEEDS_TO_KEY.FAST]: {
+        price: 0,
+        time: 0,
+      },
+    };
+  } else if (isDevNetwork(walletNetworkId)) {
     return {
       [NETWORK_SPEEDS_TO_KEY.SLOW]: {
         price: 10,
@@ -451,3 +465,30 @@ export {
   BRIDGE_ADDRESSES,
   WORMHOLE_NETWORK_IDS,
 };
+
+export async function getMetamaskNetwork() {
+  if (!window.ethereum) {
+    window.open(WALLET_EXTENSIONS.METAMASK);
+    return { name: "BSCMAINNET", networkId: 56 };
+  }
+  let networkId = 56;
+  try {
+    if (window.ethereum?.chainId) {
+      networkId = Number(window.ethereum?.chainId);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId,
+      };
+    } else if (window.ethereum?.networkVersion) {
+      networkId = Number(window.ethereum?.networkVersion);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId,
+      };
+    }
+    return { name: "BSCMAINNET", networkId };
+  } catch (e) {
+    console.log(e);
+    return { name: "BSCMAINNET", networkId };
+  }
+}

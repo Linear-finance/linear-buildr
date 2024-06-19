@@ -568,7 +568,7 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
   #homePage {
     width: 100%;
-    height: 88vh !important;
+    height: 100% !important;
     background: #fff;
     text-align: center;
     padding: 163px 0 0 0;

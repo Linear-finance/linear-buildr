@@ -299,6 +299,14 @@
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="transferBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div
+            v-else
             class="transferBtn"
             :class="{ disabled: transferDisabled || walletError }"
             @click="clickTransfer"
@@ -326,6 +334,7 @@
         </div>
       </TabPane>
     </Tabs>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -387,7 +396,7 @@ export default {
       waitProcessArray: [],
       waitProcessFlow: Function,
       BUILD_PROCESS_SETUP: { ...BUILD_PROCESS_SETUP },
-
+      showPopup: false,
       currencyList: [
         {
           name: "LINA",
@@ -442,13 +451,15 @@ export default {
     },
 
     canSendEthAmount() {
-      return (
-        this.currentSelectCurrency.balance -
-        lnrJSConnector.utils.formatEther(
-          this.$store.state?.gasDetails?.price.toString()
-        ) *
-          this.ethGasLimit
-      );
+      if (!this.walletAddress) return false;
+      else
+        return (
+          this.currentSelectCurrency.balance -
+          lnrJSConnector.utils.formatEther(
+            this.$store.state?.gasDetails?.price.toString()
+          ) *
+            this.ethGasLimit
+        );
     },
 
     isEthereumNetwork() {
@@ -501,6 +512,9 @@ export default {
       this.errors.amountMsg = "";
       this.errors.ratioMsg = "";
     },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
+    },
     async selectCurrencyFun(index) {
       this.transactionErrMsg = "";
       this.selected = index;
@@ -510,6 +524,8 @@ export default {
 
     //初始化liquids列表
     async initLiquidsList() {
+      if (!this.walletAddress) return;
+
       this.processing = true;
       const { multiCollateral } = lnrJSConnector;
       const [linaBalance, walletBalance, liquids] = await Promise.all([
@@ -1301,6 +1317,17 @@ export default {
               cursor: not-allowed;
               opacity: 0.1;
             }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
+            }
           }
         }
       }
@@ -1310,12 +1337,12 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #transfer {
-    min-height: 550px;
+    min-height: 600px;
 
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
-      min-height: 550px;
+      min-height: 600px;
 
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -1330,8 +1357,8 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .transferBox,
           .waitingBox,
@@ -1339,7 +1366,7 @@ export default {
           .failBox {
             width: 100%;
             height: 100%;
-            min-height: 550px;
+            min-height: 600px;
             display: flex;
             justify-content: center;
             -webkit-justify-content: center;

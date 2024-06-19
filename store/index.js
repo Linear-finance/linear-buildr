@@ -8,6 +8,7 @@ export const state = () => ({
   theme: "dark", //默认主题,light或dark
   currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer 5swap
   walletDetailsActionURL: "", //如果url参数有 referral transaction track，则先打开
+  isWalletOpen: false,
   gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
   sourceGasDetails: {
     price: 0,
@@ -140,6 +141,10 @@ export const mutations = {
 
   setIsMobile(state, isMobile) {
     state.isMobile = isMobile;
+  },
+
+  setIsWalletOpen(state, status) {
+    state.isWalletOpen = status;
   },
 
   setRegisteredMetamaskWalletEvents(state, status) {

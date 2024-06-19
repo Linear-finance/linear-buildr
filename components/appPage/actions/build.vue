@@ -514,6 +514,18 @@
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="buildBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div v-else-if="!isBinanceNetwork" class="buildBtn switchToBSC">
+            Please switch to BSC network to build your ℓ<span>USD</span>
+          </div>
+
+          <div
+            v-else
             class="buildBtn"
             :class="{ disabled: buildDisabled }"
             @click="clickBuild"
@@ -730,7 +742,9 @@ export default {
         this.errors.amountMsg ||
         this.errors.ratioMsg ||
         this.processing ||
-        (this.isEthereumNetwork && _.lt(this.inputData.stake, 1))
+        (this.isEthereumNetwork && _.lt(this.inputData.stake, 1)) ||
+        !this.walletAddress ||
+        !this.selectedCollateral
       );
     },
 
@@ -1502,12 +1516,11 @@ export default {
      * 点击build
      */
     async clickBuild() {
-      const minCollateral = getAssetObjectInfo(
-        this.selectedCollateral.key
-      ).minCollateral;
-
       try {
         if (!this.buildDisabled) {
+          const minCollateral = getAssetObjectInfo(
+            this.selectedCollateral.key
+          ).minCollateral;
           if (this.isEthereumNetwork) {
             this.actionTabs = "m1"; //进入swap流程
           } else if (this.isBinanceNetwork) {
@@ -2412,7 +2425,10 @@ export default {
 
           .buildBtn {
             width: 100%;
+            display: flex;
             position: absolute;
+            align-items: center;
+            justify-content: center;
             bottom: 0px;
             height: 80px;
             line-height: 80px;
@@ -2439,6 +2455,38 @@ export default {
 
             &.disabled {
               cursor: not-allowed;
+              opacity: 0.2;
+            }
+
+            &.switchToBSC {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              color: #1a38f8;
+              cursor: not-allowed;
+              background-color: #eff6ff;
+              text-transform: none;
+              &:hover {
+                &:not(.disabled) {
+                  background-color: #eff6ff;
+                }
+              }
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              background-color: #eff6ff;
+              text-transform: none;
             }
           }
         }
@@ -2451,7 +2499,7 @@ export default {
   #build {
     border-radius: 16px;
     box-shadow: 0px 2px 6px #deddde;
-    min-height: 550px;
+    min-height: 600px;
 
     .app-dark & {
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -2460,7 +2508,7 @@ export default {
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
-      min-height: 550px;
+      min-height: 600px;
 
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -2475,16 +2523,16 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .buildBox,
           .waitingBox,
           .successBox,
           .wrongBox {
             width: 100%;
-            height: 88vh !important;
-            min-height: 550px;
+            height: 100% !important;
+            min-height: 600px;
             display: flex;
             justify-content: center;
           }
@@ -2497,6 +2545,7 @@ export default {
             }
 
             .actionBodyMobile {
+              margin-top: 25px;
               display: flex;
               flex-direction: column;
               align-items: center;
@@ -2764,6 +2813,26 @@ export default {
 
               &.disabled {
                 cursor: not-allowed;
+                opacity: 0.2;
+              }
+
+              &.switchToBSC {
+                font-family: $BodyTextFontFamily;
+                font-size: 16px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.5;
+                letter-spacing: normal;
+                color: #1a38f8;
+                cursor: not-allowed;
+                background-color: #eff6ff;
+                text-transform: none;
+                &:hover {
+                  &:not(.disabled) {
+                    background-color: #eff6ff;
+                  }
+                }
               }
             }
           }

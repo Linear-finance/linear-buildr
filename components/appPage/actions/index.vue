@@ -253,7 +253,7 @@
 <script>
 import homePage from "@/components/appPage/actions/homePage";
 import notificationQueue from "@/components/notification/notificationQueue.vue";
-
+import linkModal from "@/components/linkModal.vue";
 import build from "@/components/appPage/actions/build";
 import burn from "@/components/appPage/actions/burn";
 import claim from "@/components/appPage/actions/claim";
@@ -279,6 +279,7 @@ export default {
     notificationQueue,
     transactionModal,
     ThemeSwitch,
+    linkModal,
   },
   data() {
     return {
@@ -329,7 +330,7 @@ export default {
   },
   watch: {
     isMobile() {},
-
+    walletAddress() {},
     //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
     currentAction() {},
     theme: {
@@ -346,6 +347,10 @@ export default {
 
     isMobile() {
       return this.$store.state.isMobile;
+    },
+
+    walletAddress() {
+      return this.$store.state?.wallet?.address;
     },
 
     isTransaction() {
@@ -385,7 +390,6 @@ export default {
       //正在交易中无法点击其他按钮
       if (!this.isTransaction) {
         this.$store.commit("setIsShowTooltipModle", false);
-
         if (this.currentAction != action) {
           this.$store.commit("setCurrentAction", action);
           const path = common.SUBPAGE_OPTIONS_MAP[action];
@@ -433,8 +437,10 @@ export default {
 #actions {
   width: 786px;
   margin-right: 40px;
-
+  display: flex;
+  flex-direction: column;
   .header {
+    // height: 100%;
     display: flex;
     flex-direction: column;
     .action {
@@ -479,6 +485,7 @@ export default {
     display: flex;
     width: 100%;
     @media only screen and (max-width: $max-phone-width) {
+      margin-bottom: 16px;
       justify-content: space-around;
     }
   }
@@ -854,10 +861,133 @@ export default {
       }
     }
 
+    .tooltipModle {
+      position: fixed;
+      width: 100vw;
+      height: 100%;
+      z-index: 9999;
+      overflow-y: auto;
+
+      li {
+        list-style: none;
+      }
+
+      &-external {
+        margin-top: 4rem;
+      }
+      &-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 106vw;
+        max-width: 600px;
+        height: 100%;
+        background-image: url("/img/menu/menu.png");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        z-index: 2;
+
+        @media (min-width: 1921px) {
+          max-width: 1300px;
+        }
+
+        &-close {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          margin: 8px 8px 0 0;
+          // align-self: self-end;
+          display: flex;
+          height: 48px;
+          padding: 8px;
+          justify-content: center;
+          align-items: center;
+          flex-shrink: 0;
+          cursor: pointer;
+          &-logo {
+            min-width: 26.66px;
+            min-height: 21.33px;
+            color: white;
+          }
+        }
+        &-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          // transform: translateX(200px);
+
+          height: 100vh;
+          max-height: 90%;
+          z-index: 2;
+
+          @media only screen and (max-width: $max-phone-width) {
+            // transform: translateX(-50px);
+          }
+
+          &-img {
+            margin-bottom: 4rem;
+          }
+
+          &-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            max-height: 720px;
+
+            color: #fff;
+            font-family: Gilroy;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 48px;
+            flex-grow: 1;
+
+            & > li {
+              margin-bottom: 1rem;
+              @media (min-width: 1921px) {
+                margin-bottom: 4rem;
+                font-size: 4rem !important;
+                line-height: 4rem !important;
+                font-weight: 100 !important;
+              }
+
+              & > a {
+                cursor: pointer;
+                transition: color 0.5s;
+                &:hover {
+                  color: #1a38f8 !important;
+                }
+              }
+            }
+          }
+
+          &-exList {
+            font-family: Gilroy-Regular;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 200;
+            line-height: 32px;
+
+            & > li > a {
+              color: #fff;
+              transition: color 0.5s;
+              &:hover {
+                color: #1a38f8;
+              }
+            }
+          }
+        }
+      }
+    }
+
     .actionsBox {
       width: 100%;
-      height: 88vh;
-      min-height: 550px;
+      height: 100%;
+      min-height: 600px;
       position: relative;
       overflow: hidden;
       box-shadow: 0px 2px 6px #deddde;
@@ -878,7 +1008,9 @@ export default {
   opacity: 0;
 }
 .tooltipModle-external {
+  display: flex;
   &-logo {
+    margin-right: 10px;
     min-height: 32px;
     min-width: 40px;
     color: #fff;

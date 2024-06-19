@@ -9,7 +9,7 @@
       v-if="!mShowWallet"
     >
       <div
-        v-if="!isMobile"
+        v-if="walletAddress && !isMobile"
         class="chainChange"
         @click="isShowChainList = !isShowChainList"
       >
@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="info">
+      <div v-if="walletAddress" class="info">
         <div class="address">
           {{ abbreviateAddress }}
         </div>
@@ -97,17 +97,22 @@
 
         <div class="disconnect" @click.stop="disconnect">Disconnect</div>
       </div>
-
-      <div class="info-themeSwitch">
-        <theme-switch :variant="variant" />
+      <div v-if="!walletAddress">
+        <ConnectWalletButton />
       </div>
-
-      <div v-if="isMobile" class="mNetwork" @click="mShowWallet = true">
+      <div
+        v-if="isMobile && walletAddress"
+        class="mNetwork"
+        @click="mShowWallet = true"
+      >
         <ethereumSvg v-if="isEthereumNetwork" :selected="true" />
         <binanceSvg v-else :selected="true" />
-        <div class="mNetworkName">
+        <div v-if="!isMobile" class="mNetworkName">
           {{ walletNetworkName }}
         </div>
+      </div>
+      <div class="info-themeSwitch">
+        <theme-switch :variant="variant" />
       </div>
       <div v-if="isMobile" @click="showTooltipModle" class="menu">
         <font-awesome-icon
@@ -855,7 +860,7 @@ import lnrJSConnector, {
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
-
+import ConnectWalletButton from "@/components/appPage/walletDetails/connect/connectWalletButton";
 import expandMoreSvg from "@/components/svg/more";
 import {
   abbreviateAddress,
@@ -913,6 +918,7 @@ export default {
     };
   },
   components: {
+    ConnectWalletButton,
     ethereumSvg,
     binanceSvg,
     expandMoreSvg,
@@ -1215,7 +1221,7 @@ export default {
           }
         }
       } catch (e) {
-        console.log(e, "wallet details check liquidation err");
+        console.error(e, "wallet details check liquidation err");
       }
     },
 
@@ -1287,6 +1293,8 @@ export default {
 
     //历史记录窗口状态改变
     transactionModalClick() {
+      if (!this.walletAddress) return;
+
       this.transactionStatus = !this.transactionStatus;
       this.$pub.publish("transactionModalChange", this.transactionStatus);
 
@@ -1304,6 +1312,8 @@ export default {
 
     //踪迹窗口状态改变
     trackModalClick() {
+      if (!this.walletAddress) return;
+
       this.trackStatus = !this.trackStatus;
       this.$pub.publish("trackModalChange", this.trackStatus);
 
@@ -1401,7 +1411,7 @@ export default {
   .walletAndAddressBox {
     height: 120px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 
     // transform: translateX(-80px);
@@ -1416,7 +1426,8 @@ export default {
       border: 1px solid #fff;
 
       &-themeSwitch {
-        margin-left: 16px;
+        margin-left: 8px;
+        margin-right: 8px;
       }
 
       .app-dark & {
@@ -1568,6 +1579,7 @@ export default {
     }
     .menu {
       margin-left: 8px;
+      margin-right: 8px;
       cursor: pointer;
     }
   }
@@ -1575,7 +1587,7 @@ export default {
   .walletAndAddressBoxLight {
     height: 120px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     // transform: translateX(-80px);
 
@@ -1589,7 +1601,8 @@ export default {
       border: 1px solid #475a75;
 
       &-themeSwitch {
-        margin-left: 16px;
+        margin-left: 8px;
+        margin-right: 8px;
       }
 
       .app-dark & {
@@ -2543,7 +2556,7 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
   #walletDetails {
     width: 10vw;
-    position: fixed;
+    position: absolute;
     right: 0;
     top: 0;
     min-height: 100% !important;
@@ -2586,13 +2599,13 @@ export default {
     .walletAndAddressBox {
       height: 44px;
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-end;
       align-items: center;
-      margin-top: 10px;
+      // margin-top: 10px;
       margin-right: 16px;
-      position: absolute;
+      position: relative;
       right: 0px;
-      top: 0;
+      top: 10px;
 
       .info {
         width: 294px;
@@ -2656,7 +2669,9 @@ export default {
       .mNetwork {
         display: flex;
         align-items: center;
-        padding: 8px 12px;
+        padding: 8px 8px;
+        margin-right: 8px;
+        margin-left: 8px;
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
         border-radius: 16px;
@@ -2699,7 +2714,7 @@ export default {
     .walletAndAddressBoxLight {
       height: 44px;
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-end;
       align-items: center;
       margin-top: 10px;
       margin-right: 16px;
@@ -2768,7 +2783,9 @@ export default {
       .mNetwork {
         display: flex;
         align-items: center;
-        padding: 8px 12px;
+        padding: 8px 8px;
+        margin-right: 8px;
+        margin-left: 8px;
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
         border-radius: 16px;
@@ -2777,7 +2794,7 @@ export default {
         #binanceSvg {
           width: 16px;
           height: 16px;
-          margin-right: 4px;
+          // margin-right: 4px;
         }
 
         .mNetworkName {

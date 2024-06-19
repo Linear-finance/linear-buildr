@@ -1297,6 +1297,62 @@ body.dark-theme {
     }
   }
 
+  #wallet {
+    .seeDetailsModal {
+      .ivu-modal-wrap {
+        .ivu-modal {
+          .ivu-modal-content {
+            .ivu-modal-body {
+              .walletSelect {
+                .walletSelectBox {
+                  background-color: $darkBackgroundColor;
+                  .top .title,
+                  .boxTitle,
+                  .wallets .item .itemSub,
+                  .wallets .item .itemTitle {
+                    color: #ffffff !important;
+                  }
+
+                  .wallets {
+                    .item {
+                      border-radius: 8px;
+                      border: solid 1px #e5e5e5;
+                    }
+                  }
+                }
+              }
+
+              .walletConnect .walletConnectBox {
+                background-color: $darkBackgroundColor;
+
+                .top {
+                  .closeButton {
+                    color: #ffffff;
+                  }
+
+                  .title {
+                    color: #ffffff !important;
+                  }
+                }
+
+                .boxTitle {
+                  color: #ffffff;
+                }
+                .boxCopy {
+                  .copyTitle {
+                    .title {
+                      color: #1a38f8 !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   /*// landing
   #landingPage {
 

@@ -42,7 +42,6 @@
               :class="{
                 error: errors.unStakeMsg,
               }"
-              @click="changeFocusItem(0)"
             >
               <div class="itemLeft">
                 <div class="itemIcon">
@@ -66,11 +65,6 @@
                 <div class="itemType">
                   <div class="itemTypeTitle">
                     Unstake
-                    {{
-                      selectedCollateral !== undefined
-                        ? selectedCollateral.name
-                        : ""
-                    }}
                     <Tooltip
                       max-width="305"
                       placement="top"
@@ -134,7 +128,6 @@
               :class="{
                 error: errors.amountMsg,
               }"
-              @click="changeFocusItem(1)"
             >
               <div class="itemLeft">
                 <div class="itemIcon">
@@ -248,7 +241,7 @@
                 errors.unStakeMsg || errors.ratioMsg || errors.amountMsg,
             }"
           >
-            <div
+            <!-- <div
               class="errMsg"
               :style="{
                 display:
@@ -266,7 +259,7 @@
                 class="closeIcon"
                 src="@/static/close_icon.svg"
               />
-            </div>
+            </div> -->
             <muticollateralSelector
               :selectedCollateral="selectedCollateral"
               :setSelectedCollateral="setSelectedCollateral"
@@ -291,7 +284,6 @@
               :class="{
                 error: errors.unStakeMsg,
               }"
-              @click="changeFocusItem(3)"
             >
               <div class="itemLeft">
                 <div class="itemIcon">
@@ -315,11 +307,6 @@
                 <div class="itemType">
                   <div class="itemTypeTitle">
                     Unstake
-                    {{
-                      selectedCollateral !== undefined
-                        ? selectedCollateral.name
-                        : ""
-                    }}
                     <Tooltip
                       max-width="305"
                       placement="top"
@@ -365,15 +352,14 @@
                   />
                 </div>
               </div>
-
-              <!-- <div
+              <div
                 class="itemErrMsg"
                 :style="{
                   opacity: errors.unStakeMsg ? '1' : '0',
                 }"
               >
                 {{ errors.unStakeMsg }}
-              </div> -->
+              </div>
             </div>
 
             <div
@@ -381,7 +367,6 @@
               :class="{
                 error: errors.amountMsg,
               }"
-              @click="changeFocusItem(4)"
             >
               <div class="itemLeft">
                 <div class="itemIcon">
@@ -423,14 +408,14 @@
                   />
                 </div>
               </div>
-              <!-- <div
+              <div
                 class="itemErrMsg"
                 :style="{
                   opacity: errors.amountMsg ? '1' : '0',
                 }"
               >
                 {{ errors.amountMsg }}
-              </div> -->
+              </div>
             </div>
 
             <div
@@ -438,7 +423,6 @@
               :class="{
                 error: errors.ratioMsg,
               }"
-              @click="changeFocusItem(5)"
             >
               <div class="itemLeft">
                 <div class="itemIcon">
@@ -477,30 +461,36 @@
                   />
                 </div>
               </div>
-              <!-- <div
+              <div
                 class="itemErrMsg"
                 :style="{
                   opacity: errors.ratioMsg ? '1' : '0',
                 }"
               >
                 {{ errors.ratioMsg }}
-              </div> -->
+              </div>
             </div>
 
             <gasEditor v-if="isMobile && isBinanceNetwork"></gasEditor>
           </div>
 
           <div
-            v-if="isBinanceNetwork"
+            v-if="!this.walletAddress"
+            class="burnBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div v-else-if="!isBinanceNetwork" class="burnBtn switchToBSC">
+            Please switch to BSC network to burn your ℓ<span>USD</span>
+          </div>
+          <div
+            v-else
             class="burnBtn"
             :class="{ disabled: burnDisabled }"
             @click="clickBurn"
           >
             BURN NOW
-          </div>
-
-          <div v-else class="burnBtn switchToBSC">
-            Please switch to BSC network to burn your ℓ<span>USD</span>
           </div>
 
           <Spin fix v-if="processing"></Spin>
@@ -536,6 +526,7 @@
         fluctuations in pledge tokens.
       </div>
     </Modal>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -546,6 +537,7 @@ import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 
 import {
   findParents,
+  findChildren,
   removeClass,
   addClass,
   formatterInput,
@@ -619,7 +611,7 @@ export default {
       transactionErrMsg: "", //交易错误信息
       waitProcessArray: [], //等待交易进度组
       waitProcessFlow: Function, //flow闭包函数
-
+      showPopup: false,
       introductActionModal: false,
 
       //输入框展示数据
@@ -682,7 +674,9 @@ export default {
         this.errors.amountMsg ||
         this.errors.ratioMsg ||
         this.processing ||
-        (!this.burnData.staked && !this.burnData.lock)
+        (!this.burnData.staked && !this.burnData.lock) ||
+        !this.walletAddress ||
+        !this.selectedCollateral
       );
     },
 
@@ -737,6 +731,9 @@ export default {
       this.errors.stakeMsg = "";
       this.errors.amountMsg = "";
       this.errors.ratioMsg = "";
+    },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
     },
     //获取数据
     async getBurnData(walletAddress) {
@@ -858,11 +855,10 @@ export default {
 
     //点击 burn
     async clickBurn() {
-      const minCollateral = getAssetObjectInfo(
-        this.selectedCollateral.key
-      ).minCollateral;
-
       if (!this.burnDisabled) {
+        const minCollateral = getAssetObjectInfo(
+          this.selectedCollateral.key
+        ).minCollateral;
         try {
           if (this.isEthereumNetwork) {
             return;
@@ -1249,7 +1245,9 @@ export default {
       this.$nextTick(() => {
         let currentElement = this.$refs["itemInput" + index].$el;
         let parentElement = findParents(currentElement, "actionInputItem");
+        let childElement = findChildren(parentElement, "itemLeft");
         addClass(parentElement, "active");
+        addClass(childElement, "editing");
       });
     },
 
@@ -1258,7 +1256,9 @@ export default {
       this.$nextTick(() => {
         let currentElement = this.$refs["itemInput" + index].$el;
         let parentElement = findParents(currentElement, "actionInputItem");
+        let childElement = findChildren(parentElement, "itemLeft");
         removeClass(parentElement, "active");
+        removeClass(childElement, "editing");
       });
     },
 
@@ -2475,6 +2475,7 @@ export default {
 
             &.disabled {
               cursor: not-allowed;
+              opacity: 0.2;
             }
 
             &.switchToBSC {
@@ -2495,6 +2496,17 @@ export default {
                 }
               }
             }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
+            }
           }
         }
       }
@@ -2506,7 +2518,8 @@ export default {
   #burn {
     border-radius: 16px;
     box-shadow: 0px 2px 6px #deddde;
-    min-height: 550px;
+    min-height: 600px;
+    height: 100%;
 
     .app-dark & {
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -2515,7 +2528,8 @@ export default {
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
-      min-height: 550px;
+      min-height: 600px;
+      height: 100%;
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       }
@@ -2525,12 +2539,13 @@ export default {
       }
 
       .ivu-tabs-content {
+        height: 100%;
         background: #fff;
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
           background: #fff;
 
           .burnBox,
@@ -2539,7 +2554,7 @@ export default {
           .wrongBox {
             width: 100%;
             height: 100%;
-            min-height: 550px;
+            min-height: 600px;
             display: flex;
             justify-content: center;
           }
@@ -2555,6 +2570,7 @@ export default {
               display: flex;
               flex-direction: column;
               align-items: center;
+              margin-top: 25px;
 
               .errMsg {
                 align-items: center;
@@ -2606,13 +2622,17 @@ export default {
                 padding: 15px 15px 10px;
                 border-radius: 8px;
                 border: solid 1px #deddde;
-                padding: 33px 24px;
+                padding: 33px 15px;
                 display: flex;
                 justify-content: space-between;
                 width: 90%;
                 transition: $animete-time linear;
                 position: relative;
                 height: 88px;
+
+                &.error {
+                  margin-bottom: 12%;
+                }
 
                 &:hover,
                 &.active {
@@ -2621,9 +2641,16 @@ export default {
                 }
 
                 .itemLeft {
+                  height: 100%;
                   display: flex;
                   margin-right: 16px;
                   align-items: center;
+
+                  &.editing {
+                    height: 0px;
+                    width: 0px;
+                    overflow: hidden;
+                  }
 
                   .itemIcon {
                     margin-right: 16px;
@@ -2717,8 +2744,8 @@ export default {
                   .inputRect {
                     display: flex;
                     align-items: center;
-                    padding: 0 16px;
-                    height: 21.6vw;
+                    // padding: 0 16px;
+                    // height: 21.6vw;
 
                     .itemTypeTitle {
                       font-family: $BodyTextFontFamily;
@@ -2746,6 +2773,11 @@ export default {
                         font-style: normal;
                         line-height: 1.25;
                         letter-spacing: normal;
+                        min-width: fit-content;
+
+                        &:focus {
+                          text-align: center;
+                        }
 
                         &::placeholder {
                           color: #99999a;
@@ -2823,6 +2855,7 @@ export default {
 
               &.disabled {
                 cursor: not-allowed;
+                opacity: 0.2;
               }
             }
           }

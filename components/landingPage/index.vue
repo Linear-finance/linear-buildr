@@ -857,7 +857,7 @@ export default {
 
       .introductBox {
         width: 100%;
-        height: 88vh;
+        height: 100%;
         position: relative;
         display: flex;
         align-items: stretch;

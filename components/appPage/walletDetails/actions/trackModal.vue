@@ -287,12 +287,22 @@ export default {
 
     async getTrackData() {
       try {
-        const {
-          lnrJS: { lUSD, BTCl, ETHl, lHB10 },
-        } = lnrJSConnector;
+        // const {
+        //   lnrJS: { lUSD, BTCl, ETHl, lHB10 },
+        // } = lnrJSConnector;
 
         let trackData = { issuedDebt: 0, currentDebt: [] };
 
+        if (!this.walletAddress) {
+          return {
+            chartData: 0,
+            tableData: [],
+            debet: {
+              issuedDebt: 0,
+              currentDebt: 0,
+            },
+          };
+        }
         if (this.isBinanceNetwork) {
           trackData = await fetchTrackDebt(
             this.walletAddress,

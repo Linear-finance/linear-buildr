@@ -711,7 +711,7 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
   #gasEditor {
     width: 74.4vw;
-    // min-height: 550px;
+    // min-height: 600px;
 
     .editInfo {
       .infoLeft {
@@ -744,7 +744,7 @@ export default {
     .gasEditorModal {
       .ivu-modal {
         .ivu-modal-content {
-          min-height: 550px;
+          min-height: 600px;
 
           .ivu-modal-body {
             padding: 24px 32px 0;

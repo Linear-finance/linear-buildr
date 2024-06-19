@@ -160,6 +160,8 @@ export const getPriceRates = async (currency) => {
         rates[name] = price;
       }
     }
+  } else {
+    rates = await band.pricesLast({ sources: currency });
   }
   return rates;
 };
@@ -556,6 +558,22 @@ export const storeDetailsData = async () => {
         );
       }
     }
+  } else {
+    const priceRateKey = getAssetObjectInfo(portfolioAsset).contractKey;
+    //获取货币->USD 兑换率
+    const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
+    const LINA2USDRate = priceRates[priceRateKey] / 1e18 || 0;
+    const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
+
+    let formatData = {
+      LINA2USDRate,
+      lUSD2USDRate,
+    };
+    formatData.LINA2USDRate = _.floor(LINA2USDRate, 4);
+    formatData.priceRates = priceRates;
+
+    await store.commit("setWalletDetails", formatData);
+    await store.commit("mergeWallet", { status: WALLET_STATUS.FINISH });
   }
 };
 

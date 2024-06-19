@@ -1,8 +1,9 @@
 <template>
   <div id="mainPage">
     <div class="container">
-      <landingPage v-if="!walletAddress"></landingPage>
-      <appPage v-else></appPage>
+      <!-- <landingPage v-if="!walletAddress"></landingPage> -->
+      <!-- <appPage v-else></appPage> -->
+      <appPage />
     </div>
   </div>
 </template>
@@ -116,7 +117,7 @@ export default {
 <style lang="scss" scoped>
 #mainPage {
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   overflow: auto;
   background: #fafafa;
 
@@ -132,8 +133,11 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #mainPage {
+    height: 100%;
+    min-height: 100vh;
     overflow: visible;
     .container {
+      height: 100%;
       width: 100vw;
     }
   }

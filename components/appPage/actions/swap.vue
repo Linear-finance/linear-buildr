@@ -371,7 +371,7 @@ export default {
               : require("@/static/dark-theme/NEW_LINA_logo.svg"),
           balance: _.floor(bn2n(linaBalance), 4),
           frozenBalance: 0,
-          totalBalance: 0,
+          totalBalance: _.floor(bn2n(linaBalance), 4),
         },
       ];
       this.selectCurrencyIndex = 0;

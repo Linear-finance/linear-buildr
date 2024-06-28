@@ -27,6 +27,7 @@ let lnrJSConnector: any = {
   setContractSettings: function (networkId: number, signer?: ethers.Signer) {
     this.Web3 = new Web3Connector(networkId, signer);
     this.lnrJS = this.Web3.contracts;
+    this.multiCollateral = this.Web3.multiCollateral;
     this.signer = this.Web3.signer;
     this.provider = this.Web3.provider;
     this.utils = this.Web3.utils;
@@ -61,6 +62,7 @@ const connectToMetamask = async () => {
   const walletState = {
     walletType: SUPPORTED_WALLETS.METAMASK,
   };
+
   try {
     if (window.ethereum) {
       // window.ethereum.autoRefreshOnNetworkChange = true;
@@ -221,6 +223,7 @@ export const selectedWallet = async (
   try {
     //连接钱包
     const walletStatus = await connectToWallet(walletType);
+
     if (
       walletStatus === undefined ||
       !SUPPORTED_NETWORKS[walletStatus?.networkId]

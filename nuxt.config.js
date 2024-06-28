@@ -15,7 +15,7 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: "Linear | Buildr",
+    title: "Linear | Builder",
     meta: [
       { charset: "utf-8" },
       {
@@ -46,6 +46,7 @@ module.exports = {
    */
   css: [
     "@/static/font/Gilroy/Gilroy.css", // 全局字体
+    "@fortawesome/fontawesome-svg-core/styles.css",
   ],
   /*
    ** 全局 SCSS
@@ -65,6 +66,7 @@ module.exports = {
     { src: "@/plugins/pubsub", ssr: false }, //发布订阅消息
     // { src: "@/plugins/walletListener", ssr: false }, //全局钱包改变监听
     { src: "@/plugins/refreshListen", ssr: false }, //全局钱包面板数据更新监听
+    { src: "@/plugins/fontawesome", ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules
@@ -90,6 +92,14 @@ module.exports = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
+  fontawesome: {
+    component: "Fa",
+    suffix: false,
+    icons: {
+      solid: true,
+      brands: true,
+    },
+  },
   axios: {
     prefix: "/buildr_api", //url前缀
     proxy: true, //开启跨域代理
@@ -123,7 +133,7 @@ module.exports = {
       "/burn",
       "/claim",
       "/transfer",
-      "/swap",
+      "/bridge",
       "/transaction",
       "/track",
     ],

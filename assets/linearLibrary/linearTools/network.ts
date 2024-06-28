@@ -45,6 +45,8 @@ let REWARD_UNLOCK_NETWORKS: { [k: number]: string } = {};
 
 let SUPPORTED_NETWORKS: { [k: number]: string } = {};
 
+let SUPPORTED_NETWORKS_CONFIG: { [k: number]: object } = {};
+
 let BLOCKCHAIN_BROWSER: { [k: number]: string } = {};
 
 let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
@@ -93,6 +95,7 @@ for (let i = 0; i < typedConfigs.length; i++) {
     REWARD_UNLOCK_NETWORKS[id] = object.name;
   }
   SUPPORTED_NETWORKS[id] = object.name;
+  SUPPORTED_NETWORKS_CONFIG[id] = object;
   BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
   BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
   REWARD_API_BASES[id] = object.rewardApiBase;
@@ -100,7 +103,8 @@ for (let i = 0; i < typedConfigs.length; i++) {
     RPC_URL[id] = object.rpcUrl;
   }
 
-  BRIDGE_ADDRESSES[id] = object.addresses.LnErc20Bridge;
+  BRIDGE_ADDRESSES[id] = object.addresses.system.LnErc20Bridge;
+
   WORMHOLE_NETWORK_IDS[id] = object.wormholeNetworkId;
 }
 
@@ -136,9 +140,12 @@ export const isSupportNetwork = (walletNetworkId: number) => {
 export const getOtherNetworks = (walletNetworkId: number) => {
   let other: number[] = [];
   if (isMainnetNetwork(walletNetworkId)) {
-    other = MAINNET_NETWORKS.filter(
-      (networkId) => networkId != walletNetworkId
-    );
+    if (walletNetworkId == 1) return 56;
+    else if (walletNetworkId == 56) return 1;
+    else if (walletNetworkId == 31337) return 1;
+    // other = MAINNET_NETWORKS.filter(
+    //   (networkId) => networkId != walletNetworkId
+    // );
   } else if (isDevNetwork(walletNetworkId)) {
     other = DEV_NETWORKS.filter((networkId) => networkId != walletNetworkId);
   } else if (isTestnetNetwork(walletNetworkId)) {
@@ -218,7 +225,7 @@ export const INFURA_JSON_RPC_URLS = {
 export const ETHEREUM_CHAIN_OPTIONS: { [k: number]: any } = {
   56: {
     chainName: "BSC Mainnet",
-    rpcUrls: ["https://bsc-dataseed1.binance.org/"],
+    rpcUrls: ["https://bsc-dataseed3.ninicoin.io"],
     chainId: "0x38",
     nativeCurrency: {
       name: "BNB",
@@ -283,8 +290,22 @@ export async function getBinanceNetwork() {
 export const getNetworkSpeeds = async (walletNetworkId: number) => {
   !walletNetworkId &&
     (walletNetworkId = window.$nuxt.$store.state?.walletNetworkId);
-
-  if (isDevNetwork(walletNetworkId)) {
+  if (!walletNetworkId) {
+    return {
+      [NETWORK_SPEEDS_TO_KEY.SLOW]: {
+        price: 0,
+        time: 0,
+      },
+      [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
+        price: 0,
+        time: 0,
+      },
+      [NETWORK_SPEEDS_TO_KEY.FAST]: {
+        price: 0,
+        time: 0,
+      },
+    };
+  } else if (isDevNetwork(walletNetworkId)) {
     return {
       [NETWORK_SPEEDS_TO_KEY.SLOW]: {
         price: 10,
@@ -436,6 +457,7 @@ export {
   LIQUIDATION_NETWORKS,
   REWARD_UNLOCK_NETWORKS,
   SUPPORTED_NETWORKS,
+  SUPPORTED_NETWORKS_CONFIG,
   BLOCKCHAIN_BROWSER,
   BLOCKCHAIN_BROWSER_API,
   REWARD_API_BASES,
@@ -443,3 +465,30 @@ export {
   BRIDGE_ADDRESSES,
   WORMHOLE_NETWORK_IDS,
 };
+
+export async function getMetamaskNetwork() {
+  if (!window.ethereum) {
+    window.open(WALLET_EXTENSIONS.METAMASK);
+    return { name: "BSCMAINNET", networkId: 56 };
+  }
+  let networkId = 56;
+  try {
+    if (window.ethereum?.chainId) {
+      networkId = Number(window.ethereum?.chainId);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId,
+      };
+    } else if (window.ethereum?.networkVersion) {
+      networkId = Number(window.ethereum?.networkVersion);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId,
+      };
+    }
+    return { name: "BSCMAINNET", networkId };
+  } catch (e) {
+    console.log(e);
+    return { name: "BSCMAINNET", networkId };
+  }
+}

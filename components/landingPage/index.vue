@@ -4,19 +4,21 @@
       <img
         v-if="$store.getters.isDarkTheme"
         class="linearBuildrlogo"
-        src="@/static/linear_buildr_logo_dark.svg"
+        src="@/static/logo/linear_builder_logo_dark.svg"
       />
       <img
         v-else
         class="linearBuildrlogo"
-        src="@/static/linear_buildr_logo.svg"
+        src="@/static/logo/linear_builder_logo.svg"
       />
       <theme-switch v-if="!isMobile" />
-      <div class="mBuyLINA mobileShow" @click.stop="buyDisplay = true">
+      <div class="mBuyLINA mobileShow">
         <theme-switch v-if="isMobile" variant="mobile" />
-        BUY LINA
-        <img v-if="theme === 'light'" src="@/static/arrow_right.svg" />
-        <img v-else src="@/static/dark-theme/arrow_right.svg" />
+        <div @click.stop="buyDisplay = true">
+          BUY LINA
+          <img v-if="theme === 'light'" src="@/static/arrow_right.svg" />
+          <img v-else src="@/static/dark-theme/arrow_right.svg" />
+        </div>
       </div>
     </div>
 
@@ -159,20 +161,21 @@
           </Panel>
           <Panel name="2">
             <div class="line"></div>
-            What is Buildr?
+            What is Builder?
             <p slot="content">
-              Buildr is part of the Linear's dApp suite. You can pledge and
-              stake your LINA tokens to build ℓUSD, the base currency of Linear
-              Exchange.
+              Builder is part of the Linear’s dApp suite. You can pledge and
+              stake supported on-chain assets to build ℓUSD, the base currency
+              of Linear Exchange.
             </p>
           </Panel>
           <Panel name="3">
             <div class="line"></div>
             Why stake LINA?
             <p slot="content">
-              By staking LINA to build ℓUSD for self use / provide liquidity for
-              traders, users are entitled to staking rewards and a split of the
-              transaction fees generated on our exchange.
+              By staking supported on-chain assets to build ℓUSD for self use /
+              provide liquidity for traders, users are entitled to staking
+              rewards and a split of the transaction fees generated on our
+              exchange.
             </p>
           </Panel>
           <Panel name="4">
@@ -854,7 +857,7 @@ export default {
 
       .introductBox {
         width: 100%;
-        height: 88vh;
+        height: 100%;
         position: relative;
         display: flex;
         align-items: stretch;

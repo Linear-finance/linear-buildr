@@ -13,15 +13,28 @@
                   @click="jumpToStep"
                   >STEP<img src="@/static/arrow_right.svg"
                 /></span>
-                .
               </template>
               <template v-else>
-                Build ℓUSD and earn staking rewards by staking LINA.
+                Build ℓUSD and earn staking rewards by staking supported
+                on-chain assets.
               </template>
             </div>
+            <muticollateralSelector
+              :selectedCollateral="selectedCollateral"
+              :setSelectedCollateral="setSelectedCollateral"
+            />
             <div class="actionRate" v-if="isBinanceNetwork">
-              1 LINA =
-              {{ formatNumberFromBigNumber(buildData.LINA2USDBN, 4) }}
+              {{
+                selectedCollateral == undefined
+                  ? "-"
+                  : "1 " + selectedCollateral.name
+              }}
+              =
+              {{
+                selectedCollateral !== undefined
+                  ? formatNumberFromBigNumber(buildData.LINA2USDBN, 4)
+                  : "-"
+              }}
               ℓUSD
             </div>
 
@@ -34,18 +47,49 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
-                  <img v-else src="@/static/dark-theme/LINA_logo.svg" />
+                  <img
+                    v-if="this.selectedCollateral == undefined"
+                    :src="
+                      theme == 'light'
+                        ? require('@/static/LINA_logo.svg')
+                        : require('@/static/LINA_logo_dark.svg')
+                    "
+                  />
+                  <img
+                    v-else-if="theme == 'dark'"
+                    :src="require(`@/static/${selectedCollateral.darkimg}`)"
+                  />
+                  <img
+                    v-else
+                    :src="require(`@/static/${selectedCollateral.img}`)"
+                  />
                 </div>
                 <div class="itemType">
-                  <div class="itemTypeTitle">Stake LINA</div>
+                  <div class="itemTypeTitle">
+                    Stake
+                    {{
+                      selectedCollateral !== undefined
+                        ? selectedCollateral.name
+                        : ""
+                    }}
+                  </div>
                   <div
+                    v-if="selectedCollateral !== undefined"
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 0 }"
-                    @click.stop="toggleModal"
+                    :class="{
+                      active: activeItemBtn == 0,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    @click.stop="clickBuy"
                   >
-                    buy lina
-                    <img src="@/static/arrow_right.svg" />
+                    buy
+                    {{ this.selectedCollateral.name }}
+
+                    <img
+                      @mouseover="arrow_icon = true"
+                      @mouseleave="arrow_icon = false"
+                      :src="arrow_icon ? arrow_hover : arrow_default"
+                    />
                   </div>
                 </div>
               </div>
@@ -57,24 +101,15 @@
                     type="text"
                     v-model="inputData.stake"
                     placeholder="0"
-                    :min="1"
+                    :min="0"
                     :max="100000000000"
                     @on-change="changeStakeAmount"
                     @on-focus="inputFocus(0)"
                     @on-blur="inputBlur(0)"
                     :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
                   />
-                  <!-- :formatter="
-                                            value =>
-                                                floor(
-                                                    toNonExponential(value),
-                                                    DECIMAL_PRECISION
-                                                )
-                                        " -->
-                  <!-- :max="formatEtherToNumber(buildData.maxAvaliableLINA)" -->
-                  <!-- <div class="unit">lina</div> -->
                 </div>
-                <!-- <div class="avaliable">Avaliable : 1,000</div> -->
               </div>
 
               <div
@@ -120,7 +155,10 @@
                   </div>
                   <div
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 1 }"
+                    :class="{
+                      active: activeItemBtn == 1,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
                     @click.stop="clickMaxBuildAmount"
                   >
                     MAX
@@ -141,15 +179,9 @@
                     @on-blur="inputBlur(1)"
                     placeholder="0"
                     :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
                   />
-
-                  <!-- :formatter=" value => floor(
-                                        toNonExponential(value), DECIMAL_PRECISION )
-                                    " -->
-                  <!-- :max="formatEtherToNumber(buildData.maxAvaliablelUSD)" -->
-                  <!-- <div class="unit">ℓUSD</div> -->
                 </div>
-                <!-- <div class="avaliable">Avaliable : 1,000</div> -->
               </div>
               <div
                 class="itemErrMsg"
@@ -176,7 +208,10 @@
                   <div class="itemTypeTitle">P Ratio</div>
                   <div
                     class="itemTypeBtn"
-                    :class="{ active: activeItemBtn == 2 }"
+                    :class="{
+                      active: activeItemBtn == 2,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
                     @click.stop="clickTargetRatio"
                   >
                     TARGET RATIO
@@ -189,6 +224,7 @@
                     class="input"
                     ref="itemInput2"
                     type="text"
+                    :min="0"
                     :max="100000000000"
                     v-model="inputData.ratio"
                     @on-change="changeRatio"
@@ -196,6 +232,7 @@
                     @on-blur="inputBlur(2)"
                     placeholder="0"
                     :formatter="(value) => formatterInput(value, 0)"
+                    :disabled="this.selectedCollateral == undefined"
                   />
                   <!-- :max="buildData.maxPRatio" -->
                   <!-- <div class="unit">%</div> -->
@@ -233,86 +270,183 @@
               {{ errors.stakeMsg }}
               {{ errors.ratioMsg }}
               {{ errors.amountMsg }}
+              <img
+                @click="closeErrorMobile"
+                class="closeIcon"
+                src="@/static/close_icon.svg"
+              />
             </div>
+            <muticollateralSelector
+              :selectedCollateral="selectedCollateral"
+              :setSelectedCollateral="setSelectedCollateral"
+            />
 
             <div class="actionRate">
-              1 LINA =
-              {{ formatNumberFromBigNumber(buildData.LINA2USDBN, 4) }}
+              {{
+                selectedCollateral == undefined
+                  ? "-"
+                  : "1 " + selectedCollateral.name
+              }}
+              =
+              {{
+                selectedCollateral !== undefined
+                  ? formatNumberFromBigNumber(buildData.LINA2USDBN, 4)
+                  : "-"
+              }}
               ℓUSD
             </div>
-
-            <div class="inputGroupBox">
-              <div
-                class="actionInputItem"
-                :class="{
-                  error: errors.stakeMsg || errors.amountMsg,
-                }"
-              >
-                <img
-                  v-if="theme === 'light'"
-                  class="showInfo"
-                  src="@/static/info_white.svg"
-                  @click="showIntroductActionModal"
-                />
-                <img
-                  v-else
-                  class="showInfo"
-                  src="@/static/dark-theme/info_white.svg"
-                  @click="showIntroductActionModal"
-                />
-
-                <div class="box">
-                  <div class="itemType">
-                    <img
-                      v-if="theme === 'light'"
-                      src="@/static/LINA_logo.svg"
-                    />
-                    <img v-else src="@/static/dark-theme/LINA_logo.svg" />
-                    <div class="itemTypeTitle">Stake LINA</div>
-                    <InputNumber
-                      class="input"
-                      ref="itemInput3"
-                      type="text"
-                      v-model="inputData.stake"
-                      placeholder="0"
-                      :max="100000000000"
-                      @on-change="changeStakeAmount"
-                      @on-focus="inputFocus(3)"
-                      @on-blur="inputBlur(3)"
-                      :formatter="formatterInput"
-                    />
-                  </div>
-
-                  <div class="itemType">
-                    <img
-                      v-if="theme === 'light'"
-                      src="@/static/currency/lUSD.svg"
-                    />
-                    <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
-                    <div class="itemTypeTitle">Build ℓUSD</div>
-                    <InputNumber
-                      class="input"
-                      ref="itemInput4"
-                      type="text"
-                      :max="100000000000"
-                      v-model="inputData.amount"
-                      @on-change="changeBuildAmount"
-                      @on-focus="inputFocus(4)"
-                      @on-blur="inputBlur(4)"
-                      placeholder="0"
-                      :formatter="formatterInput"
-                    />
-                  </div>
+            <div
+              class="actionInputItem"
+              :class="{
+                error: errors.stakeMsg,
+              }"
+              @click="changeFocusItem(3)"
+            >
+              <div class="itemLeft">
+                <div class="itemIcon">
+                  <img
+                    v-if="this.selectedCollateral == undefined"
+                    :src="
+                      theme == 'light'
+                        ? require('@/static/LINA_logo.svg')
+                        : require('@/static/LINA_logo_dark.svg')
+                    "
+                  />
+                  <img
+                    v-else-if="theme == 'dark'"
+                    :src="require(`@/static/${selectedCollateral.darkimg}`)"
+                  />
+                  <img
+                    v-else
+                    :src="require(`@/static/${selectedCollateral.img}`)"
+                  />
                 </div>
-
-                <div
-                  class="itemTypeBtn"
-                  :class="{ active: activeItemBtn == 1 }"
-                  @click.stop="clickMaxBuildAmount"
-                >
-                  Max
+                <div class="itemType">
+                  <div class="itemTypeTitle">
+                    Stake
+                    {{
+                      selectedCollateral !== undefined
+                        ? selectedCollateral.name
+                        : ""
+                    }}
+                  </div>
+                  <div
+                    v-if="selectedCollateral !== undefined"
+                    class="itemTypeBtn"
+                    :class="{
+                      active: activeItemBtn == 3,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    @click.stop="clickBuy"
+                  >
+                    buy {{ this.selectedCollateral.name }}
+                    <img
+                      @mouseover="arrow_icon = true"
+                      @mouseleave="arrow_icon = false"
+                      :src="arrow_icon ? arrow_hover : arrow_default"
+                    />
+                  </div>
                 </div>
               </div>
+              <div class="itemRight">
+                <div class="inputRect">
+                  <InputNumber
+                    class="input"
+                    ref="itemInput3"
+                    type="text"
+                    v-model="inputData.stake"
+                    placeholder="0"
+                    :min="0"
+                    :max="100000000000"
+                    @on-change="changeStakeAmount"
+                    @on-focus="inputFocus(3)"
+                    @on-blur="inputBlur(3)"
+                    :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
+                  />
+                </div>
+              </div>
+
+              <!-- <div
+                class="itemErrMsg"
+                :style="{
+                  opacity: errors.stakeMsg ? '1' : '0',
+                }"
+              >
+                {{ errors.stakeMsg }}
+              </div> -->
+            </div>
+
+            <div
+              class="actionInputItem"
+              :class="{
+                error: errors.buildAmount,
+              }"
+              @click="changeFocusItem(4)"
+            >
+              <div class="itemLeft">
+                <div class="itemIcon">
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
+                </div>
+                <div class="itemType">
+                  <div class="itemTypeTitle">
+                    Build ℓUSD
+                    <Tooltip
+                      max-width="305"
+                      placement="top"
+                      class="tip globalInfoStyle"
+                      content="Amount of ℓUSD built may vary due to block times and price fluctuations in pledge tokens."
+                      offset="0 4"
+                    >
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_white.svg"
+                      />
+                      <img v-else src="@/static/dark-theme/info_white.svg" />
+                    </Tooltip>
+                  </div>
+                  <div
+                    class="itemTypeBtn"
+                    :class="{
+                      active: activeItemBtn == 4,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    @click.stop="clickMaxBuildAmount"
+                  >
+                    MAX
+                  </div>
+                </div>
+              </div>
+              <div class="itemRight">
+                <div class="inputRect">
+                  <InputNumber
+                    class="input"
+                    ref="itemInput4"
+                    type="text"
+                    :min="0"
+                    :max="100000000000"
+                    v-model="inputData.amount"
+                    @on-change="changeBuildAmount"
+                    @on-focus="inputFocus(4)"
+                    @on-blur="inputBlur(4)"
+                    placeholder="0"
+                    :formatter="formatterInput"
+                    :disabled="this.selectedCollateral == undefined"
+                  />
+                </div>
+              </div>
+              <!-- <div
+                class="itemErrMsg"
+                :style="{
+                  opacity: errors.amountMsg ? '1' : '0',
+                }"
+              >
+                {{ errors.amountMsg }}
+              </div> -->
             </div>
 
             <div
@@ -322,13 +456,32 @@
               }"
               @click="changeFocusItem(5)"
             >
-              <div class="ratioInputBox">
-                <div class="box">
+              <div class="itemLeft">
+                <div class="itemIcon">
+                  <img v-if="theme === 'light'" src="@/static/percentage.svg" />
+                  <img v-else src="@/static/dark-theme/percentage.svg" />
+                </div>
+                <div class="itemType">
                   <div class="itemTypeTitle">P Ratio</div>
+                  <div
+                    class="itemTypeBtn"
+                    :class="{
+                      active: activeItemBtn == 5,
+                      selectedAsset: selectedCollateral !== undefined,
+                    }"
+                    @click.stop="clickTargetRatio"
+                  >
+                    TARGET RATIO
+                  </div>
+                </div>
+              </div>
+              <div class="itemRight">
+                <div class="inputRect">
                   <InputNumber
                     class="input"
                     ref="itemInput5"
                     type="text"
+                    :min="0"
                     :max="100000000000"
                     v-model="inputData.ratio"
                     @on-change="changeRatio"
@@ -336,17 +489,21 @@
                     @on-blur="inputBlur(5)"
                     placeholder="0"
                     :formatter="(value) => formatterInput(value, 0)"
+                    :disabled="this.selectedCollateral == undefined"
                   />
+                  <!-- :max="buildData.maxPRatio" -->
+                  <!-- <div class="unit">%</div> -->
                 </div>
-
-                <div
-                  class="itemTypeBtn"
-                  :class="{ active: activeItemBtn == 2 }"
-                  @click.stop="clickTargetRatio"
-                >
-                  Target ratio
-                </div>
+                <!-- <div class="avaliable">Current : 99.73</div> -->
               </div>
+              <!-- <div
+                class="itemErrMsg"
+                :style="{
+                  opacity: errors.ratioMsg ? '1' : '0',
+                }"
+              >
+                {{ errors.ratioMsg }}
+              </div> -->
             </div>
 
             <gasEditorSwap
@@ -357,6 +514,18 @@
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="buildBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div v-else-if="!isBinanceNetwork" class="buildBtn switchToBSC">
+            Please switch to BSC network to build your ℓ<span>USD</span>
+          </div>
+
+          <div
+            v-else
             class="buildBtn"
             :class="{ disabled: buildDisabled }"
             @click="clickBuild"
@@ -387,7 +556,8 @@
           :swapType="1"
           v-if="actionTabs == 'm1' && isEthereumNetworkFunc(sourceNetworkId)"
           @close="setDefaultTab"
-        ></watingEnhanceSwapNew>
+        >
+        </watingEnhanceSwapNew>
       </TabPane>
     </Tabs>
 
@@ -413,28 +583,31 @@
 <script>
 import _ from "lodash";
 import gasEditor from "@/components/gasEditor";
-import { openBuyLINA, toNonExponential } from "@/common/utils";
-
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import {
-  storeDetailsData,
   getPriceRates,
   // getPriceRatesFromApi,
   getBuildRatio,
 } from "@/assets/linearLibrary/linearTools/request";
-import { DECIMAL_LENGTH } from "@/assets/linearLibrary/linearTools/constants/flow";
-
+import muticollateralSelector from "../../selector/muticollateralSelector.vue";
 import {
   findParents,
   removeClass,
   addClass,
   formatterInput,
+  // toNonExponential,
+  // openBuyLINA,
 } from "@/common/utils";
 
 import {
+  formatByStoreCollateral,
   formatEtherToNumber,
   formatNumber,
   formatNumberFromBigNumber,
+  getAssetObjectInfo,
+  parseUnitAndReformat,
+  replaceWaitProcessString,
+  roundCryptoValueString,
 } from "@/assets/linearLibrary/linearTools/format";
 
 import {
@@ -450,13 +623,10 @@ import {
   bnSub,
   bnMul,
   bnDiv,
-  bnAdd2N,
-  bnSub2N,
-  bnMul2N,
-  bnDiv2N,
-  MAX_DECIMAL_LENGTH,
   n2bn,
   bn2n,
+  n2bnForAsset,
+  bn2nForAsset,
 } from "@/common/bnCalc";
 
 import { BigNumber, utils } from "ethers";
@@ -469,22 +639,25 @@ import {
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import gasEditorSwap from "@/components/gasEditorSwap";
 import linkModal from "~/components/linkModal.vue";
+import { LINA } from "~/assets/linearLibrary/linearTools/constants/currency";
 
 export default {
   name: "build",
   data() {
     return {
+      arrow_default: require("@/static/arrow_right_baby_blue.svg"),
+      arrow_hover: require("@/static/arrow_right.svg"),
       utils, // ethers工具包
       DECIMAL_PRECISION,
       formatNumber, //千分格式化
       formatNumberFromBigNumber, //大数格千分格式化
       formatEtherToNumber,
       floor: _.floor, //向下取值
-      toNonExponential, //科学计数法转正常显示 Conversion of scientific counting method to digital text
+      // toNonExponential, //科学计数法转正常显示 Conversion of scientific counting method to digital text
       actionTabs: "m0", //子页(m0默认,m1执行) Subpages(m0 default, m1 waiting)
-
+      LINA: LINA,
       activeItemBtn: -1, //当前激活按钮 0,1,2 Start with -1
-
+      arrow_icon: false,
       confirmTransactionStep: -1, //当前交易进度
       confirmTransactionStatus: false, //当前交易确认状态
       confirmTransactionNetworkId: "", //当前交易确认网络id
@@ -538,6 +711,7 @@ export default {
       isEthereumNetworkFunc: isEthereumNetwork,
       sourceNetworkId: "",
       showPopup: false,
+      selectedCollateral: undefined,
     };
   },
   components: {
@@ -545,6 +719,7 @@ export default {
     gasEditorSwap,
     watingEnhanceSwapNew,
     linkModal,
+    muticollateralSelector,
   },
   watch: {
     walletAddress() {},
@@ -553,6 +728,9 @@ export default {
     isBinanceNetwork() {},
     walletNetworkId() {},
     isMobile() {},
+    selectedCollateral() {
+      this.getBuildData();
+    },
   },
   computed: {
     //build按钮禁止状态
@@ -564,7 +742,9 @@ export default {
         this.errors.amountMsg ||
         this.errors.ratioMsg ||
         this.processing ||
-        (this.isEthereumNetwork && _.lt(this.inputData.stake, 1))
+        (this.isEthereumNetwork && _.lt(this.inputData.stake, 1)) ||
+        !this.walletAddress ||
+        !this.selectedCollateral
       );
     },
 
@@ -594,10 +774,11 @@ export default {
     theme() {
       return this.$store.state.theme;
     },
+    multiCollateralAsset() {
+      return this.$store.state?.multiCollateral;
+    },
   },
   created() {
-    this.getBuildData(this.walletAddress);
-
     this.sourceNetworkId = this.walletNetworkId;
 
     //监听链切换
@@ -617,7 +798,7 @@ export default {
             needApprove: n2bn("0"),
             ratio: 0,
           };
-          await this.getBuildData(this.walletAddress);
+          await this.getBuildData();
         }
       }
     );
@@ -629,6 +810,11 @@ export default {
     }
   },
   methods: {
+    closeErrorMobile() {
+      this.errors.stakeMsg = "";
+      this.errors.amountMsg = "";
+      this.errors.ratioMsg = "";
+    },
     toggleModal() {
       this.showPopup = !this.showPopup;
     },
@@ -641,7 +827,13 @@ export default {
      * 调整stake最小数为1,小于为0
      */
     adjustMinStake() {
-      if (this.inputData.stake < 1 || this.actionData.stake.lt(n2bn("1"))) {
+      const minCollateral = getAssetObjectInfo(
+        this.selectedCollateral.key
+      ).minCollateral;
+      if (
+        this.inputData.stake < minCollateral ||
+        this.actionData.stake.lt(n2bnForAsset(minCollateral))
+      ) {
         this.$nextTick(() => {
           this.inputData.stake = 0;
           this.actionData.stake = n2bn("0");
@@ -652,41 +844,51 @@ export default {
     /**
      * 获取数据
      */
-    async getBuildData(walletAddress) {
+    async getBuildData() {
       try {
         this.processing = true;
+        const walletAddress = this.walletAddress;
+
+        if (walletAddress === undefined) return;
+        if (this.selectedCollateral === undefined) return;
 
         const {
-          lnrJS: {
-            LinearFinance,
-            LnCollateralSystem,
-            LnRewardLocker,
-            LnDebtSystem,
-          },
+          lnrJS: { LnRewardLocker },
           utils,
         } = lnrJSConnector;
+        const LnDebtSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnDebtSystem;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
+        const LinearFinance =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LinearFinance;
 
         if (this.isEthDevNetwork) {
-          const avaliableLINA = await LinearFinance.balanceOf(walletAddress); //LINA余额
+          const avaliableLINA = await LinearFinance.balanceOf(walletAddress);
 
           this.buildData.LINA = _.floor(
-            formatEtherToNumber(avaliableLINA),
+            formatByStoreCollateral(avaliableLINA),
             DECIMAL_PRECISION
           );
 
           this.buildData.LINABN = avaliableLINA;
         } else {
-          const LINABytes = utils.formatBytes32String("LINA");
+          const LINABytes = utils.formatBytes32String(
+            this.selectedCollateral.contractKey
+          );
           //取合约地址
           const LnCollateralSystemAddress = LnCollateralSystem.address;
 
           const results = await Promise.all([
-            LinearFinance.balanceOf(walletAddress), //LINA余额
-            LnCollateralSystem.userCollateralData(walletAddress, LINABytes), //staked lina
-            LnRewardLocker.balanceOf(walletAddress), //lock lina
-            LinearFinance.allowance(walletAddress, LnCollateralSystemAddress), //已 approved 的 lina 额度
+            LinearFinance.balanceOf(walletAddress), //collateral 余额
+            LnCollateralSystem.userCollateralData(walletAddress, LINABytes), //staked collateral
+            LnRewardLocker.balanceOf(walletAddress), //lock collateral
+            LinearFinance.allowance(walletAddress, LnCollateralSystemAddress), //已 approved 的 collateral 额度
             LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress), //总债务
-            getBuildRatio(), //目标抵押率
+            // getBuildRatio(), //目标抵押率
             LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress), //个人全部抵押物兑lUSD,用于计算pratio
           ]);
 
@@ -695,27 +897,28 @@ export default {
             stakedLina,
             lockLina,
             approvedLina,
-            amountDebt,
-            buildRatio,
+            amountDebtUnformat,
             totalCollateralInUsd,
-          ] = results.map(formatEtherToNumber);
+          ] = results.map(formatByStoreCollateral);
 
+          const amountDebt = formatEtherToNumber(
+            await LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
+          );
           let currentRatioPercent = n2bn("0");
+          const buildRatio = await getBuildRatio(this.selectedCollateral.key);
 
-          if (results[6].gt("0") && results[4][0].gt("0")) {
+          if (results[5].gt("0") && results[4][0].gt("0")) {
             currentRatioPercent = bnMul(
-              bnDiv(results[6], results[4][0]),
+              bnDiv(results[5], results[4][0]),
               n2bn("100")
             );
           }
 
-          const targetRatioPercent = 100 / buildRatio; //目标抵押率
-
-          const priceRates = await getPriceRates(["LINA", "lUSD"]);
-          // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
-
-          const LINAPrice = priceRates.LINA / priceRates.lUSD;
-          const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
+          const targetRatioPercent = 100 / formatEtherToNumber(buildRatio);
+          const priceRateKey = this.selectedCollateral.contractKey;
+          const priceRates = await getPriceRates([priceRateKey, "lUSD"]);
+          const LINAPrice = priceRates[priceRateKey] / priceRates.lUSD;
+          const LINAPriceBN = bnDiv(priceRates[priceRateKey], priceRates.lUSD);
 
           this.buildData.LINA = _.floor(avaliableLINA, DECIMAL_PRECISION);
           this.buildData.LINABN = results[0];
@@ -727,7 +930,11 @@ export default {
           this.buildData.stakedBN = results[1];
 
           this.buildData.lock = _.floor(lockLina, DECIMAL_PRECISION);
-          this.buildData.lockBN = results[2];
+          if (this.selectedCollateral.key == LINA) {
+            this.buildData.lockBN = results[2];
+          } else {
+            this.buildData.lockBN = n2bnForAsset("0");
+          }
 
           this.buildData.approvedBN = results[3];
 
@@ -736,11 +943,16 @@ export default {
 
           this.buildData.targetRatio = targetRatioPercent;
           this.buildData.currentRatio =
-            formatEtherToNumber(currentRatioPercent);
+            formatByStoreCollateral(currentRatioPercent);
           this.buildData.currentRatioBN = currentRatioPercent;
 
           //获取当前抵押率
           this.inputData.ratio = this.buildData.currentRatio;
+          this.inputData.stake = null;
+          this.inputData.amount = null;
+          this.errors.stakeMsg = "";
+          this.errors.amountMsg = "";
+          this.errors.ratioMsg = "";
         }
       } catch (e) {
         console.log(e, "getBuildData err");
@@ -765,18 +977,25 @@ export default {
           //抵押所有lina后能生成多少lUSD
           allCanBuildLUSDAfterStakeAll = bnDiv(
             bnMul(
-              bnAdd(
-                bnAdd(this.buildData.LINABN, this.buildData.stakedBN),
-                this.buildData.lockBN
+              n2bn(
+                formatByStoreCollateral(
+                  bnAdd(
+                    bnAdd(
+                      parseUnitAndReformat(this.buildData.LINABN),
+                      parseUnitAndReformat(this.buildData.stakedBN)
+                    ),
+                    parseUnitAndReformat(this.buildData.lockBN)
+                  )
+                )
               ),
-              this.buildData.LINA2USDBN
+              parseUnitAndReformat(this.buildData.LINA2USDBN, false)
             ),
-            n2bn((this.buildData.targetRatio / 100).toString())
+            n2bnForAsset((this.buildData.targetRatio / 100).toString())
           );
 
           //可以生成的lUSD小于等于债务
           if (allCanBuildLUSDAfterStakeAll.lte(this.buildData.debtBN)) {
-            this.errors.amountMsg = "You don't have enough amount of LINA.";
+            this.errors.amountMsg = `You don't have enough amount of ${this.selectedCollateral.name}.`;
             return;
           }
 
@@ -788,18 +1007,24 @@ export default {
             this.actionData.needApprove = n2bn("10000000000");
           }
 
-          this.inputData.stake = formatEtherToNumber(this.buildData.LINABN);
+          this.inputData.stake = formatByStoreCollateral(this.buildData.LINABN);
           this.inputData.amount = formatEtherToNumber(
             bnSub(allCanBuildLUSDAfterStakeAll, this.buildData.debtBN)
           );
-          this.inputData.ratio = 350;
-
-          this.actionData.stake = this.buildData.LINABN;
+          const selectedAssetRatio = this.selectedCollateral.targetRatio * 100;
+          this.inputData.ratio = selectedAssetRatio;
+          this.actionData.stake = n2bnForAsset(
+            roundCryptoValueString(
+              this.inputData.stake.toString(),
+              this.selectedCollateral.key
+            ),
+            this.selectedCollateral.key
+          );
           this.actionData.amount = bnSub(
             allCanBuildLUSDAfterStakeAll,
             this.buildData.debtBN
           );
-          this.actionData.ratio = n2bn("350");
+          this.actionData.ratio = n2bn(selectedAssetRatio.toString());
 
           this.adjustMinStake();
         }
@@ -808,6 +1033,7 @@ export default {
       }
     },
 
+    //点击target
     //点击target
     clickTargetRatio() {
       try {
@@ -823,42 +1049,42 @@ export default {
             this.errors.ratioMsg = "You don't have build ℓUSD.";
             return;
           }
-
           if (
             this.buildData.currentRatioBN.gt(
-              n2bn(this.buildData.targetRatio.toString())
+              n2bnForAsset(this.buildData.targetRatio.toString())
             )
           ) {
             //抵押率大于目标抵押率，只build，不计算stake
             let stakeAndLockToLUSD = bnDiv(
               bnMul(
-                bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
-                this.buildData.LINA2USDBN
+                bnAdd(
+                  parseUnitAndReformat(this.buildData.stakedBN),
+                  parseUnitAndReformat(this.buildData.lockBN)
+                ),
+                parseUnitAndReformat(this.buildData.LINA2USDBN, false)
               ),
-              n2bn((this.buildData.targetRatio / 100).toString())
+              n2bnForAsset((this.buildData.targetRatio / 100).toString())
             );
-
             this.inputData.stake = 0;
             this.inputData.amount =
               _.floor(
-                formatEtherToNumber(
+                formatByStoreCollateral(
                   bnSub(stakeAndLockToLUSD, this.buildData.debtBN)
                 ),
                 DECIMAL_PRECISION
               ) - this.toleranceDifference; //增加容错
-            this.inputData.ratio = 350;
-
+            const selectedAssetRatio =
+              this.selectedCollateral.targetRatio * 100;
+            this.inputData.ratio = selectedAssetRatio;
             this.actionData.stake = n2bn("0");
             this.actionData.amount = bnSub(
               bnSub(stakeAndLockToLUSD, this.buildData.debtBN),
-              n2bn(this.toleranceDifference.toString())
+              n2bnForAsset(this.toleranceDifference.toString())
             ); //增加容错
-
-            // console.log(this.actionData.amount,'this.actionData.amount ');
-            this.actionData.ratio = n2bn("350");
+            this.actionData.ratio = n2bn(selectedAssetRatio.toString());
           } else if (
             this.buildData.currentRatioBN.lt(
-              n2bn(this.buildData.targetRatio.toString())
+              n2bnForAsset(this.buildData.targetRatio.toString())
             )
           ) {
             //抵押率小于目标抵押率，只stake，不计算build
@@ -866,23 +1092,27 @@ export default {
             let needStakeWhenTargetRatio = bnSub(
               bnDiv(
                 bnMul(
-                  n2bn((this.buildData.targetRatio / 100).toString()),
-                  this.buildData.debtBN
+                  n2bnForAsset((this.buildData.targetRatio / 100).toString()),
+                  parseUnitAndReformat(this.buildData.debtBN, false)
                 ),
-                this.buildData.LINA2USDBN
+                parseUnitAndReformat(this.buildData.LINA2USDBN, false)
               ),
-              this.buildData.lockBN
+              parseUnitAndReformat(this.buildData.lockBN)
             );
 
             //需要补充抵押的lina数量
             let newStakeAmount = bnSub(
-              needStakeWhenTargetRatio,
-              this.buildData.stakedBN
+              parseUnitAndReformat(needStakeWhenTargetRatio, false),
+              parseUnitAndReformat(this.buildData.stakedBN)
             );
 
             //可用lina数量不足
-            if (newStakeAmount.gt(this.buildData.LINABN)) {
-              this.errors.ratioMsg = "You don't have enough amount of LINA.";
+            if (
+              parseUnitAndReformat(newStakeAmount, false).gt(
+                parseUnitAndReformat(this.buildData.LINABN)
+              )
+            ) {
+              this.errors.ratioMsg = `You don't have enough amount of ${this.selectedCollateral.name}.`;
               return;
             }
 
@@ -891,13 +1121,16 @@ export default {
               this.actionData.needApprove = n2bn("10000000000");
             }
 
+            const selectedAssetRatio =
+              this.selectedCollateral.targetRatio * 100;
+
             this.inputData.stake = formatEtherToNumber(newStakeAmount);
             this.inputData.amount = 0;
-            this.inputData.ratio = 350;
+            this.inputData.ratio = selectedAssetRatio;
 
             this.actionData.stake = newStakeAmount;
             this.actionData.amount = n2bn("0");
-            this.actionData.ratio = n2bn("350");
+            this.actionData.ratio = n2bn(selectedAssetRatio.toString());
           }
 
           this.adjustMinStake();
@@ -915,26 +1148,30 @@ export default {
         // this.resetInputData();
 
         if (!stakeAmount) {
-          this.errors.stakeMsg = "You can't stake the amount of LINA.";
+          this.errors.stakeMsg = `You can't stake the amount of ${this.selectedCollateral.name}.`;
           return;
         }
 
         if (n2bn(stakeAmount.toString()).gt(this.buildData.LINABN)) {
-          this.errors.stakeMsg = "You don't have enough amount of LINA.";
+          this.errors.stakeMsg = `You don't have enough amount of ${this.selectedCollateral.name}.`;
           return;
         }
 
         if (!this.isEthDevNetwork) {
           //抵押输入的lina时能生成的最大lusd
+
           let canBuildMaxAfterStake = bnDiv(
             bnMul(
               bnAdd(
-                bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
-                n2bn(stakeAmount.toString())
+                bnAdd(
+                  parseUnitAndReformat(this.buildData.stakedBN),
+                  parseUnitAndReformat(this.buildData.lockBN)
+                ),
+                n2bnForAsset(stakeAmount.toString())
               ),
-              this.buildData.LINA2USDBN
+              parseUnitAndReformat(this.buildData.LINA2USDBN, false)
             ),
-            n2bn((this.buildData.targetRatio / 100).toString())
+            n2bnForAsset((this.buildData.targetRatio / 100).toString())
           );
 
           let canBuildAfterStake = bnSub(
@@ -956,19 +1193,23 @@ export default {
           }
 
           this.inputData.stake = stakeAmount;
-          this.actionData.stake = n2bn(stakeAmount.toString());
+          this.actionData.stake = n2bnForAsset(
+            stakeAmount.toString(),
+            this.selectedCollateral.key
+          );
 
           this.adjustMinStake();
-
           this.actionData.ratio = bnMul(
             bnDiv(
-              bnMul(
-                canBuildMaxAfterStake,
-                n2bn(this.buildData.targetRatio / 100)
+              n2bn(
+                bnMul(
+                  canBuildMaxAfterStake,
+                  n2bnForAsset(this.buildData.targetRatio / 100)
+                )
               ),
-              bnAdd(this.actionData.amount, this.buildData.debtBN)
+              n2bn(bnAdd(this.actionData.amount, this.buildData.debtBN))
             ),
-            n2bn("100")
+            n2bnForAsset("100")
           );
 
           this.inputData.ratio = formatEtherToNumber(this.actionData.ratio);
@@ -996,12 +1237,15 @@ export default {
           let canBuildMaxAfterStakeAll = bnDiv(
             bnMul(
               bnAdd(
-                bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
-                this.buildData.LINABN
+                bnAdd(
+                  parseUnitAndReformat(this.buildData.stakedBN),
+                  parseUnitAndReformat(this.buildData.lockBN)
+                ),
+                parseUnitAndReformat(this.buildData.LINABN)
               ),
-              this.buildData.LINA2USDBN
+              parseUnitAndReformat(this.buildData.LINA2USDBN, false)
             ),
-            n2bn((this.buildData.targetRatio / 100).toString())
+            n2bnForAsset((this.buildData.targetRatio / 100).toString())
           );
 
           //抵押所有lina后能build最大lusd - debt = 还能build多少
@@ -1016,33 +1260,42 @@ export default {
           }
 
           //输入lusd超过最大可build数量
-          if (n2bn(buildAmount.toString()).gt(canBuildAfterStakeAll)) {
-            this.errors.amountMsg = "You don't have enough amount of LINA.";
+          if (n2bnForAsset(buildAmount).gt(canBuildAfterStakeAll)) {
+            this.errors.amountMsg = `You don't have enough amount of ${this.selectedCollateral.name}.`;
             return;
           }
 
           let nowCanBuildMax = bnDiv(
             bnMul(
-              bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
-              this.buildData.LINA2USDBN
+              bnAdd(
+                parseUnitAndReformat(this.buildData.stakedBN),
+                parseUnitAndReformat(this.buildData.lockBN)
+              ),
+              parseUnitAndReformat(this.buildData.LINA2USDBN, false)
             ),
-            n2bn((this.buildData.targetRatio / 100).toString())
+            n2bnForAsset((this.buildData.targetRatio / 100).toString())
           );
 
           let nowCanBuild = bnSub(nowCanBuildMax, this.buildData.debtBN);
 
           //输入lusd大于现在直接可以build的数量
-          if (n2bn(buildAmount.toString()).gt(nowCanBuild)) {
+          if (n2bnForAsset(buildAmount.toString()).gt(nowCanBuild)) {
             let needStakeAmount = bnDiv(
               bnMul(
-                bnSub(n2bn(buildAmount.toString()), nowCanBuild),
-                n2bn((this.buildData.targetRatio / 100).toString())
+                bnSub(n2bnForAsset(buildAmount.toString()), nowCanBuild),
+                n2bnForAsset((this.buildData.targetRatio / 100).toString())
               ),
-              this.buildData.LINA2USDBN
+              parseUnitAndReformat(this.buildData.LINA2USDBN, false)
             );
 
             this.inputData.stake = formatEtherToNumber(needStakeAmount);
-            this.actionData.stake = needStakeAmount;
+            this.actionData.stake = n2bnForAsset(
+              roundCryptoValueString(
+                bn2nForAsset(needStakeAmount).toString(),
+                this.selectedCollateral.key
+              ),
+              this.selectedCollateral.key
+            );
 
             //需要approve
             if (
@@ -1095,7 +1348,7 @@ export default {
           // );
 
           this.inputData.amount = buildAmount;
-          this.actionData.amount = n2bn(buildAmount.toString());
+          this.actionData.amount = n2bnForAsset(buildAmount.toString());
 
           this.adjustMinStake();
         }
@@ -1103,6 +1356,10 @@ export default {
         console.log(error, "build change error");
         this.errors.amountMsg = "Invalid number";
       }
+    },
+
+    displayAssetKey(name) {
+      return getAssetObjectInfo(name).key;
     },
 
     //ratio改变事件
@@ -1151,12 +1408,15 @@ export default {
             bnDiv(
               bnMul(
                 bnAdd(
-                  bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
-                  this.buildData.LINABN
+                  bnAdd(
+                    parseUnitAndReformat(this.buildData.stakedBN),
+                    parseUnitAndReformat(this.buildData.lockBN)
+                  ),
+                  parseUnitAndReformat(this.buildData.LINABN)
                 ),
-                this.buildData.LINA2USDBN
+                parseUnitAndReformat(this.buildData.LINA2USDBN, false)
               ),
-              this.buildData.debtBN
+              parseUnitAndReformat(this.buildData.debtBN, false)
             ),
             n2bn("100")
           );
@@ -1166,8 +1426,7 @@ export default {
             !maxRatioAfterStakeMax.eq("0") &&
             n2bn(ratioAmount.toString()).gt(maxRatioAfterStakeMax)
           ) {
-            this.errors.ratioMsg =
-              "The P-Ratio can't be larger than your staking amount of LINA.";
+            this.errors.ratioMsg = `The P-Ratio can't be larger than your staking amount of ${this.selectedCollateral.name}.`;
             return;
           }
 
@@ -1177,17 +1436,17 @@ export default {
             let stakeWhenRaisePratio = bnSub(
               bnDiv(
                 bnMul(
-                  n2bn((ratioAmount / 100).toString()),
-                  this.buildData.debtBN
+                  n2bnForAsset((ratioAmount / 100).toString()),
+                  parseUnitAndReformat(this.buildData.debtBN, false)
                 ),
-                this.buildData.LINA2USDBN
+                parseUnitAndReformat(this.buildData.LINA2USDBN, false)
               ),
-              this.buildData.lockBN
+              parseUnitAndReformat(this.buildData.lockBN)
             );
 
             let needStake = bnSub(
-              stakeWhenRaisePratio,
-              this.buildData.stakedBN
+              parseUnitAndReformat(stakeWhenRaisePratio, false),
+              parseUnitAndReformat(this.buildData.stakedBN)
             );
 
             //需要approve
@@ -1199,7 +1458,13 @@ export default {
             }
 
             this.inputData.stake = formatEtherToNumber(needStake);
-            this.actionData.stake = needStake;
+            this.actionData.stake = n2bnForAsset(
+              roundCryptoValueString(
+                bn2nForAsset(needStake, this.selectedCollateral.key).toString(),
+                this.selectedCollateral.key
+              ),
+              this.selectedCollateral.key
+            );
 
             this.inputData.amount = 0;
             this.actionData.amount = n2bn("0");
@@ -1214,10 +1479,13 @@ export default {
             //下调抵押率至ratioAmount需要生成多少债务
             let debtWhenFallPratio = bnDiv(
               bnMul(
-                bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
-                this.buildData.LINA2USDBN
+                bnAdd(
+                  parseUnitAndReformat(this.buildData.stakedBN),
+                  parseUnitAndReformat(this.buildData.lockBN)
+                ),
+                parseUnitAndReformat(this.buildData.LINA2USDBN, false)
               ),
-              n2bn((ratioAmount / 100).toString())
+              n2bnForAsset((ratioAmount / 100).toString())
             );
 
             //下调抵押率至ratioAmount需要build多少lusd
@@ -1233,7 +1501,7 @@ export default {
             this.actionData.amount = needBuildAmount;
 
             this.inputData.ratio = ratioAmount;
-            this.actionData.ratio = n2bn(ratioAmount.toString());
+            this.actionData.ratio = n2bnForAsset(ratioAmount.toString());
           }
 
           this.adjustMinStake();
@@ -1250,6 +1518,9 @@ export default {
     async clickBuild() {
       try {
         if (!this.buildDisabled) {
+          const minCollateral = getAssetObjectInfo(
+            this.selectedCollateral.key
+          ).minCollateral;
           if (this.isEthereumNetwork) {
             this.actionTabs = "m1"; //进入swap流程
           } else if (this.isBinanceNetwork) {
@@ -1263,14 +1534,44 @@ export default {
             }
 
             if (
-              this.actionData.stake.gte(n2bn("1")) &&
+              this.actionData.stake.gte(n2bnForAsset(minCollateral)) &&
               this.actionData.amount.gte(n2bn("0.01"))
             ) {
               //合并进度
+              if (
+                BUILD_PROCESS_SETUP.STAKING_BUILD.includes("[REPLACE_CURRENCY]")
+              ) {
+                BUILD_PROCESS_SETUP.STAKING_BUILD = _.replace(
+                  BUILD_PROCESS_SETUP.STAKING_BUILD,
+                  "[REPLACE_CURRENCY]",
+                  this.selectedCollateral.name
+                );
+              } else {
+                BUILD_PROCESS_SETUP.STAKING_BUILD = replaceWaitProcessString(
+                  BUILD_PROCESS_SETUP.STAKING_BUILD,
+                  this.selectedCollateral.name
+                );
+              }
+
               this.waitProcessArray.push(BUILD_PROCESS_SETUP.STAKING_BUILD);
             } else {
               //单步进度
-              if (this.actionData.stake.gte(n2bn("1"))) {
+
+              if (this.actionData.stake.gte(n2bnForAsset(minCollateral))) {
+                if (
+                  BUILD_PROCESS_SETUP.STAKING.includes("[REPLACE_CURRENCY]")
+                ) {
+                  BUILD_PROCESS_SETUP.STAKING = _.replace(
+                    BUILD_PROCESS_SETUP.STAKING,
+                    "[REPLACE_CURRENCY]",
+                    this.selectedCollateral.name
+                  );
+                } else {
+                  BUILD_PROCESS_SETUP.STAKING = replaceWaitProcessString(
+                    BUILD_PROCESS_SETUP.STAKING,
+                    this.selectedCollateral.name
+                  );
+                }
                 this.waitProcessArray.push(BUILD_PROCESS_SETUP.STAKING);
               }
 
@@ -1344,10 +1645,13 @@ export default {
     async startApproveContract(approveAmountLINA) {
       this.confirmTransactionStatus = false;
 
-      const {
-        lnrJS: { LnCollateralSystem, LinearFinance },
-        utils,
-      } = lnrJSConnector;
+      const { utils } = lnrJSConnector;
+      const LnCollateralSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnCollateralSystem;
+      const LinearFinance =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LinearFinance;
 
       //取合约地址
       const LnCollateralSystemAddress = LnCollateralSystem.address;
@@ -1410,7 +1714,16 @@ export default {
       this.confirmTransactionNetworkId = this.walletNetworkId;
 
       //多抵押一点,防止build失败
-      let tempStakeAmount = n2bn(_.ceil(bn2n(stakeAmountLINA), 2));
+      let tempStakeAmount = n2bnForAsset(
+        roundCryptoValueString(
+          bn2nForAsset(stakeAmountLINA, this.selectedCollateral.key).toString(),
+          this.selectedCollateral.key
+        ),
+        this.selectedCollateral.key
+      );
+      const minCollateral = getAssetObjectInfo(
+        this.selectedCollateral.key
+      ).minCollateral;
 
       //小于等于最大数
       if (tempStakeAmount.lte(this.buildData.LINABN)) {
@@ -1418,18 +1731,18 @@ export default {
       }
 
       //合约需要大于1
-      if (stakeAmountLINA.eq(n2bn("1"))) {
+      if (stakeAmountLINA.eq(n2bnForAsset(minCollateral))) {
         stakeAmountLINA = bnAdd(stakeAmountLINA, n2bn("0.000000000000000001"));
       }
 
       if (buildAmountlUSD.gt(n2bn("0.01"))) {
-        buildAmountlUSD = n2bn(_.floor(bn2n(buildAmountlUSD), 2));
+        buildAmountlUSD = n2bnForAsset(_.floor(bn2n(buildAmountlUSD), 4));
       }
 
-      const {
-        lnrJS: { LnCollateralSystem },
-        utils,
-      } = lnrJSConnector;
+      const { utils } = lnrJSConnector;
+      const LnCollateralSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnCollateralSystem;
 
       const transactionSettings = {
         gasPrice: this.$store.state?.gasDetails?.price,
@@ -1441,9 +1754,8 @@ export default {
           stakeAmountLINA,
           buildAmountlUSD
         );
-
       let transaction = await LnCollateralSystem.stakeAndBuildMax(
-        utils.formatBytes32String("LINA"),
+        utils.formatBytes32String(this.selectedCollateral.contractKey),
         stakeAmountLINA,
         transactionSettings
       );
@@ -1484,7 +1796,13 @@ export default {
       this.confirmTransactionStatus = false;
 
       //多抵押一点,防止build失败
-      let tempStakeAmount = n2bn(_.ceil(bn2n(stakeAmountLINA), 2));
+      let tempStakeAmount = n2bnForAsset(
+        roundCryptoValueString(
+          bn2nForAsset(stakeAmountLINA, this.selectedCollateral.key).toString(),
+          this.selectedCollateral.key
+        ),
+        this.selectedCollateral.key
+      );
 
       //小于等于最大数
       if (tempStakeAmount.lte(this.buildData.LINABN)) {
@@ -1496,10 +1814,10 @@ export default {
         stakeAmountLINA = bnAdd(stakeAmountLINA, n2bn("0.000000000000000001"));
       }
 
-      const {
-        lnrJS: { LnCollateralSystem },
-        utils,
-      } = lnrJSConnector;
+      const { utils } = lnrJSConnector;
+      const LnCollateralSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnCollateralSystem;
 
       const transactionSettings = {
         gasPrice: this.$store.state?.gasDetails?.price,
@@ -1513,7 +1831,7 @@ export default {
       );
 
       let transaction = await LnCollateralSystem.Collateral(
-        utils.formatBytes32String("LINA"),
+        utils.formatBytes32String(this.selectedCollateral.contractKey),
         stakeAmountLINA,
         transactionSettings
       );
@@ -1550,12 +1868,12 @@ export default {
     async startBuildContract(buildAmountlUSD) {
       this.confirmTransactionStatus = false;
 
-      buildAmountlUSD = n2bn(_.floor(bn2n(buildAmountlUSD), 2));
+      buildAmountlUSD = n2bn(_.floor(bn2n(buildAmountlUSD), 4));
 
-      const {
-        lnrJS: { LnBuildBurnSystem },
-        utils,
-      } = lnrJSConnector;
+      const { utils } = lnrJSConnector;
+      const LnBuildBurnSystem =
+        lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+          .LnBuildBurnSystem;
 
       const transactionSettings = {
         gasPrice: this.$store.state?.gasDetails?.price,
@@ -1604,10 +1922,10 @@ export default {
     //评估Approve的gas
     async getGasEstimateFromApprove(contractAddress, approveAmountLINA) {
       try {
-        const {
-          utils,
-          lnrJS: { LinearFinance },
-        } = lnrJSConnector;
+        const { utils } = lnrJSConnector;
+        const LinearFinance =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LinearFinance;
 
         if (
           approveAmountLINA.isZero() ||
@@ -1633,10 +1951,10 @@ export default {
       buildAmountlUSD
     ) {
       try {
-        const {
-          lnrJS: { LnCollateralSystem },
-          utils,
-        } = lnrJSConnector;
+        const { utils } = lnrJSConnector;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
 
         if (
           stakeAmountLINA.lte("0") &&
@@ -1644,9 +1962,8 @@ export default {
         ) {
           throw new Error("invalid input");
         }
-
         let gasEstimate = await LnCollateralSystem.estimateGas.stakeAndBuildMax(
-          utils.formatBytes32String("LINA"),
+          utils.formatBytes32String(this.selectedCollateral.contractKey),
           stakeAmountLINA
         );
 
@@ -1660,10 +1977,10 @@ export default {
     //评估Staking的gas
     async getGasEstimateFromStaking(stakeAmountLINA) {
       try {
-        const {
-          lnrJS: { LnCollateralSystem },
-          utils,
-        } = lnrJSConnector;
+        const { utils } = lnrJSConnector;
+        const LnCollateralSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnCollateralSystem;
 
         if (
           stakeAmountLINA.isZero() ||
@@ -1673,7 +1990,7 @@ export default {
         }
 
         let gasEstimate = await LnCollateralSystem.estimateGas.Collateral(
-          utils.formatBytes32String("LINA"),
+          utils.formatBytes32String(this.selectedCollateral.contractKey),
           stakeAmountLINA
         );
 
@@ -1686,10 +2003,9 @@ export default {
     //评估Build的gas
     async getGasEstimateFromBuild(buildAmountlUSD) {
       try {
-        const {
-          lnrJS: { LnBuildBurnSystem },
-          utils,
-        } = lnrJSConnector;
+        const LnBuildBurnSystem =
+          lnrJSConnector.multiCollateral[this.selectedCollateral.key]
+            .LnBuildBurnSystem;
 
         if (
           buildAmountlUSD <= 0 //小于等于0
@@ -1765,8 +2081,13 @@ export default {
 
     //点击购买
     clickBuy() {
-      openBuyLINA();
-      this.activeItemBtn = 0;
+      if (this.selectedCollateral.key == LINA) {
+        this.toggleModal();
+        this.activeItemBtn = 0;
+      } else {
+        window.open(this.selectedCollateral.buyLink);
+        this.activeItemBtn = 0;
+      }
     },
 
     showIntroductActionModal() {
@@ -1781,7 +2102,7 @@ export default {
 
       this.waitProcessArray = [];
       this.confirmTransactionStep = 0;
-      this.getBuildData(this.walletAddress);
+      this.getBuildData();
 
       this.sourceNetworkId = this.walletNetworkId;
 
@@ -1792,6 +2113,9 @@ export default {
     //Retry page
     tryAgain() {
       this.setDefaultTab();
+    },
+    setSelectedCollateral(item) {
+      this.selectedCollateral = item;
     },
   },
 };
@@ -1837,20 +2161,20 @@ export default {
             align-items: center;
 
             .actionTitle {
-              font-family: Gilroy-bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
               letter-spacing: normal;
               text-align: center;
-              color: #5a575c;
+              color: #101a28;
             }
 
             .actionDesc {
               margin-top: 8px;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -1858,7 +2182,7 @@ export default {
               line-height: 1.29;
               letter-spacing: normal;
               text-align: center;
-              color: #99999a;
+              color: #475a75;
               margin-bottom: 40px;
 
               .step {
@@ -1896,16 +2220,17 @@ export default {
               margin-bottom: 24px;
               border-radius: 8px;
               border: solid 1px #deddde;
-              padding: 39px 24px;
+              padding: 33px 24px;
               display: flex;
               justify-content: space-between;
               width: 100%;
               transition: $animete-time linear;
               position: relative;
+              height: 88px;
 
               &:hover,
               &.active {
-                border-color: white;
+                border-color: #1a38f8 !important;
                 box-shadow: 0px 2px 12px #deddde;
               }
 
@@ -1954,11 +2279,16 @@ export default {
                     }
                   }
 
+                  .app-dark & {
+                    .itemTypeBtn {
+                      color: #3c3a3e;
+                    }
+                  }
+
                   .itemTypeBtn {
                     transition: $animete-time linear;
                     cursor: pointer;
                     display: flex;
-                    opacity: 0.2;
                     text-transform: uppercase;
                     font-family: Gilroy-bold;
                     font-size: 12px;
@@ -1968,20 +2298,26 @@ export default {
                     line-height: 1.33;
                     letter-spacing: 1.5px;
                     text-align: center;
-                    color: #1a38f8;
+                    color: #e5e5e5;
+
+                    .app-dark & {
+                      color: #3c3a3e !important;
+                    }
+
+                    &.selectedAsset {
+                      color: #a4cbff !important;
+                      &:hover {
+                        &:not(.default) {
+                          color: #1a38f8 !important;
+                        }
+                      }
+                    }
 
                     img {
                       margin-left: 6px;
                     }
 
-                    &:hover {
-                      &:not(.default) {
-                        opacity: 1;
-                      }
-                    }
-
                     &.active {
-                      opacity: 1;
                     }
 
                     &.default {
@@ -1999,6 +2335,18 @@ export default {
                   display: flex;
                   align-items: center;
                   justify-content: flex-end;
+
+                  .ivu-input-number-input[disabled],
+                  .ivu-input-number-disabled {
+                    background-color: #fff !important;
+
+                    cursor: not-allowed;
+
+                    .app-dark & {
+                      background-color: transparent !important;
+                    }
+                  }
+
                   // margin-bottom: 8px;
                   .input {
                     width: 100%;
@@ -2077,7 +2425,10 @@ export default {
 
           .buildBtn {
             width: 100%;
+            display: flex;
             position: absolute;
+            align-items: center;
+            justify-content: center;
             bottom: 0px;
             height: 80px;
             line-height: 80px;
@@ -2104,7 +2455,38 @@ export default {
 
             &.disabled {
               cursor: not-allowed;
-              opacity: 0.1;
+              opacity: 0.2;
+            }
+
+            &.switchToBSC {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              color: #1a38f8;
+              cursor: not-allowed;
+              background-color: #eff6ff;
+              text-transform: none;
+              &:hover {
+                &:not(.disabled) {
+                  background-color: #eff6ff;
+                }
+              }
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              background-color: #eff6ff;
+              text-transform: none;
             }
           }
         }
@@ -2117,7 +2499,7 @@ export default {
   #build {
     border-radius: 16px;
     box-shadow: 0px 2px 6px #deddde;
-    min-height: 550px;
+    min-height: 600px;
 
     .app-dark & {
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -2126,7 +2508,7 @@ export default {
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
-      min-height: 550px;
+      min-height: 600px;
 
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -2141,16 +2523,16 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .buildBox,
           .waitingBox,
           .successBox,
           .wrongBox {
             width: 100%;
-            height: 88vh !important;
-            min-height: 550px;
+            height: 100% !important;
+            min-height: 600px;
             display: flex;
             justify-content: center;
           }
@@ -2163,6 +2545,7 @@ export default {
             }
 
             .actionBodyMobile {
+              margin-top: 25px;
               display: flex;
               flex-direction: column;
               align-items: center;
@@ -2179,13 +2562,19 @@ export default {
                 color: #df434c;
 
                 img {
-                  margin-right: 16px;
+                  margin-right: 8px;
+                }
+                .closeIcon {
+                  position: absolute;
+                  right: 10%;
+                  cursor: pointer;
+                  margin-bottom: 20px;
                 }
               }
 
               .actionRate {
                 width: 74.4vw;
-                margin: 32px 0 28px;
+                margin: 10px 0 15px;
                 border-radius: 12px;
                 display: flex;
                 justify-content: center;
@@ -2203,124 +2592,136 @@ export default {
                 color: #1a38f8;
               }
 
-              .inputGroupBox {
-                width: 74.4vw;
-
-                .actionInputItem {
-                  position: relative;
-                  display: flex;
-                  flex-direction: column;
-                  border-radius: 8px;
-                  border: solid 1px #e5e5e5;
-
-                  .showInfo {
-                    position: absolute;
-                    top: 8px;
-                    right: 8px;
-                  }
-
-                  .box {
-                    display: flex;
-
-                    .itemType {
-                      height: 42.5vw;
-                      display: flex;
-                      justify-content: center;
-                      flex-direction: column;
-                      align-items: center;
-
-                      img {
-                        width: 40px;
-                      }
-
-                      .itemTypeTitle {
-                        margin: 16px 0 0;
-                        font-family: Gilroy;
-                        font-size: 12px;
-                        font-weight: 500;
-                        text-align: center;
-                        color: #99999a;
-                      }
-
-                      .input {
-                        width: 100%;
-                        height: 24px;
-                        border: none;
-                        box-shadow: none;
-
-                        .ivu-input-number-handler-wrap {
-                          display: none;
-                        }
-
-                        .ivu-input-number-input {
-                          text-align: center;
-                          font-family: Gilroy-Bold;
-                          font-size: 16px;
-                          font-weight: bold;
-                          font-stretch: normal;
-                          font-style: normal;
-                          line-height: 1.25;
-                          letter-spacing: normal;
-
-                          &::placeholder {
-                            color: #99999a;
-                          }
-                        }
-                      }
-                    }
-                  }
-
-                  .itemTypeBtn {
-                    height: 32px;
-                    width: 100%;
-                    text-transform: uppercase;
-                    border-top: solid 1px #e5e5e5;
-                    font-family: Gilroy;
-                    text-align: center;
-                    font-size: 10px;
-                    line-height: 32px;
-                    font-weight: bold;
-                    color: #1a38f8;
-                  }
-                }
-              }
-
               .actionInputItem {
-                margin-bottom: 24px;
                 border-radius: 8px;
                 border: solid 1px #deddde;
+                margin-bottom: 12px;
+                padding: 15px 15px 10px;
+                display: flex;
+                justify-content: space-between;
+                width: 90%;
                 transition: $animete-time linear;
+                position: relative;
+                height: 88px;
 
+                &:hover,
                 &.active {
-                  border-color: white;
+                  border-color: #1a38f8 !important;
                   box-shadow: 0px 2px 12px #deddde;
                 }
 
-                .ratioInputBox {
-                  width: 74.4vw;
-                  position: relative;
+                .itemLeft {
+                  display: flex;
+                  margin-right: 16px;
+                  align-items: center;
 
-                  .box {
+                  .itemIcon {
+                    margin-right: 16px;
+                    width: 40px;
+                    height: 40px;
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: center;
                     align-items: center;
-                    padding: 0 16px;
-                    height: 21.6vw;
+                    border-radius: 50%;
+                    background: #ffffff;
 
+                    img {
+                      width: 100%;
+                      height: 100%;
+                    }
+                    .app-dark & {
+                      background: none;
+                    }
+                  }
+
+                  .itemType {
                     .itemTypeTitle {
-                      font-family: Gilroy;
-                      font-size: 12px;
-                      font-weight: 500;
-                      text-align: center;
-                      color: #99999a;
+                      display: flex;
+                      align-items: center;
+                      font-family: Gilroy-bold;
+                      font-size: 16px;
+                      font-weight: bold;
+                      font-stretch: normal;
+                      font-style: normal;
+                      line-height: 1.5;
+                      letter-spacing: normal;
+                      color: #5a575c;
+
+                      .tip {
+                        margin-left: 8px;
+                        img {
+                          margin-top: -3px;
+                        }
+                      }
                     }
 
+                    .itemTypeBtn {
+                      transition: $animete-time linear;
+                      cursor: pointer;
+                      display: flex;
+                      text-transform: uppercase;
+                      font-family: Gilroy-bold;
+                      font-size: 12px;
+                      font-weight: bold;
+                      font-stretch: normal;
+                      font-style: normal;
+                      line-height: 1.33;
+                      letter-spacing: 1.5px;
+                      text-align: center;
+                      color: #e5e5e5;
+
+                      .app-dark & {
+                        color: #3c3a3e !important;
+                      }
+
+                      &.selectedAsset {
+                        color: #a4cbff !important;
+                        &:hover {
+                          &:not(.default) {
+                            color: #1a38f8 !important;
+                          }
+                        }
+                      }
+
+                      img {
+                        margin-left: 6px;
+                      }
+
+                      &.active {
+                      }
+
+                      &.default {
+                        cursor: default;
+                      }
+                    }
+                  }
+                }
+
+                .itemRight {
+                  flex: 1;
+                  display: flex;
+
+                  .inputRect {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+
+                    .ivu-input-number-input[disabled],
+                    .ivu-input-number-disabled {
+                      background-color: #fff !important;
+
+                      cursor: not-allowed;
+
+                      .app-dark & {
+                        background-color: transparent !important;
+                      }
+                    }
+
+                    // margin-bottom: 8px;
                     .input {
-                      width: 53.33vw;
-                      height: 32px;
+                      width: 100%;
                       border: none;
                       box-shadow: none;
-                      padding: 0;
 
                       .ivu-input-number-handler-wrap {
                         display: none;
@@ -2328,35 +2729,53 @@ export default {
 
                       .ivu-input-number-input {
                         text-align: right;
-                        font-family: Gilroy-Bold;
-                        font-size: 16px;
+                        font-family: Gilroy-bold;
+                        font-size: 32px;
                         font-weight: bold;
                         font-stretch: normal;
                         font-style: normal;
                         line-height: 1.25;
                         letter-spacing: normal;
+                        color: #5a575c;
 
                         &::placeholder {
                           color: #99999a;
                         }
                       }
                     }
+                    .unit {
+                      color: #5a575c;
+                      font-family: Gilroy-Regular;
+                      font-size: 16px;
+                      font-weight: 400;
+                      line-height: 24px;
+                      text-transform: uppercase;
+                    }
                   }
 
-                  .itemTypeBtn {
-                    height: 32px;
-                    width: 100%;
-                    position: relative;
-                    bottom: 0;
-                    border-top: solid 1px #e5e5e5;
-                    text-transform: uppercase;
+                  .avaliable {
+                    color: #c6c4c7;
                     font-family: Gilroy;
-                    text-align: center;
-                    font-size: 10px;
-                    line-height: 32px;
-                    font-weight: bold;
-                    color: #1a38f8;
+                    font-size: 12px;
+                    font-weight: 500;
+                    line-height: 16px;
+                    text-align: right;
                   }
+                }
+
+                .itemErrMsg {
+                  transition: opacity $animete-time linear;
+                  position: absolute;
+                  left: 0;
+                  bottom: -20px;
+                  height: 16px;
+                  color: #df434c;
+                  font-family: Gilroy;
+                  font-size: 10px;
+                  font-weight: 700;
+                  line-height: 16px;
+                  text-transform: uppercase;
+                  letter-spacing: 1.25px;
                 }
 
                 &.error {
@@ -2394,7 +2813,26 @@ export default {
 
               &.disabled {
                 cursor: not-allowed;
-                opacity: 0.1;
+                opacity: 0.2;
+              }
+
+              &.switchToBSC {
+                font-family: $BodyTextFontFamily;
+                font-size: 16px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.5;
+                letter-spacing: normal;
+                color: #1a38f8;
+                cursor: not-allowed;
+                background-color: #eff6ff;
+                text-transform: none;
+                &:hover {
+                  &:not(.disabled) {
+                    background-color: #eff6ff;
+                  }
+                }
               }
             }
           }

@@ -1,10 +1,5 @@
 <template>
-  <v-chart
-    :options="option"
-    :manualUpdate="manualUpdate"
-    :autoresize="autoResize"
-    ref="chart"
-  />
+  <v-chart :options="option" :autoresize="autoResize" ref="chart" />
 </template>
 
 <style>
@@ -62,11 +57,6 @@ export default {
       type: String,
       default: "{c0}",
     },
-    manualUpdate: {
-      //是否手动更新data,否则需手动调用updateData
-      type: Boolean,
-      default: false,
-    },
     autoResize: {
       //是否自动更新大小,否则需手动调用resize
       type: Boolean,
@@ -85,10 +75,8 @@ export default {
   watch: {
     //监视data变动
     data(newData) {
-      //非手动
-      if (!this.manualUpdate) {
-        this.updateData(newData);
-      }
+      this.option.series[0].data = newData.series;
+      this.refresh();
     },
   },
   computed: {
@@ -151,12 +139,12 @@ export default {
       : "#FFFFFF";
 
     innerColor.areaColorTop = _.has(this.color, "areaColorTop")
-      ? this.color.areaColorTop
-      : "#C7EFE7";
+      ? "#1A38F8"
+      : "#1A38F8";
 
     innerColor.areaColorBottom = _.has(this.color, "areaColorBottom")
       ? this.color.areaColorBottom
-      : "#FFFFFF";
+      : "white";
 
     innerColor.tooltipLineColor = _.has(this.color, "tooltipLineColor")
       ? this.color.tooltipLineColor

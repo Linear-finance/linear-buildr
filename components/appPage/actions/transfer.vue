@@ -77,7 +77,7 @@
                 <div
                   class="dropdownItem"
                   v-for="(item, index) in currencyList"
-                  @click="selectCurrencyFun(index)"
+                  @click="selectCurrencyFun(index, item)"
                   :key="index"
                   :class="{
                     activity: index == selected,
@@ -167,6 +167,11 @@
                 {{ transactionErrMsg }}
               </div>
               <div v-else>Please input a valid address.</div>
+              <img
+                @click="closeErrorMobile"
+                class="closeIcon"
+                src="@/static/close_icon.svg"
+              />
             </div>
             <div
               class="from actionInputItem"
@@ -253,7 +258,7 @@
                 <div
                   class="dropdownItem"
                   v-for="(item, index) in currencyList"
-                  @click="selectCurrencyFun(index)"
+                  @click="selectCurrencyFun(index, item)"
                   :key="index"
                   :class="{
                     activity: index == selected,
@@ -294,6 +299,14 @@
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="transferBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div
+            v-else
             class="transferBtn"
             :class="{ disabled: transferDisabled || walletError }"
             @click="clickTransfer"
@@ -321,12 +334,12 @@
         </div>
       </TabPane>
     </Tabs>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
 <script>
 import {
-  openBlockchainBrowser,
   findParents,
   removeClass,
   addClass,
@@ -347,13 +360,15 @@ import {
   isEthereumNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
 import currencies from "@/common/currency";
-
 import {
   abbreviateAddress,
+  floorBigNumber,
   formatNumber,
+  getAssetObjectInfo,
 } from "@/assets/linearLibrary/linearTools/format";
-import { bn2n, n2bn } from "@/common/bnCalc";
+import { bn2n, bn2nForAsset, n2bnForAsset, n2bn } from "@/common/bnCalc";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 
 export default {
   name: "transfer",
@@ -381,15 +396,15 @@ export default {
       waitProcessArray: [],
       waitProcessFlow: Function,
       BUILD_PROCESS_SETUP: { ...BUILD_PROCESS_SETUP },
-
+      showPopup: false,
       currencyList: [
         {
           name: "LINA",
           key: "LINA",
           img:
             this.theme === "light"
-              ? require("@/static/LINA_logo.svg")
-              : require("@/static/dark-theme/LINA_logo.svg"),
+              ? require("@/static/NEW_LINA_logo.svg")
+              : require("@/static/dark-theme/NEW_LINA_logo.svg"),
           balance: 0,
         },
       ],
@@ -436,13 +451,15 @@ export default {
     },
 
     canSendEthAmount() {
-      return (
-        this.currentSelectCurrency.balance -
-        lnrJSConnector.utils.formatEther(
-          this.$store.state?.gasDetails?.price.toString()
-        ) *
-          this.ethGasLimit
-      );
+      if (!this.walletAddress) return false;
+      else
+        return (
+          this.currentSelectCurrency.balance -
+          lnrJSConnector.utils.formatEther(
+            this.$store.state?.gasDetails?.price.toString()
+          ) *
+            this.ethGasLimit
+        );
     },
 
     isEthereumNetwork() {
@@ -490,6 +507,14 @@ export default {
     });
   },
   methods: {
+    closeErrorMobile() {
+      this.errors.stakeMsg = "";
+      this.errors.amountMsg = "";
+      this.errors.ratioMsg = "";
+    },
+    toggleModal() {
+      this.showPopup = !this.showPopup;
+    },
     async selectCurrencyFun(index) {
       this.transactionErrMsg = "";
       this.selected = index;
@@ -499,9 +524,12 @@ export default {
 
     //初始化liquids列表
     async initLiquidsList() {
+      if (!this.walletAddress) return;
+
       this.processing = true;
+      const { multiCollateral } = lnrJSConnector;
       const [linaBalance, walletBalance, liquids] = await Promise.all([
-        lnrJSConnector.lnrJS.LinearFinance.balanceOf(this.walletAddress),
+        multiCollateral.LINA.LinearFinance.balanceOf(this.walletAddress),
         lnrJSConnector.provider.getBalance(this.walletAddress),
         getLiquids(this.walletAddress),
       ]);
@@ -516,16 +544,23 @@ export default {
         };
       });
 
+      const collateralList = await Promise.all(
+        collateralAssets.map(async (item) => {
+          let balance = await multiCollateral[item.key].LinearFinance.balanceOf(
+            this.walletAddress
+          );
+          return {
+            name: item.name,
+            key: item.key,
+            balance: _.floor(bn2nForAsset(balance, item.key), 4),
+            img: item.img,
+          };
+        })
+      );
+
       this.currencyList = [
-        {
-          name: "LINA",
-          key: "LINA",
-          img:
-            this.theme === "light"
-              ? require("@/static/LINA_logo.svg")
-              : require("@/static/dark-theme/LINA_logo.svg"),
-          balance: _.floor(bn2n(linaBalance), 4),
-        },
+        ...collateralList,
+        ...liquidsList,
         {
           name: this.isEthereumNetwork ? "ETH" : "BNB",
           key: this.isEthereumNetwork ? "ETH" : "BNB",
@@ -534,7 +569,6 @@ export default {
           }${this.isEthereumNetwork ? "ETH_logo" : "currency/BNBl"}.svg`),
           balance: _.floor(bn2n(walletBalance), 4),
         },
-        ...liquidsList,
       ];
 
       let index = _.findIndex(this.currencyList, [
@@ -612,7 +646,16 @@ export default {
             this.BUILD_PROCESS_SETUP.TRANSFER +
               (this.isEthereumNetwork ? "ETH" : "BSC")
           ) {
-            await this.onSend(n2bn(this.transferNumber));
+            const transferNumberFormatted =
+              this.currentSelectCurrency.key == "ETH" ||
+              this.currentSelectCurrency.key == "BNB" ||
+              this.currentSelectCurrency.key == "lUSD"
+                ? n2bn(this.transferNumber)
+                : n2bnForAsset(
+                    this.transferNumber,
+                    this.currentSelectCurrency.key
+                  );
+            await this.onSend(transferNumberFormatted);
           }
         } catch (error) {
           //自定义错误
@@ -637,9 +680,16 @@ export default {
       this.confirmTransactionNetworkId = this.walletNetworkId;
 
       //获取gas评估
+      const sendAmountFormatted =
+        this.currentSelectCurrency.key == "ETH" ||
+        this.currentSelectCurrency.key == "BNB" ||
+        this.currentSelectCurrency.key == "lUSD"
+          ? bn2n(sendAmount)
+          : bn2nForAsset(sendAmount, this.currentSelectCurrency.key);
+
       const gasLimit = await this.getGasEstimate(
         selectedAssetKind,
-        bn2n(sendAmount),
+        sendAmountFormatted,
         recieveAddress
       );
 
@@ -659,14 +709,24 @@ export default {
         this.confirmTransactionStatus = true;
         this.confirmTransactionHash = transaction.hash;
 
+        const displayValue =
+          this.currentSelectCurrency.key == "ETH" ||
+          this.currentSelectCurrency.key == "BNB" ||
+          this.currentSelectCurrency.key == "lUSD"
+            ? floorBigNumber(sendAmount)
+            : floorBigNumber(
+                sendAmount,
+                getAssetObjectInfo(this.currentSelectCurrency.key).decimal
+              );
+
         // 发起右下角通知
         this.$pub.publish("notificationQueue", {
           hash: this.confirmTransactionHash,
           type: "Transfer",
           networkId: this.walletNetworkId,
-          value: `${formatNumber(
-            lnrJSConnector.utils.formatEther(sendAmount)
-          )} ${this.currentSelectCurrency.name}`,
+          value: `${formatNumber(displayValue)} ${
+            this.currentSelectCurrency.name
+          }`,
         });
 
         //等待结果返回
@@ -684,14 +744,20 @@ export default {
       if (currency === "LINA") {
         let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
         return LnProxy.transfer(destination, amount, settings);
-      } else if (["ETH", "BNB"].includes(currency)) {
+      } else if (currency === "BNB") {
         return lnrJSConnector.signer.sendTransaction({
           value: amount,
           to: destination,
           ...settings,
         });
-      } else {
+      } else if (currency === "lUSD") {
         return lnrJSConnector.lnrJS[currency].transfer(
+          destination,
+          amount,
+          settings
+        );
+      } else {
+        return lnrJSConnector.multiCollateral[currency].LinearFinance.transfer(
           destination,
           amount,
           settings
@@ -710,7 +776,12 @@ export default {
 
         let gasEstimate;
 
-        const amountBN = n2bn(amount);
+        const amountBN =
+          this.currentSelectCurrency.key == "ETH" ||
+          this.currentSelectCurrency.key == "BNB" ||
+          this.currentSelectCurrency.key == "lUSD"
+            ? n2bn(amount)
+            : n2bnForAsset(amount, this.currentSelectCurrency.key);
 
         if (currency === "LINA") {
           let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
@@ -723,7 +794,10 @@ export default {
             destination,
             amountBN
           );
-        } else if (["ETH", "BNB"].includes(currency)) {
+        } else if (
+          (currency == "ETH" && this.isEthereumNetwork == "ETH") ||
+          currency == "GLMR"
+        ) {
           if (amount === this.selectedAssetMaxValue) {
             //不能转全部eth,需要留手续费
             throw new Error("input.error.balanceTooLow");
@@ -732,10 +806,14 @@ export default {
             data: amountBN,
             to: destination,
           });
-        } else {
+        } else if (currency == "lUSD") {
           gasEstimate = await lnrJSConnector.lnrJS[
             currency
           ].estimateGas.transfer(destination, amountBN);
+        } else {
+          gasEstimate = await lnrJSConnector.multiCollateral[
+            this.currentSelectCurrency.key
+          ].LinearFinance.estimateGas.transfer(destination, amountBN);
         }
 
         return bufferGasLimit(gasEstimate);
@@ -839,9 +917,9 @@ export default {
 
             .text {
               .title {
-                font-family: Gilroy-Bold;
+                font-family: $HeadingsFontFamily;
                 font-size: 32px;
-                font-weight: bold;
+                font-weight: 200;
                 font-stretch: normal;
                 font-style: normal;
                 line-height: 1.25;
@@ -851,7 +929,7 @@ export default {
               }
               .descript {
                 margin-top: 8px;
-                font-family: Gilroy-Regular;
+                font-family: $BodyTextFontFamily;
                 font-size: 14px;
                 font-weight: normal;
                 font-stretch: normal;
@@ -918,7 +996,7 @@ export default {
                   width: 100%;
                 }
                 .p_1 {
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 16px;
                   font-weight: bold;
                   font-stretch: normal;
@@ -932,7 +1010,7 @@ export default {
                   opacity: 0.2;
                   cursor: pointer;
                   transition: $animete-time linear;
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: bold;
                   font-stretch: normal;
@@ -1014,7 +1092,7 @@ export default {
                   .unit {
                     width: 40px;
                     color: #5a575c;
-                    font-family: "PingFangHK-Regular";
+                    font-family: Gilroy;
                     font-size: 16px;
                     text-align: right;
                     display: flex;
@@ -1073,7 +1151,7 @@ export default {
                   }
                   .midle {
                     flex: 1;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 16px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -1177,7 +1255,7 @@ export default {
                     box-shadow: none;
                     outline: none;
                     color: #5a575c;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 14px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -1222,7 +1300,7 @@ export default {
             letter-spacing: 3px;
             cursor: pointer;
             transition: $animete-time linear;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
@@ -1239,6 +1317,17 @@ export default {
               cursor: not-allowed;
               opacity: 0.1;
             }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
+            }
           }
         }
       }
@@ -1248,12 +1337,12 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
   #transfer {
-    min-height: 550px;
+    min-height: 600px;
 
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
-      min-height: 550px;
+      min-height: 600px;
 
       .app-dark & {
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -1268,8 +1357,8 @@ export default {
 
         .ivu-tabs-tabpane {
           width: 100%;
-          height: 88vh !important;
-          min-height: 550px;
+          height: 100% !important;
+          min-height: 600px;
 
           .transferBox,
           .waitingBox,
@@ -1277,7 +1366,7 @@ export default {
           .failBox {
             width: 100%;
             height: 100%;
-            min-height: 550px;
+            min-height: 600px;
             display: flex;
             justify-content: center;
             -webkit-justify-content: center;
@@ -1309,6 +1398,13 @@ export default {
                 img {
                   margin-right: 16px;
                 }
+
+                .closeIcon {
+                  position: absolute;
+                  right: 10%;
+                  cursor: pointer;
+                  margin-bottom: 20px;
+                }
               }
 
               .from {
@@ -1335,7 +1431,7 @@ export default {
                   align-items: center;
 
                   .tokenName {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 24px;
                     text-align: center;
                     color: #5a575c;
@@ -1388,7 +1484,7 @@ export default {
                       .ivu-input-number-input {
                         text-align: left;
                         color: #99999a;
-                        font-family: Gilroy-Bold;
+                        font-family: $BodyTextFontFamily;
                         font-size: 16px;
                         font-weight: bold;
                         font-stretch: normal;
@@ -1410,7 +1506,7 @@ export default {
                     background-color: rgba(126, 181, 255, 0.1);
                     text-align: center;
                     line-height: 44px;
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 10px;
                     font-weight: bold;
                     color: #1a38f8;
@@ -1453,7 +1549,7 @@ export default {
                     }
                     .midle {
                       flex: 1;
-                      font-family: Gilroy-Bold;
+                      font-family: $BodyTextFontFamily;
                       font-size: 16px;
                       font-weight: bold;
                       font-stretch: normal;
@@ -1489,7 +1585,7 @@ export default {
                 justify-content: center;
                 border: solid 1px #e5e5e5;
                 border-radius: 8px;
-                font-family: Gilroy;
+                font-family: $BodyTextFontFamily;
                 font-size: 12px;
                 color: #99999a;
                 margin-bottom: 16px;
@@ -1500,7 +1596,7 @@ export default {
                   box-shadow: none;
                   outline: none;
                   color: #5a575c;
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   font-size: 14px;
                   font-weight: bold;
                   font-stretch: normal;

@@ -1,131 +1,32 @@
 <template>
   <div id="homePage">
-    <div
-      class="attentionBox"
-      :class="{
-        attention: currentRatioStatus == 1,
-        urgent: currentRatioStatus == 2,
-        liquidated: currentRatioStatus == 3,
-      }"
-      v-if="currentRatioStatus != 0"
-    >
-      <div class="colorBlock"></div>
-      <div class="container">
-        <img
-          class="icon"
-          src="@/static/info_orange.svg"
-          alt=""
-          app-
-          v-if="currentRatioStatus == 1"
-        />
-        <img
-          class="icon"
-          src="@/static/error.svg"
-          alt=""
-          v-if="currentRatioStatus == 2"
-        />
-        <img
-          class="icon"
-          src="@/static/close_blue.svg"
-          alt=""
-          v-if="currentRatioStatus == 3"
-        />
-        <div class="content">
-          <div class="title">
-            <template v-if="currentRatioStatus == 1"
-              >Attention required</template
-            >
-            <template v-if="currentRatioStatus == 2"
-              >Urgent: Action required</template
-            >
-            <template v-if="currentRatioStatus == 3"
-              >Accout Liquidated</template
-            >
-          </div>
-          <div class="context">
-            <template v-if="currentRatioStatus == 1">
-              Your P-ratio is below the target ratio. To prevent being
-              liquidated, please either
-              <span v-if="needBuyLINA"
-                >buy and stake {{ formatNumber(needLINANum) }} LINA</span
-              ><span v-else>stake {{ formatNumber(needLINANum) }} LINA</span> or
-              <span v-if="needBuylUSD"
-                >buy and burn {{ formatNumber(needlUSDNum) }} ℓUSD</span
-              ><span v-else>burn {{ formatNumber(needlUSDNum) }} ℓUSD</span> to
-              raise up to target ratio to be able to claim rewards.
-            </template>
-            <template v-if="currentRatioStatus == 2">
-              Your P-ratio has reached the minimum maintainence level. Please
-              <span v-if="needBuyLINA"
-                >buy and stake {{ formatNumber(needLINANum) }} LINA</span
-              ><span v-else>stake {{ formatNumber(needLINANum) }} LINA</span> or
-              <span v-if="needBuylUSD"
-                >buy and burn {{ formatNumber(needlUSDNum) }} ℓUSD</span
-              ><span v-else>burn {{ formatNumber(needlUSDNum) }} ℓUSD</span> to
-              raise up to target ratio.
-            </template>
-            <template v-if="currentRatioStatus == 3">
-              Your P-raio has fallen below the minimum required level for more
-              than 3 days, your LINA has been liquidated. Please view in the
-              transaction history for more information.
-            </template>
-          </div>
-          <div class="btnBox">
-            <div
-              class="btn"
-              v-if="needBuyLINA && currentRatioStatus != 3"
-              @click.stop="toggleModal"
-            >
-              Buy LINA →
-            </div>
-            <div
-              class="btn"
-              v-if="!needBuyLINA && currentRatioStatus != 3"
-              @click="actionLink(2)"
-            >
-              Stake now →
-            </div>
-            <div
-              class="btn"
-              v-if="needBuylUSD && currentRatioStatus != 3"
-              @click="actionLink(3)"
-            >
-              Buy ℓUSD →
-            </div>
-            <div
-              class="btn"
-              v-if="!needBuylUSD && currentRatioStatus != 3"
-              @click="actionLink(4)"
-            >
-              Burn now →
-            </div>
-            <div
-              class="btn"
-              v-if="currentRatioStatus == 3"
-              @click="actionLink(5)"
-            >
-              View Details →
-            </div>
-          </div>
-        </div>
-        <img
-          class="close"
-          src="@/static/icon-cancel.svg"
-          alt=""
-          @click="colseAttention"
-        />
+    <div class="alertStacking" v-if="multiCollateralValuesRatios">
+      <div
+        v-for="(item, index) in collateralAssets"
+        :key="index"
+        class="alertContainer"
+      >
+        <attentionBox :assetInfo="item" assetImg="any" />
       </div>
     </div>
-    <div class="title">Welcome to Buildr</div>
+    <div class="title">Welcome to Builder</div>
     <div class="context">
-      Our native token LINA is staked in our collateral pool to build ℓUSD. The
-      collateral pool enables infinite liquidity and no slippage.
+      Supported on-chain assets are staked in our collateral pool to build ℓUSD.
+      The collateral pool enables infinite liquidity and no slippage.
     </div>
     <div class="actionsBox">
       <div class="boxItem" :class="{ isMobile }" @click.stop="toggleModal">
         <div class="imgBox">
-          <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
-          <img v-else src="@/static/dark-theme/LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/NEW_LINA_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/NEW_LINA_logo.svg"
+          />
         </div>
         <div class="boxContext">
           Buy LINA <br />
@@ -142,8 +43,16 @@
         @click="isMobile && btnClick(2)"
       >
         <div class="imgBox">
-          <img v-if="theme === 'light'" src="@/static/currency/lUSD.svg" />
-          <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LUSD_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LUSD_logo.svg"
+          />
         </div>
         <div class="boxContext">
           Stake LINA <br />
@@ -175,7 +84,8 @@ import { LIQUIDATION_NETWORKS } from "@/assets/linearLibrary/linearTools/network
 import { BigNumber, utils } from "ethers";
 
 import { getPriceRates } from "@/assets/linearLibrary/linearTools/request";
-
+import attentionBox from "@/components/attentionBox.vue";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 import {
   formatEtherToNumber,
   formatNumber,
@@ -198,31 +108,21 @@ import {
 
 export default {
   name: "homePage",
-  components: { linkModal },
   data() {
     return {
       formatNumber,
-      currentRatioStatus: 0, //0正常 1低于500警告 2低于200清算窗口 3爆仓
-      needBuyLINA: false,
-      needLINANum: 0,
-      needBuylUSD: false,
-      needlUSDNum: 0,
-      walletData: {
-        avaliableLINA: 0,
-        LINA2USD: 0,
-        staked: 0,
-        lock: 0,
-        amountlUSD: 0,
-        debt: 0,
-        targetRatio: 350,
-        currentRatio: 0,
-      },
+      collateralAssets: collateralAssets,
       showPopup: false,
     };
+  },
+  components: {
+    attentionBox,
+    linkModal,
   },
   watch: {
     isMobile() {},
     walletAddress() {},
+    multiCollateralValuesRatios() {},
   },
   computed: {
     isMobile() {
@@ -237,6 +137,9 @@ export default {
     theme() {
       return this.$store.state.theme;
     },
+    multiCollateralValuesRatios() {
+      return this.$store.state?.multiCollateralValues.currentRatio;
+    },
   },
   created() {
     //订阅钱包账户改变事件
@@ -247,9 +150,6 @@ export default {
     this.$pub.subscribe("onWalletChainChange", (msg, params) => {
       this.walletStatusChange();
     });
-  },
-  mounted() {
-    this.checkLiquidation();
   },
   methods: {
     toggleModal() {
@@ -427,14 +327,11 @@ export default {
   padding: 200px 193px 207px;
   position: relative;
 
-  .app-dark & {
-    background: $darkBackgroundColor;
-  }
-
-  .attentionBox {
-    width: 600px;
+  .alertStacking {
     position: absolute;
-    top: 48px;
+    top: 10px;
+    z-index: 2;
+    margin: 10px 0;
     left: 50%;
     transform: translateX(-300px);
     display: flex;
@@ -462,10 +359,10 @@ export default {
         width: 499px;
 
         .title {
-          font-family: Gilroy-Bold;
+          font-family: $BodyTextFontFamily;
           font-size: 14px;
           line-height: 24px;
-          color: #5a575c;
+          color: #101a28;
           text-align: left;
           margin-bottom: 4px;
 
@@ -475,8 +372,8 @@ export default {
         }
 
         .context {
-          font-family: Gilroy;
-          font-size: 12px;
+          font-family: $BodyTextFontFamily;
+          font-size: 14px;
           color: #99999a;
           text-align: left;
           margin: 0 0 4px;
@@ -540,31 +437,30 @@ export default {
   }
 
   .title {
-    font-family: Gilroy-bold;
-    font-size: 32px;
-    font-weight: bold;
+    font-family: $HeadingsFontFamily;
+    font-size: 36px;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.25;
     letter-spacing: normal;
-    color: #5a575c;
+    color: #101a28;
+    font-weight: 200;
 
     .app-dark & {
-      color: $darkFontColor;
+      color: #fff;
     }
   }
 
   .context {
-    font-family: Gilroy-Regular;
+    font-family: $BodyTextFontFamily;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: 400;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.29;
     letter-spacing: normal;
     text-align: center;
-    color: #99999a;
-
+    color: #475a75;
     margin: 9px 0 48px;
 
     .app-dark & {
@@ -607,14 +503,14 @@ export default {
         width: 100%;
         text-align: center;
         font-size: 14px;
-        font-weight: normal;
+        font-weight: 200;
         font-stretch: normal;
         font-style: normal;
-        line-height: 1.29;
+        line-height: 20px;
         letter-spacing: normal;
         text-align: center;
-        color: #5a575c;
-        font-family: Gilroy-Regular;
+        color: #1d2639;
+        font-family: $HeadingsFontFamily;
         cursor: default;
 
         .app-dark & {
@@ -672,21 +568,27 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
   #homePage {
     width: 100%;
-    height: 88vh !important;
+    height: 100% !important;
     background: #fff;
     text-align: center;
     padding: 163px 0 0 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .alertStacking {
+      left: 50%;
+    }
 
     .title {
-      font-family: Gilroy-Bold;
+      font-family: $HeadingsFontFamily;
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 200;
       font-stretch: normal;
       font-style: normal;
       line-height: 1.33;
       letter-spacing: normal;
       text-align: center;
-      color: #5a575c;
+      color: #101a28;
 
       .app-dark & {
         color: $darkFontColor;
@@ -694,7 +596,7 @@ export default {
     }
 
     .context {
-      font-family: Gilroy;
+      font-family: $BodyTextFontFamily;
       font-size: 12px;
       font-weight: normal;
       font-stretch: normal;
@@ -702,7 +604,7 @@ export default {
       line-height: 1.33;
       letter-spacing: normal;
       text-align: center;
-      color: #99999a;
+      color: #475a75;
 
       margin: 9px 60px;
 

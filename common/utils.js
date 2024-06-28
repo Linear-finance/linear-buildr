@@ -81,7 +81,7 @@ Date.prototype.format = function (fmStr) {
 //取小数位长度
 Number.prototype.countDecimals = function () {
   if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
-  return this.toString().split(".")[1].length || 0;
+  return this.toString().split(".")[1] || 0;
 };
 
 /**
@@ -96,7 +96,7 @@ export const formatterInput = (value, decimal = DECIMAL_PRECISION) => {
   }
 
   //大于最大安全整数
-  if (value > Number.MAX_SAFE_INTEGER) {
+  if (value > Number.MAX_SAFE_INTEGER || value.toString().includes("e")) {
     value = toNonExponential(value);
   }
   return value;
@@ -159,6 +159,22 @@ export const findParents = ($el, $className) => {
   }
 };
 
+export const findChildren = ($el, $className) => {
+  try {
+    let childNodes = $el.childNodes;
+    for (let childNode of childNodes) {
+      if (
+        childNode.className &&
+        childNode.className.indexOf($className) !== -1
+      ) {
+        return childNode;
+      }
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};
 /**
  * 删除class
  * @param {Element} el  当前dom元素

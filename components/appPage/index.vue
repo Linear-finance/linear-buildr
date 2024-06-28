@@ -15,7 +15,7 @@
     >
       您有swap未完成,是否继续swap
       <div @click.stop="cancelSwap">取消</div>
-      <div @click.stop="jumoToSwap">继续</div>
+      <div @click.stop="jumpToSwap">继续</div>
       <div @click.stop="ignoreSwap">忽略</div>
     </Modal>
   </div>
@@ -60,7 +60,6 @@ export default {
   mounted() {
     if (this.isMobile) {
       const unfreezeDatas = { ...this.$store.state?.swapUnfreezeDatas };
-      //console.log(unfreezeDatas, this.walletNetworkId, "unfreezeDatas");
 
       //有数据且,钱包地址一致,
       if (
@@ -73,9 +72,9 @@ export default {
     }
   },
   methods: {
-    jumoToSwap() {
+    jumpToSwap() {
       this.$store.commit("setCurrentAction", 5);
-      this.$router.push("/swap");
+      this.$router.push("/bridge");
       this.$store.commit("setSwapUnfreezeContinue", true);
       this.hasUnfreeze = false;
     },
@@ -93,12 +92,14 @@ export default {
 
 <style lang="scss">
 #appPage {
+  height: 100%;
   display: flex;
   padding: 0 120px 64px;
 }
 
 @media only screen and (max-width: $max-phone-width) {
   #appPage {
+    height: 100%;
     display: flex;
     padding: 0 16px 16px 16px;
   }

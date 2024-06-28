@@ -6,6 +6,7 @@ const GRAPHQL_BATCH_SIZE = 500;
 const graphLiquidationPortalEndpoints = {
   56: process.env.SUBGRAPH_LIQUIDATION_PORTAL_BINANCE_MAINNET,
   10056: process.env.SUBGRAPH_LIQUIDATION_PORTAL_BSC_DEV,
+  31337: process.env.SUBGRAPH_LIQUIDATION_PORTAL_BINANCE_MAINNET,
 };
 
 module.exports = {

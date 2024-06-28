@@ -222,6 +222,30 @@ const currencies = {
     type: "index",
     tokenColor: "#D50A99",
   },
+  AAVEl: {
+    name: "AAVEℓ",
+    fullName: "AAVE",
+    type: "crypto",
+    tokenColor: "#A9559A",
+  },
+  AXSl: {
+    name: "AXSℓ",
+    fullName: "AXS",
+    type: "index",
+    tokenColor: "#005add",
+  },
+  SHIBAl: {
+    name: "SHIBAℓ",
+    fullName: "SHIBA",
+    type: "index",
+    tokenColor: "#FF0100",
+  },
+  FETl: {
+    name: "FETℓ",
+    fullName: "FET",
+    type: "index",
+    tokenColor: "#1F2944",
+  },
 };
 
 //导入资源路径
@@ -237,4 +261,5 @@ requireIcon();
 
 export const sourceKey = "lUSD";
 
+export const LINA = "LINA";
 export default currencies;

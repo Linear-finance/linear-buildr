@@ -5,7 +5,7 @@
         <div class="swapBox">
           <div class="actionBody">
             <template v-if="!isMobile">
-              <div class="actionTitle">Swap</div>
+              <div class="actionTitle">Bridge</div>
               <div class="actionDesc">
                 You can select the type of liquids and enter the amount you want
                 to swap to the other chain.
@@ -150,11 +150,19 @@
             <div v-if="!isMobile" class="someWrong" v-show="errors.amountMsg">
               {{ errors.amountMsg }}
             </div>
-            <gasEditorSwap></gasEditorSwap>
+            <gasEditorSwap v-if="walletAddress"></gasEditorSwap>
             <!-- v-if="actionTabs == 'm0'" -->
           </div>
 
           <div
+            v-if="!this.walletAddress"
+            class="swapBtn noWallet"
+            @click.stop="toggleModal"
+          >
+            BUY LINA
+          </div>
+          <div
+            v-else
             class="swapBtn"
             :class="{
               disabled: swapDisabled,
@@ -176,6 +184,7 @@
         ></watingEnhanceSwapNew>
       </TabPane>
     </Tabs>
+    <linkModal :visible="showPopup" @toggle="showPopup = $event"></linkModal>
   </div>
 </template>
 
@@ -242,14 +251,17 @@ export default {
 
       selectCurrencyIndex: 0,
       selectCurrencyKey: "LINA",
-
+      showPopup: false,
       currencies: [],
 
       frozenTokens: undefined,
     };
   },
   watch: {
-    walletAddress() {},
+    walletAddress() {
+      this.initCurrencies();
+      this.initData();
+    },
     isEthereumNetwork() {},
     isBinanceNetwork() {},
     walletNetworkId() {},
@@ -341,18 +353,25 @@ export default {
 
   methods: {
     //设置初始列表
-    initCurrencies() {
+    async initCurrencies() {
+      let linaBalance = 0;
+      if (this.walletAddress) {
+        linaBalance = await lnrJSConnector.lnrJS.LinearFinance.balanceOf(
+          this.walletAddress
+        );
+      }
+
       this.currencies = [
         {
           name: "LINA",
           key: "LINA",
           img:
             this.theme === "light"
-              ? require("@/static/LINA_logo.svg")
-              : require("@/static/dark-theme/LINA_logo.svg"),
-          balance: 0,
+              ? require("@/static/NEW_LINA_logo.svg")
+              : require("@/static/dark-theme/NEW_LINA_logo.svg"),
+          balance: _.floor(bn2n(linaBalance), 4),
           frozenBalance: 0,
-          totalBalance: 0,
+          totalBalance: _.floor(bn2n(linaBalance), 4),
         },
       ];
       this.selectCurrencyIndex = 0;
@@ -360,13 +379,13 @@ export default {
 
     async initData() {
       try {
-        this.currencyDropDown = false;
-        await this.initLiquidsList();
-        await this.filterCurrencies();
+        // this.currencyDropDown = false;
+        // await this.initLiquidsList();
+        // await this.filterCurrencies();
+        this.initCurrencies();
       } catch (error) {
         this.initCurrencies();
         this.selectCurrencyKey = "LINA";
-        console.log("initData error", error);
         this.processing = false;
       }
     },
@@ -538,8 +557,7 @@ export default {
     //点击最大
     clickMaxAmount() {
       this.activeItemBtn = 0;
-      this.swapNumber = _.floor(this.currency.totalBalance, 4);
-
+      this.swapNumber = _.floor(this.currency.balance, 4);
       var el = document.getElementById("transfer_number_input");
       this.setCursorRange(el, 0, 0);
     },
@@ -562,6 +580,10 @@ export default {
       });
     },
 
+    toggleModal() {
+      this.showPopup = !this.showPopup;
+    },
+
     async close() {
       this.actionTabs = "m0";
       await this.initData();
@@ -573,30 +595,21 @@ export default {
         lnr.freeZe({
           depositor: this.walletAddress,
           recipient: this.walletAddress,
-          networkId: getOtherNetworks(this.walletNetworkId),
+          networkId: this.walletNetworkId,
         }),
         lnr.unfreeze({
           depositor: this.walletAddress,
           recipient: this.walletAddress,
-          networkId: this.walletNetworkId,
+          networkId: getOtherNetworks(this.walletNetworkId),
         }),
       ]);
       //取不同存储记录
       const diffArray = _.xorBy(sourceArray, targetArray, "depositId");
       if (diffArray.length) {
-        if (diffArray[0].destChainId === this.walletNetworkId) {
-          // Use contract to double check withdrawn result in case of subgraph delays
-          const contractResult =
-            await lnrJSConnector.lnrJS.LnErc20Bridge.withdrawnDeposits(
-              diffArray[0].destChainId,
-              diffArray[0].depositId
-            );
-          console.log(contractResult, "contractResult");
-          if (!contractResult) {
-            this.$store.commit("setSwapUnfreezeContinue", true);
-            this.frozenTokens = diffArray[0].source;
-            this.actionTabs = "m1";
-          }
+        if (diffArray[0].srcChainId === this.walletNetworkId) {
+          this.$store.commit("setSwapUnfreezeContinue", true);
+          this.frozenTokens = diffArray[0].source;
+          this.actionTabs = "m1";
         } else {
           this.initData();
         }
@@ -635,9 +648,9 @@ export default {
             padding: 64px 193px 0;
 
             .actionTitle {
-              font-family: Gilroy-Bold;
+              font-family: $HeadingsFontFamily;
               font-size: 32px;
-              font-weight: bold;
+              font-weight: 200;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.25;
@@ -648,7 +661,7 @@ export default {
 
             .actionDesc {
               margin: 8px 55px 84px;
-              font-family: Gilroy-Regular;
+              font-family: $BodyTextFontFamily;
               font-size: 14px;
               font-weight: normal;
               font-stretch: normal;
@@ -697,7 +710,7 @@ export default {
                 }
 
                 .name {
-                  font-family: Gilroy-Bold;
+                  font-family: $BodyTextFontFamily;
                   text-align: center;
                   font-size: 24px;
                   line-height: 32px;
@@ -750,7 +763,7 @@ export default {
                         }
 
                         .itemName {
-                          font-family: Gilroy-Bold;
+                          font-family: $BodyTextFontFamily;
                           font-size: 16px;
                           font-weight: bold;
                           font-stretch: normal;
@@ -797,7 +810,7 @@ export default {
 
                 .label {
                   .amount {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 16px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -808,7 +821,7 @@ export default {
                   }
 
                   .max {
-                    font-family: Gilroy-Bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -841,7 +854,7 @@ export default {
 
                   .ivu-input-number-input {
                     text-align: right;
-                    font-family: Gilroy-bold;
+                    font-family: $BodyTextFontFamily;
                     font-size: 32px;
                     font-weight: bold;
                     font-stretch: normal;
@@ -910,7 +923,7 @@ export default {
                   .max {
                     opacity: 1;
                     background: none !important;
-                    color: $darkButtonColor !important;
+                    color: $BodyTextFontFamily !important;
                   }
                 }
               }
@@ -943,7 +956,7 @@ export default {
             letter-spacing: 3px;
             cursor: pointer;
             transition: $animete-time linear;
-            font-family: Gilroy-Bold;
+            font-family: $BodyTextFontFamily;
             font-size: 24px;
             font-weight: bold;
             line-height: 32px;
@@ -957,6 +970,17 @@ export default {
             &.disabled {
               opacity: 0.1;
               cursor: not-allowed;
+            }
+
+            &.noWallet {
+              font-family: $BodyTextFontFamily;
+              font-size: 16px;
+              font-weight: bold;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.5;
+              letter-spacing: normal;
+              text-transform: none;
             }
 
             &.swapBtnActivited {
@@ -1004,7 +1028,7 @@ export default {
                 }
 
                 .errMessage {
-                  font-family: Gilroy-Medium;
+                  font-family: $BodyTextFontFamily;
                   font-size: 12px;
                   font-weight: 500;
                   font-stretch: normal;
@@ -1030,7 +1054,7 @@ export default {
                     margin-bottom: 12px;
                   }
                   .avaliable {
-                    font-family: Gilroy-Medium;
+                    font-family: $BodyTextFontFamily;
                     font-size: 12px;
                     font-weight: 500;
                     font-stretch: normal;
@@ -1055,7 +1079,7 @@ export default {
                   .label {
                     flex: 1;
                     .amount {
-                      font-family: Gilroy-Medium;
+                      font-family: $BodyTextFontFamily;
                       font-size: 12px;
                       font-weight: 500;
                       line-height: 1.33;
@@ -1098,11 +1122,14 @@ export default {
             }
             .swapBtn {
               height: 48px;
-              font-size: 16px;
+              font-size: 14px;
               font-stretch: normal;
               font-style: normal;
               line-height: 1.5;
               letter-spacing: 2px;
+              padding-left: 5px;
+              padding-right: 5px;
+              text-align: center;
             }
           }
         }

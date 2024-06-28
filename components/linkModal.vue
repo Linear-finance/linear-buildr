@@ -22,7 +22,7 @@
     <Row justify="center">
       <div style="padding: 16px">
         <p v-if="theme === 'light'" style="color: #5a575c">
-          You would like to buy LINA from :
+          You would like to buy LINA from:
         </p>
         <p v-else style="color: #f6f6f6">You would like to buy LINA from :</p>
       </div>
@@ -31,9 +31,10 @@
           v-if="theme === 'light'"
           class="ivu-card ivu-card-bordered"
           style="width: 348px; height: 100px; cursor: pointer"
-          @click.stop="closeThenOpenPCS"
         >
-          <img src="@/static/exchanges/pcs.svg" class="cardImg" />
+          <div @click.stop="closeThenOpenPCS">
+            <img src="@/static/exchanges/pcs.svg" class="cardImg" />
+          </div>
         </Card>
         <Card
           v-else
@@ -44,9 +45,10 @@
             height: 100px;
             cursor: pointer;
           "
-          @click.stop="closeThenOpenPCS"
         >
-          <img src="@/static/exchanges/pcs_dark.svg" class="cardImg" />
+          <div @click.stop="closeThenOpenPCS">
+            <img src="@/static/exchanges/pcs_dark.svg" class="cardImg" />
+          </div>
         </Card>
       </div>
       <div style="padding: 16px">
@@ -54,9 +56,10 @@
           v-if="theme === 'light'"
           class="ivu-card ivu-card-bordered"
           style="width: 348px; height: 100px; cursor: pointer"
-          @click.stop="closeThenOpenBinance"
         >
-          <img src="@/static/exchanges/binance.svg" class="cardImg" />
+          <div @click.stop="closeThenOpenBinance">
+            <img src="@/static/exchanges/binance.svg" class="cardImg" />
+          </div>
         </Card>
         <Card
           v-else
@@ -67,9 +70,10 @@
             height: 100px;
             cursor: pointer;
           "
-          @click.stop="closeThenOpenBinance"
         >
-          <img src="@/static/exchanges/binance.svg" class="cardImg" />
+          <div @click.stop="closeThenOpenBinance">
+            <img src="@/static/exchanges/binance.svg" class="cardImg" />
+          </div>
         </Card>
       </div>
       <div style="padding: 24px"></div>
@@ -120,6 +124,7 @@ export default {
 
 <style lang="scss">
 .buyModal {
+  z-index: 100;
   .ivu-modal-wrap {
     .ivu-modal {
       .ivu-modal-content {

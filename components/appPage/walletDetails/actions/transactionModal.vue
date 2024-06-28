@@ -85,7 +85,7 @@
                 <Checkbox label="Stake"> Stake </Checkbox>
                 <Checkbox label="Unstake"> Unstake </Checkbox>
                 <Checkbox label="Referral"> Referral </Checkbox>
-                <Checkbox label="Swap"> Swap </Checkbox>
+                <Checkbox label="Swap"> Bridge </Checkbox>
                 <Checkbox label="Liquidated(Staked)">
                   Liquidated(Staked)
                 </Checkbox>
@@ -187,27 +187,22 @@
                 <template v-if="!isMobile">
                   {{ row.chain }}
                 </template>
-
-                <template v-if="isMobile && isEthereumNetwork(row.networkId)">
-                  ETH
-                </template>
-                <template v-if="isMobile && isBinanceNetwork(row.networkId)">
-                  BSC
-                </template>
               </div>
               <div class="td date">
-                <template v-if="!isMobile">
-                  {{ row.date }}
-                </template>
-                <template v-else>
+                <template>
                   <span>{{ row.date | mobileDate }} </span>
+                  <br />
                   <span>{{ row.date | mobileDate(true) }} </span>
                 </template>
               </div>
 
               <template v-if="!isMobile">
                 <div class="td type">
-                  {{ row.type }}
+                  <div>
+                    {{ row.newType }}
+                  </div>
+                  <div v-if="row.asset != ''">({{ row.asset }})</div>
+                  <div v-else></div>
                 </div>
                 <div class="td amount">
                   <span>{{ row.amount }}</span>
@@ -215,7 +210,10 @@
               </template>
               <template v-if="isMobile">
                 <div class="td typeAmount">
-                  <span>{{ row.type }}</span>
+                  <span v-if="row.asset != ''"
+                    >{{ row.newType }} ({{ row.asset }})</span
+                  >
+                  <span v-else>{{ row.newType }}</span>
                   <span>{{ row.amount }}</span>
                 </div>
               </template>
@@ -223,7 +221,7 @@
                 class="td viewInBrowser"
                 @click="openBlockchainBrowser(row.hash, row.networkId)"
               >
-                <template v-if="!isMobile">VIEW</template>
+                <template v-if="!isMobile">VIEW →</template>
                 <template v-else> → </template>
               </div>
             </div>
@@ -347,7 +345,7 @@
               <Checkbox label="Stake"> Stake </Checkbox>
               <Checkbox label="Unstake"> Unstake </Checkbox>
               <Checkbox label="Referral"> Referral </Checkbox>
-              <Checkbox label="Swap"> Swap </Checkbox>
+              <Checkbox label="Swap"> Bridge </Checkbox>
               <Checkbox label="Liquidated(Staked)">
                 Liquidated(Staked)
               </Checkbox>
@@ -491,6 +489,8 @@ export default {
   watch: {
     currentPageData() {
       var that = this;
+      var newType = "";
+      var asset = "";
       var amount = "",
         date = "",
         tempData = [];
@@ -504,12 +504,10 @@ export default {
 
       this.currentPageData.map(function (item, index, ary) {
         date = format(item.timestamp, "d MMM yyyy kk:mm");
-        const { networkId, hash, chain, type } = item;
+        const { networkId, hash, chain } = item;
 
         if (
-          item.type == "Build" ||
           item.type == "Unstake" ||
-          item.type == "Burn" ||
           item.type == "Stake" ||
           item.type == "Swap" ||
           item.type == "Referral" ||
@@ -517,31 +515,62 @@ export default {
           item.type == "Liquidated(Staked)" ||
           item.type == "Liquidated(Locked)"
         ) {
+          const asset = item.source == "BNB" ? "WBNB" : item.source;
+
           amount =
             item.symbol +
             formatNumber(item.value, item.decimal) +
             " " +
-            item.source;
+            "\n" +
+            asset;
+        } else if (item.type == "Build" || item.type == "Burn") {
+          amount = item.symbol + formatNumber(item.value) + " " + "\n" + "ℓUSD";
         } else if (item.type == "Claim") {
-          let rewardslusd = "";
-          let rewardsLina = "";
-          if (item.rewardslusd != undefined || item.rewardslusd != 0) {
-            rewardslusd = formatNumber(item.rewardslusd) + " ℓUSD";
+          let reward = "";
+          if (item.rewardslusd == 0) {
+            reward = formatNumber(item.rewardsLina) + " " + "LINA";
+          } else {
+            reward =
+              formatNumber(item.rewardsLina) +
+              " " +
+              "LINA" +
+              "\n" +
+              "+" +
+              formatNumber(item.rewardslusd) +
+              " ℓUSD";
           }
-          if (!item.rewardsLina || item.rewardsLina != 0) {
-            rewardsLina = formatNumber(item.rewardsLina) + " LINA";
-          }
-          amount = "+" + rewardsLina + "&\n" + "+" + rewardslusd;
+          amount = "+" + reward;
         } else if (item.type == "Unlock Reward") {
           amount = formatNumber(item.value) + " LINA";
         } else {
           return null;
         }
 
+        if (item.type == "Burn" || item.type == "Build") {
+          newType = item.type;
+          asset = item.source === "BNB" ? "WBNB" : item.source;
+        } else if (item.type == "Liquidated(Staked)") {
+          newType = "Liquidated";
+          asset = "Staked";
+        } else if (item.type == "Liquidated(Locked)") {
+          newType = "Liquidated";
+          asset = "Locked";
+        } else if (item.type == "Claim") {
+          newType = item.type;
+          asset =
+            item.collateralCurrency === "BNB"
+              ? "WBNB"
+              : item.collateralCurrency;
+        } else {
+          newType = item.type;
+          asset = "";
+        }
+
         tempData.push({
           networkId,
           chain,
-          type,
+          newType,
+          asset,
           amount,
           date,
           hash,
@@ -816,6 +845,11 @@ body {
 
   .ivu-modal-wrap {
     position: absolute;
+
+    .ivu-page-item {
+      border-radius: 20px;
+      margin: 2px;
+    }
 
     .ivu-modal-body {
       border-radius: 16px;
@@ -1267,6 +1301,10 @@ body {
             &:last-of-type {
               padding-right: 16px;
             }
+
+            &.typeAmount {
+              padding-left: 55px;
+            }
             .app-dark & {
               color: #f6f5f6 !important;
             }
@@ -1303,6 +1341,11 @@ body {
                 padding: 5px;
                 height: 100%;
                 word-break: keep-all !important;
+                width: calc(100% / 5);
+
+                .app-dark & {
+                  color: #e5e5e5;
+                }
 
                 &:first-of-type {
                   padding-left: 16px;
@@ -1330,6 +1373,7 @@ body {
               }
 
               .chain {
+                font-family: Gilroy-Bold;
                 display: flex;
                 align-items: center;
                 text-transform: capitalize;
@@ -1588,6 +1632,10 @@ body {
                 flex: 1;
                 padding-right: 16px;
               }
+
+              &.date {
+                padding-left: 20px;
+              }
             }
           }
 
@@ -1621,6 +1669,7 @@ body {
                   padding: 5px;
                   height: 100%;
                   word-break: break-all;
+                  width: auto;
 
                   &:first-of-type {
                     padding-left: 0px;
@@ -1683,6 +1732,7 @@ body {
                   display: flex;
                   flex-direction: column;
                   flex: 2;
+
                   .app-dark & {
                     span {
                       &:last-child {

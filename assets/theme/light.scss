@@ -2,12 +2,15 @@
 //Light theme setup
 $lightBackgroundColor: #fff; //背景色
 $lightBackgroundDeepColor: #fff; //深色背景
-$lightFontColor: #000; //字体色
+$lightFontColor: #101a28; //字体色
 $lightBorderColor: #fff; //边框色
 $lightBorderLightColor: #fff; //边框浅色
 $lightBorderDeepColor: #fff; //边框深色
 $lightButtonColor: #000; //按钮色
 $lightButtonHoverColor: #fff; //按钮热点色
+
+$HeadingsFontFamily: Switzer;
+$BodyTextFontFamily: Satoshi Variable;
 
 .light {
   * {
@@ -30,4 +33,6 @@ body.light-theme {
   lightBorderDeepColor: $lightBorderDeepColor;
   lightButtonColor: $lightButtonColor;
   lightButtonHoverColor: $lightButtonHoverColor;
+  headingsFontFamily: $HeadingsFontFamily;
+  bodyTextFontFamily: $BodyTextFontFamily;
 }

@@ -1,12 +1,14 @@
 import Cookies from "js-cookie";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
+import { collateralAssets } from "~/assets/linearLibrary/linearTools/collateralAssets";
 
 export const state = () => ({
   locale: "en", //默认语言
   theme: "dark", //默认主题,light或dark
   currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer 5swap
   walletDetailsActionURL: "", //如果url参数有 referral transaction track，则先打开
+  isWalletOpen: false,
   gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
   sourceGasDetails: {
     price: 0,
@@ -46,6 +48,10 @@ export const state = () => ({
   autoConnect: false, //自动连接钱包
   setupModal: false, //nework setup 窗口
   isUnlockScheduleShow: false, //user lock lina unlock schedule popup
+  isShowTooltipModle: false, // 菜单
+  multiCollateralAsset: collateralAssets[0].key,
+  portfolioAsset: collateralAssets[0].key,
+  multiCollateralValues: {},
 });
 
 export const getters = {
@@ -137,6 +143,10 @@ export const mutations = {
     state.isMobile = isMobile;
   },
 
+  setIsWalletOpen(state, status) {
+    state.isWalletOpen = status;
+  },
+
   setRegisteredMetamaskWalletEvents(state, status) {
     state.registeredMetamaskWalletEvents = status;
   },
@@ -176,6 +186,22 @@ export const mutations = {
   setIsUnlockScheduleShow(state, status) {
     state.isUnlockScheduleShow = status;
   },
+
+  setIsShowTooltipModle(state, status) {
+    state.isShowTooltipModle = status;
+  },
+
+  setMultiCollateralAsset(state, asset) {
+    state.multiCollateralAsset = asset;
+  },
+
+  setPortfolioAsset(state, asset) {
+    state.portfolioAsset = asset;
+  },
+
+  setMultiCollateralValues(state, values) {
+    state.multiCollateralValues = values;
+  },
 };
 
 export const actions = {
@@ -183,7 +209,6 @@ export const actions = {
   // async nuxtServerInit({ commit }, { req }) {}
   nuxtClientInit(_store) {
     const theme = Cookies.get("theme");
-    console.log({ theme });
     if (theme === undefined) {
       _store.dispatch("themeInit");
     } else {

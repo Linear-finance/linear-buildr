@@ -1,21 +1,24 @@
 //暗色主题
 //Preparation for dark theme
 $white: #fff;
-$darkBackgroundColor: #141b2d; //背景色 / background color
-$darkBackgroundDeepColor: #050d20; //深色背景 / dark background color
+$darkBackgroundColor: #1d2639; //背景色 / background color
+$darkBackgroundDeepColor: #101a28; //深色背景 / dark background color
 
 $darkLighterBlue: #cee1fb;
-$darkFontColor: $white; //字体色 / font-color
-$darkFontColorSecondary: #f6f5f6; //字体色 / font-color
-$darkFontColorLight: #e5e5e5; //字体色 / font-color
+$darkFontColor: #7a8ba5; //字体色 / font-color
+$darkFontColorSecondary: #dde4e9; //字体色 / font-color
+$darkFontColorLight: #e5e5e5 !important; //字体色 / font-color
 $darkFontColorDisabled: #5a575c; //字体色 / font-color
 
-$darkBorderColor: #1f2b4d; //边框色 / border-color
+$darkBorderColor: #dde4e9; //边框色 / border-color
 $darkBorderLightColor: #5a575c; //边框浅色 / Light border
 $darkButtonColor: #3851f0; //按钮色 / Button color
 $darkButtonColor2: #1a38f8; //按钮色 / Button color
 $darkButtonColorHighlight: #1b9cfc; //按钮色 / Button color
 $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
+
+$HeadingsFontFamily: Switzer;
+$BodyTextFontFamily: Satoshi Variable;
 
 .dark {
   * {
@@ -37,6 +40,8 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   darkButtonHoverColor: $darkButtonHoverColor;
   darkFontColorSecondary: $darkFontColorSecondary;
   darkFontColorLight: $darkFontColorLight;
+  headingsFontFamily: $HeadingsFontFamily;
+  bodyTextFontFamily: $BodyTextFontFamily;
 }
 
 html.dark-theme,
@@ -114,8 +119,10 @@ body.dark-theme {
   }
 
   #homePage {
+    background-color: #1d2639 !important;
+
     .actionsBox .boxItem {
-      background-color: #141b2d !important;
+      background-color: #1d2639 !important;
       border: 1px solid rgba(153, 153, 154, 0.2) !important;
 
       .boxContext {
@@ -132,6 +139,17 @@ body.dark-theme {
         &:hover {
           color: #333333 !important;
         }
+      }
+    }
+  }
+
+  #walletDetails {
+    .leftAsset {
+      color: #e5e5e5;
+    }
+    .portfolioBox {
+      .left {
+        color: #e5e5e5;
       }
     }
   }
@@ -187,17 +205,15 @@ body.dark-theme {
     background-color: transparent !important;
   }
 
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .title,
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .amount,
   #walletDetails .walletDetailsBox .walletInfo .title,
-  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems.obtrusive .left,
   #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentTitle,
-  #homePage .title,
   #landingPage .container .walletBox .box .boxItem .boxSub,
   .ivu-collapse-item-active .ivu-collapse-header,
   .ivu-collapse-header,
   //.ivu-collapse-content-box,
   .actionRate,
-  .editTitle,
-  .infoRight,
   .tableBody .tr .td,
   .itemNumBox,
   .itemTime,
@@ -214,47 +230,21 @@ body.dark-theme {
   .actionInputItem .p_1,
   .transferMain .text .descript,
   .descTopMobile,
-  .statusBox .status,
   .refreshBtn {
     color: $darkFontColorSecondary !important;
   }
 
   //#landingPage .container .walletBox .box .boxItem .boxSub,
-  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .title,
-  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .amount,
-  #walletDetails
-    .walletDetailsBox
-    .walletInfo
-    .tokenBox
-    .box
-    .tokenItems.obtrusive
-    .right,
+  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems.obtrusive .right,
   #walletDetails .walletDetailsBox .actionsBox .box .boxItem,
   #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentDesc,
-  #gasEditor
-    .gasEditorModal
-    .ivu-modal
-    .ivu-modal-body
-    .content
-    .custom
-    .leftRect
-    .desc
-    .unit,
-  #gasEditor
-    .gasEditorModal
-    .ivu-modal
-    .ivu-modal-body
-    .content
-    .selections
-    .selectionItem
-    .itemSpeed,
-  #gasEditor .editInfo .infoLeft .editTitle,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .custom .leftRect .desc .unit,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .selections .selectionItem .itemSpeed,
+  // #gasEditor .editInfo .infoLeft .editTitle,
   .ivu-input-number-input,
-  #homePage .actionsBox .boxItem .boxContext,
   #homePage .context,
   .ivu-collapse-content-box,
   .mBuyLINA,
-  .actionTitle,
   .buyLINA .ivu-icon,
   .actionDesc,
   .itemTypeBtn,
@@ -278,7 +268,17 @@ body.dark-theme {
   }
 
   #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems {
-    color: #99999a !important;
+    color: #7a8ba5 !important;
+  }
+
+  #walletDetails
+    .walletDetailsBox
+    .walletInfo
+    .tokenBox
+    .box
+    .tokenItems.obtrusive
+    .left {
+    color: $darkFontColorLight;
   }
 
   .itemTypeBtn,
@@ -569,6 +569,14 @@ body.dark-theme {
     }
   }
 
+  #build .actionTitle,
+  #burn .actionTitle,
+  #claim .actionTitle,
+  #transfer .actionTitle,
+  #swap .actionTitle {
+    color: #fff !important;
+  }
+
   #build
     .actionTabs
     .ivu-tabs-content
@@ -576,7 +584,7 @@ body.dark-theme {
     .buildBox
     .actionBodyWeb
     .actionDesc {
-    color: #e5e5e5 !important;
+    color: $darkFontColor !important;
   }
 
   #build
@@ -606,7 +614,6 @@ body.dark-theme {
     .itemLeft
     .itemType
     .itemTypeBtn {
-    color: $darkButtonColor2 !important;
   }
 
   #build
@@ -619,6 +626,16 @@ body.dark-theme {
     &:active {
       border-color: $darkButtonColor !important;
       box-shadow: 0 4px 50px rgba(0, 0, 0, 0.5) !important;
+    }
+    .itemRight {
+      .inputRect {
+        .ivu-input-number-input[disabled],
+        .ivu-input-number-disabled {
+          background-color: $darkBackgroundDeepColor !important;
+          opacity: 0.72;
+          cursor: not-allowed;
+        }
+      }
     }
   }
 
@@ -659,8 +676,18 @@ body.dark-theme {
       .itemLeft
       .itemType
       .itemTypeBtn {
-      color: #1a38f8 !important;
+      color: #5a575c;
+      &.selectedAsset {
+        color: #a4cbff;
+      }
+      &:hover {
+        &:not(.default) {
+          opacity: 1;
+          color: #1a38f8;
+        }
+      }
     }
+
     .actionTabs
       .ivu-tabs-content
       .ivu-tabs-tabpane
@@ -687,6 +714,16 @@ body.dark-theme {
         border: 1px solid #3851f0 !important;
         box-sizing: border-box !important;
         box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      .itemRight {
+        .inputRect {
+          .ivu-input-number-input[disabled],
+          .ivu-input-number-disabled {
+            background-color: $darkBackgroundDeepColor !important;
+            opacity: 0.72;
+            cursor: not-allowed;
+          }
+        }
       }
     }
   }
@@ -717,7 +754,7 @@ body.dark-theme {
       .transferMain
       .text
       .descript {
-      color: #ffffff !important;
+      color: $darkFontColor !important;
     }
     .actionTabs
       .ivu-tabs-content
@@ -821,7 +858,7 @@ body.dark-theme {
 
     #gasEditor .editInfo .infoLeft,
     #gasEditor .editInfo .infoRight {
-      color: #ffffff !important;
+      color: #99999a !important;
     }
 
     .actionTabs
@@ -850,15 +887,9 @@ body.dark-theme {
       .actionBody
       .rewardsBox
       .box {
-      background-color: #bababa !important;
-
-      .title {
-        font-family: Gilroy-Regular;
-        font-weight: normal !important;
-        color: #99999a !important;
-      }
+      .titleMobile,
+      .rewardsContainerLeft,
       .amount {
-        color: #99999a !important;
       }
     }
   }
@@ -918,7 +949,8 @@ body.dark-theme {
         .buildBox
         .actionBodyMobile
         .errMsg {
-        background-color: $darkFontColorSecondary !important;
+        background-color: $darkBackgroundDeepColor !important;
+        border: 1px solid #df434c;
       }
       .actionTabs
         .ivu-tabs-content
@@ -1061,7 +1093,8 @@ body.dark-theme {
         .burnBox
         .actionBodyMobile
         .errMsg {
-        background-color: $darkFontColorSecondary !important;
+        background-color: $darkBackgroundDeepColor !important;
+        border: 1px solid #df434c;
       }
       .actionTabs
         .ivu-tabs-content
@@ -1189,7 +1222,8 @@ body.dark-theme {
         .transferBox
         .transferMainMobile
         .errMsg {
-        background-color: #f6f5f6 !important;
+        background-color: $darkBackgroundDeepColor !important;
+        border: 1px solid #df434c;
         color: #df434c !important;
       }
       .actionTabs
@@ -1256,6 +1290,62 @@ body.dark-theme {
           .midle {
             .p_1 {
               color: #1a38f8 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  #wallet {
+    .seeDetailsModal {
+      .ivu-modal-wrap {
+        .ivu-modal {
+          .ivu-modal-content {
+            .ivu-modal-body {
+              .walletSelect {
+                .walletSelectBox {
+                  background-color: $darkBackgroundColor;
+                  .top .title,
+                  .boxTitle,
+                  .wallets .item .itemSub,
+                  .wallets .item .itemTitle {
+                    color: #ffffff !important;
+                  }
+
+                  .wallets {
+                    .item {
+                      border-radius: 8px;
+                      border: solid 1px #e5e5e5;
+                    }
+                  }
+                }
+              }
+
+              .walletConnect .walletConnectBox {
+                background-color: $darkBackgroundColor;
+
+                .top {
+                  .closeButton {
+                    color: #ffffff;
+                  }
+
+                  .title {
+                    color: #ffffff !important;
+                  }
+                }
+
+                .boxTitle {
+                  color: #ffffff;
+                }
+                .boxCopy {
+                  .copyTitle {
+                    .title {
+                      color: #1a38f8 !important;
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -1515,19 +1605,19 @@ span.ivu-date-picker-cells-cell-disabled:hover {
 
   // tooltip
   .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-inner {
-    background: #ffffff !important;
+    background: #050d20 !important;
     border: 1px solid #3851f0 !important;
     box-sizing: border-box !important;
     box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
     border-radius: 8px !important;
-    color: #333333 !important;
+    color: #ffffff !important;
   }
   .globalInfoStyle.ivu-tooltip
     .ivu-tooltip-popper[x-placement="top"]
     .ivu-tooltip-arrow {
-    border-color: #ffffff !important;
+    border-color: #1a38f8 !important;
   }
   .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-arrow {
-    background-color: #ffffff !important;
+    background-color: #050d20 !important;
   }
 }

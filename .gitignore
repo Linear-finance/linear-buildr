@@ -94,7 +94,7 @@ sw.*
 .env.*
 .editorconfig
 package-lock.json
-yarn.lock 
+# yarn.lock 
 
 
 # generated contracts

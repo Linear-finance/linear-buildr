@@ -280,7 +280,9 @@ export default {
     !this.isEthDevNetwork && this.useGetFeeData(this.walletAddress);
   },
   watch: {
-    walletAddress() {},
+    walletAddress() {
+      this.useGetFeeData(this.walletAddress);
+    },
     walletNetworkName() {},
     walletNetworkId() {},
     isEthereumNetwork() {},

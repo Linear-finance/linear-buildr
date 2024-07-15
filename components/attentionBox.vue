@@ -452,7 +452,7 @@ export default {
           break;
         case 3:
           window.open(
-            "https://app.stellaswap.com/exchange/swap?outputCurrency=0xcbabee0658725b5b21e1512244734a5d5c6b51d6"
+            "https://pancakeswap.finance/swap?outputCurrency=0xd89336eac00e689d218c46cdd854585a09f432b3&chainId=56"
           );
           break;
         case 4:

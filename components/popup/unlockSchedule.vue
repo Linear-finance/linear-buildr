@@ -72,12 +72,13 @@ export default {
       openBlockchainBrowser,
     };
   },
-  created() {
-    this.getUnlockData();
-  },
   watch: {
     currentPageData() {},
-    walletAddress() {},
+    walletAddress(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.getUnlockData();
+      }
+    },
     walletNetworkId() {},
   },
   computed: {

@@ -927,7 +927,11 @@ export default {
   watch: {
     trackStatusChange() {},
     walletStatus() {},
-    walletAddress() {},
+    walletAddress(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.checkLiquidation();
+      }
+    },
     abbreviateAddress() {},
     walletDetails(data) {},
     isEthereumNetwork() {},

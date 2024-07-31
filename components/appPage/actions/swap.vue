@@ -463,7 +463,9 @@ export default {
         //总额
         item.totalBalance = item.balance + item.frozenBalance;
 
-        return item.key == "LINA" || item.totalBalance > 0;
+        return (
+          item.key == "LINA" || (item.totalBalance > 0 && item.key == "lUSD")
+        );
       });
 
       this.currencies = [...currencies];

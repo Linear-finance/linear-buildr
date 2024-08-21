@@ -76,7 +76,7 @@
                 </div>
 
                 <div v-if="isMobile" class="avaliable">
-                  Avaliable:
+                  Available:
                   {{ formatNumber(currency.balance, 4) }}
                   {{ currency.name }}
                 </div>
@@ -259,7 +259,6 @@ export default {
   },
   watch: {
     walletAddress() {
-      this.initCurrencies();
       this.initData();
     },
     isEthereumNetwork() {},
@@ -270,7 +269,6 @@ export default {
     diffSwapNumber() {},
     currency() {},
     theme() {
-      this.initCurrencies();
       this.initData();
     },
   },
@@ -308,6 +306,7 @@ export default {
     },
 
     currency() {
+      console.log(this.currencies[this.selectCurrencyIndex]?.balance);
       return this.currencies[this.selectCurrencyIndex];
     },
     theme() {
@@ -379,11 +378,11 @@ export default {
 
     async initData() {
       try {
-        // this.currencyDropDown = false;
-        // await this.initLiquidsList();
-        // await this.filterCurrencies();
-        this.initCurrencies();
+        this.currencyDropDown = false;
+        await this.initLiquidsList();
+        await this.filterCurrencies();
       } catch (error) {
+        console.log(error);
         this.initCurrencies();
         this.selectCurrencyKey = "LINA";
         this.processing = false;
@@ -410,7 +409,6 @@ export default {
           totalBalance: 0,
         };
       });
-
       this.currencies[0].balance = _.floor(bn2n(linaBalance), 4);
       this.currencies = [...this.currencies, ...liquidsList];
     },
@@ -458,7 +456,6 @@ export default {
         other && (otherUnFreeZeTokens = other.UnFreeZeTokens);
 
         let frozenBalance = bnSub(currentFreeZeTokens, otherUnFreeZeTokens);
-
         item.frozenBalance = frozenBalance.gt(n2bn("0"))
           ? _.floor(formatEtherToNumber(frozenBalance), 4)
           : null;
@@ -466,7 +463,9 @@ export default {
         //总额
         item.totalBalance = item.balance + item.frozenBalance;
 
-        return item.key == "LINA" || item.totalBalance > 0;
+        return (
+          item.key == "LINA" || (item.totalBalance > 0 && item.key == "lUSD")
+        );
       });
 
       this.currencies = [...currencies];
@@ -521,8 +520,7 @@ export default {
         )
           ? _.floor(formatEtherToNumber(frozenBalance), 4)
           : null;
-
-        this.currency.balance = bn2n(balance, 4);
+        this.currency.balance = bn2n(balance, 18);
       } catch (error) {
         this.swapNumber = null;
         console.log(error, "getCurrencyBalance error");

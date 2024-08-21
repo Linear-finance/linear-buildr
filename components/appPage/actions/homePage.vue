@@ -121,7 +121,11 @@ export default {
   },
   watch: {
     isMobile() {},
-    walletAddress() {},
+    walletAddress(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.checkLiquidation();
+      }
+    },
     multiCollateralValuesRatios() {},
   },
   computed: {

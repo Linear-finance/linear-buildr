@@ -914,7 +914,8 @@ export default {
             );
           }
 
-          const targetRatioPercent = 100 / formatEtherToNumber(buildRatio);
+          // const targetRatioPercent = 100 / formatEtherToNumber(buildRatio);
+          const targetRatioPercent = 350.1;
           const priceRateKey = this.selectedCollateral.contractKey;
           const priceRates = await getPriceRates([priceRateKey, "lUSD"]);
           const LINAPrice = priceRates[priceRateKey] / priceRates.lUSD;

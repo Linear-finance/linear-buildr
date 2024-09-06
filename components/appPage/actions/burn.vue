@@ -642,6 +642,7 @@ export default {
         lUSD: 0,
         debt: 0,
         targetRatio: 350,
+        roundedTargetRatio: 350.1,
         currentRatio: 0,
       },
 
@@ -835,6 +836,8 @@ export default {
         this.burnData.debtBN = results[6][0];
 
         this.burnData.targetRatio = targetRatioPercent;
+        this.burnData.roundedTargetRatio =
+          Math.ceil(targetRatioPercent * 10) / 10;
         this.burnData.currentRatio =
           formatByStoreCollateral(currentRatioPercent);
         this.burnData.currentRatioBN = currentRatioPercent;
@@ -1521,7 +1524,7 @@ export default {
 
           if (
             this.burnData.currentRatioBN.gt(
-              n2bn(this.burnData.targetRatio.toString())
+              n2bn(this.burnData.roundedTargetRatio.toString())
             )
           ) {
             //下调抵押率，当前抵押率大于目标抵押率，销毁LINA到抵押率刚好
@@ -1533,7 +1536,7 @@ export default {
               bnDiv(
                 bnSub(
                   parseUnitAndReformat(this.burnData.currentRatioBN),
-                  n2bnForAsset(this.burnData.targetRatio.toString())
+                  n2bnForAsset(this.burnData.roundedTargetRatio.toString())
                 ),
                 parseUnitAndReformat(this.burnData.currentRatioBN)
               )
@@ -1555,13 +1558,13 @@ export default {
               this.actionDatas.unStake = this.burnData.stakedBN;
             }
             this.inputData.amount = formatEtherToNumber(0);
-            this.inputData.ratio = this.burnData.targetRatio;
+            this.inputData.ratio = this.burnData.roundedTargetRatio;
 
             this.actionDatas.amount = n2bn("0");
-            this.actionDatas.ratio = this.burnData.targetRatio;
+            this.actionDatas.ratio = this.burnData.roundedTargetRatio;
           } else if (
             this.burnData.currentRatioBN.lt(
-              n2bn(this.burnData.targetRatio.toString())
+              n2bn(this.burnData.roundedTargetRatio.toString())
             )
           ) {
             //上调抵押率，看当前抵押率上调到目标抵押率需要还多少债务，如果lUSD余额大于等于要还的则销毁，低于则报错
@@ -1576,7 +1579,7 @@ export default {
                 ),
                 parseUnitAndReformat(this.burnData.LINA2USDBN, false)
               ),
-              n2bnForAsset((this.burnData.targetRatio / 100).toString())
+              n2bnForAsset((this.burnData.roundedTargetRatio / 100).toString())
             );
 
             burnlUSD = bnSub(this.burnData.debtBN, retainlUSD);
@@ -1587,12 +1590,11 @@ export default {
 
             this.inputData.unStake = 0;
             this.inputData.amount = formatEtherToNumber(burnlUSD);
-            this.inputData.ratio = this.burnData.targetRatio;
-
+            this.inputData.ratio = this.burnData.roundedTargetRatio;
             this.actionDatas.unStake = n2bn("0");
             this.actionDatas.amount = burnlUSD;
             this.actionDatas.ratio = n2bnForAsset(
-              this.burnData.targetRatio.toString()
+              this.burnData.roundedTargetRatio.toString()
             );
           } else {
             //抵押率刚好则不动

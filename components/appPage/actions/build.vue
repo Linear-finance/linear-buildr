@@ -701,6 +701,7 @@ export default {
         lock: 0,
         debt: 0,
         targetRatio: 350,
+        roundedTargetRatio: 350.1,
         currentRatio: 0,
       },
 
@@ -942,6 +943,8 @@ export default {
           this.buildData.debtBN = results[4][0];
 
           this.buildData.targetRatio = targetRatioPercent;
+          this.buildData.roundedTargetRatio =
+            Math.ceil(targetRatioPercent * 10) / 10;
           this.buildData.currentRatio =
             formatByStoreCollateral(currentRatioPercent);
           this.buildData.currentRatioBN = currentRatioPercent;
@@ -1051,7 +1054,7 @@ export default {
           }
           if (
             this.buildData.currentRatioBN.gt(
-              n2bnForAsset(this.buildData.targetRatio.toString())
+              n2bnForAsset(this.buildData.roundedTargetRatio.toString())
             )
           ) {
             //抵押率大于目标抵押率，只build，不计算stake
@@ -1063,7 +1066,7 @@ export default {
                 ),
                 parseUnitAndReformat(this.buildData.LINA2USDBN, false)
               ),
-              n2bnForAsset((this.buildData.targetRatio / 100).toString())
+              n2bnForAsset((this.buildData.roundedTargetRatio / 100).toString())
             );
             this.inputData.stake = 0;
             this.inputData.amount =
@@ -1084,7 +1087,7 @@ export default {
             this.actionData.ratio = n2bn(selectedAssetRatio.toString());
           } else if (
             this.buildData.currentRatioBN.lt(
-              n2bnForAsset(this.buildData.targetRatio.toString())
+              n2bnForAsset(this.buildData.roundedTargetRatio.toString())
             )
           ) {
             //抵押率小于目标抵押率，只stake，不计算build
@@ -1092,7 +1095,9 @@ export default {
             let needStakeWhenTargetRatio = bnSub(
               bnDiv(
                 bnMul(
-                  n2bnForAsset((this.buildData.targetRatio / 100).toString()),
+                  n2bnForAsset(
+                    (this.buildData.roundedTargetRatio / 100).toString()
+                  ),
                   parseUnitAndReformat(this.buildData.debtBN, false)
                 ),
                 parseUnitAndReformat(this.buildData.LINA2USDBN, false)

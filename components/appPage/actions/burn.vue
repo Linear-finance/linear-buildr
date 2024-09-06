@@ -1591,7 +1591,6 @@ export default {
             this.inputData.unStake = 0;
             this.inputData.amount = formatEtherToNumber(burnlUSD);
             this.inputData.ratio = this.burnData.roundedTargetRatio;
-            console.log(this.burnData.currentRatio);
             this.actionDatas.unStake = n2bn("0");
             this.actionDatas.amount = burnlUSD;
             this.actionDatas.ratio = n2bnForAsset(

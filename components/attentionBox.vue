@@ -426,13 +426,10 @@ export default {
     },
     async targetRatioCal() {
       //计算达到target需要补stake多少ath
-      console.log(getAssetObjectInfo(this.assetInfo.key).roundedTargetRatio);
       const buildRatio = await getBuildRatio(this.assetInfo.key);
-      console.log(100 / formatEtherToNumber(buildRatio), "123");
       // divided by 1000 to avoid dividing by 10 and 100 individually
       const roundedTargetRatio =
         Math.ceil((100 / formatEtherToNumber(buildRatio)) * 10) / 1000;
-      console.log(roundedTargetRatio);
       let needStakeWhenTargetRatio =
         (roundedTargetRatio * this.walletData.debt) / this.walletData.LINA2USD -
         this.walletData.lock;

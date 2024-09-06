@@ -916,7 +916,6 @@ export default {
           }
 
           const targetRatioPercent = 100 / formatEtherToNumber(buildRatio);
-          // const targetRatioPercent = 350.1;
           const priceRateKey = this.selectedCollateral.contractKey;
           const priceRates = await getPriceRates([priceRateKey, "lUSD"]);
           const LINAPrice = priceRates[priceRateKey] / priceRates.lUSD;
@@ -1058,7 +1057,6 @@ export default {
               n2bnForAsset(this.buildData.roundedTargetRatio.toString())
             )
           ) {
-            console.log("test!");
             //抵押率大于目标抵押率，只build，不计算stake
             let stakeAndLockToLUSD = bnDiv(
               bnMul(

@@ -184,7 +184,10 @@ import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import { LIQUIDATION_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber } from "ethers";
-import { getPriceRates } from "@/assets/linearLibrary/linearTools/request";
+import {
+  getPriceRates,
+  getBuildRatio,
+} from "@/assets/linearLibrary/linearTools/request";
 import {
   formatEtherToNumber,
   formatNumber,
@@ -377,7 +380,7 @@ export default {
               this.assetInfo.contractKey
           ) {
             //已标记
-            this.targetRatioCal();
+            await this.targetRatioCal();
             this.currentRatioStatus = 2;
           } else if (
             this.multiCollateralValuesRatios &&
@@ -385,7 +388,7 @@ export default {
             this.multiCollateralValuesRatios[this.assetInfo.key] <
               getAssetObjectInfo(this.assetInfo.key).targetRatio * 100
           ) {
-            this.targetRatioCal();
+            await this.targetRatioCal();
             this.currentRatioStatus = 1;
           } else {
             //pratio为0，检查最近一天有无爆仓
@@ -421,12 +424,17 @@ export default {
     colseAttention() {
       this.currentRatioStatus = 0;
     },
-    targetRatioCal() {
+    async targetRatioCal() {
       //计算达到target需要补stake多少ath
+      console.log(getAssetObjectInfo(this.assetInfo.key).roundedTargetRatio);
+      const buildRatio = await getBuildRatio(this.assetInfo.key);
+      console.log(100 / formatEtherToNumber(buildRatio), "123");
+      // divided by 1000 to avoid dividing by 10 and 100 individually
+      const roundedTargetRatio =
+        Math.ceil((100 / formatEtherToNumber(buildRatio)) * 10) / 1000;
+      console.log(roundedTargetRatio);
       let needStakeWhenTargetRatio =
-        (getAssetObjectInfo(this.assetInfo.key).targetRatio *
-          this.walletData.debt) /
-          this.walletData.LINA2USD -
+        (roundedTargetRatio * this.walletData.debt) / this.walletData.LINA2USD -
         this.walletData.lock;
 
       this.needLINANum = needStakeWhenTargetRatio - this.walletData.staked;
@@ -438,7 +446,7 @@ export default {
       let canBuildlUSDWhenTargetRatio =
         ((this.walletData.staked + this.walletData.lock) *
           this.walletData.LINA2USD) /
-        getAssetObjectInfo(this.assetInfo.key).targetRatio;
+        roundedTargetRatio;
 
       this.needlUSDNum = this.walletData.debt - canBuildlUSDWhenTargetRatio;
       if (this.needlUSDNum < 0) this.needlUSDNum = 0;

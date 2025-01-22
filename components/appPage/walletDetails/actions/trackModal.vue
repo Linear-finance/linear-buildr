@@ -237,7 +237,7 @@ export default {
           window.open("https://medium.com/@linear.finance");
           break;
         case 3:
-          window.open("https://twitter.com/LinearFinance");
+          window.open("https://x.com/LinearFinance");
           break;
         default:
           break;

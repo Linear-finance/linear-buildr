@@ -129,7 +129,7 @@
             </g>
           </svg>
         </a>
-        <a href="https://twitter.com/LinearFinance" target="_blank">
+        <a href="https://x.com/LinearFinance" target="_blank">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="40"

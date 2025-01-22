@@ -197,14 +197,14 @@
             </ul>
             <div class="tooltipModle-external">
               <a
-                href="https://twitter.com/LinearFinance"
+                href="https://x.com/LinearFinance"
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 <font-awesome-icon
                   class="tooltipModle-external-logo"
-                  :icon="['fab', 'twitter-square']"
-                  size="2x"
+                  :icon="['fab', 'square-x-twitter']"
+                  size="xl"
                 />
               </a>
               <a
@@ -216,7 +216,7 @@
                   class="tooltipModle-external-logo"
                   :icon="['fab', 'discord']"
                   fixedWidth
-                  size="2x"
+                  size="xl"
                 />
               </a>
               <a
@@ -227,7 +227,7 @@
                 <font-awesome-icon
                   class="tooltipModle-external-logo"
                   :icon="['fab', 'medium']"
-                  size="2x"
+                  size="xl"
                 />
               </a>
             </div>
@@ -603,9 +603,11 @@ export default {
       background-repeat: no-repeat;
       background-size: 100% 100%;
       z-index: 2;
+      border-radius: 50px 0 0 50px;
 
       @media (min-width: 1921px) {
         max-width: 1300px;
+        border-radius: 100px 0 0 100px;
       }
 
       &-close {
@@ -613,7 +615,6 @@ export default {
         top: 0px;
         right: 0px;
         margin: 8px 8px 0 0;
-        // align-self: self-end;
         display: flex;
         height: 48px;
         padding: 8px;
@@ -621,51 +622,47 @@ export default {
         align-items: center;
         flex-shrink: 0;
         cursor: pointer;
+
         &-logo {
-          min-width: 26.66px;
-          min-height: 21.33px;
           color: white;
         }
       }
       &-content {
         display: flex;
+        height: 90%;
         flex-direction: column;
-        justify-content: space-around;
-        // transform: translateX(200px);
-        height: 100vh;
-        max-height: 90%;
-        z-index: 2;
-
-        @media only screen and (max-width: $max-phone-width) {
-          // transform: translateX(-50px);
-        }
+        justify-content: space-between;
+        color: white;
 
         &-img {
-          margin-bottom: 8rem;
+          @media (min-width: 1921px) {
+            margin-bottom: 0rem;
+          }
+          cursor: pointer;
         }
 
         &-list {
           display: flex;
           flex-direction: column;
           justify-content: center;
-          height: 100%;
-          max-height: 720px;
-
-          color: #fff;
-          font-family: Gilroy;
-          font-size: 32px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 48px;
-          flex-grow: 1;
+          margin: 0;
+          // height: 100%;
+          // max-height: 720px;
 
           & > li {
-            margin-bottom: 1rem;
-            @media (min-width: 1921px) {
-              margin-bottom: 4rem;
-              font-size: 4rem !important;
-              line-height: 4rem !important;
-              font-weight: 100 !important;
+            color: #fff;
+            font-family: Gilroy;
+            font-size: 1.714em;
+            list-style-type: none;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1.714em;
+            margin-bottom: 1em;
+            &:last-of-type {
+              margin-bottom: 0;
+            }
+            @media (max-height: 800px) {
+              margin-bottom: 5px;
             }
 
             & > a {
@@ -1012,8 +1009,8 @@ export default {
   display: flex;
   &-logo {
     margin-right: 10px;
-    min-height: 32px;
-    min-width: 40px;
+    min-height: 24px;
+    min-width: 30px;
     color: #fff;
   }
 }

@@ -215,82 +215,6 @@
           src="@/static/icon-cancel.svg"
         />
       </div>
-      <div class="actionsBox">
-        <div class="box">
-          <div
-            class="boxItem"
-            :class="{ selected: trackStatus }"
-            @click="trackModalClick"
-            @mouseenter="trackIconStatus = 1"
-            @mouseleave="trackIconStatus = 0"
-          >
-            <div class="placeholder">
-              <transition-group name="img-fade">
-                <img
-                  v-if="theme === 'light'"
-                  key="1"
-                  v-show="!trackStatus && !trackIconStatus"
-                  src="@/static/appPage/track.svg"
-                />
-                <img
-                  v-else
-                  key="1"
-                  v-show="!trackStatus && !trackIconStatus"
-                  src="@/static/dark-theme/appPage/track.svg"
-                />
-                <img
-                  key="2"
-                  v-show="!trackStatus && trackIconStatus"
-                  src="@/static/appPage/track_hover.svg"
-                />
-                <img
-                  key="3"
-                  v-show="trackStatus"
-                  src="@/static/appPage/track_selected.svg"
-                />
-              </transition-group>
-            </div>
-            TRACK DEBT
-          </div>
-        </div>
-        <div class="box">
-          <div
-            class="boxItem"
-            :class="{ selected: transactionStatus }"
-            @click="transactionModalClick"
-            @mouseenter="transactionIconStatus = 1"
-            @mouseleave="transactionIconStatus = 0"
-          >
-            <div class="placeholder">
-              <transition-group name="img-fade">
-                <img
-                  v-if="theme === 'light'"
-                  key="1"
-                  v-show="!transactionStatus && !transactionIconStatus"
-                  src="@/static/appPage/transaction.svg"
-                />
-                <img
-                  v-else
-                  key="1"
-                  v-show="!transactionStatus && !transactionIconStatus"
-                  src="@/static/dark-theme/appPage/transaction.svg"
-                />
-                <img
-                  key="2"
-                  v-show="!transactionStatus && transactionIconStatus"
-                  src="@/static/appPage/transaction_hover.svg"
-                />
-                <img
-                  key="3"
-                  v-show="transactionStatus"
-                  src="@/static/appPage/transaction_selected.svg"
-                />
-              </transition-group>
-            </div>
-            TRANSACTION
-          </div>
-        </div>
-      </div>
 
       <div class="walletInfo">
         <div class="portfolioSection">
@@ -531,16 +455,7 @@
                   class="tokenItems unobtrusive"
                   v-if="this.selectedAsset.key === 'LINA'"
                 >
-                  <div class="left">
-                    Locked
-                    <span
-                      v-show="walletDetails.lockLINA"
-                      @click="openUnlockSchedule"
-                      class="unlockScheduleButton"
-                    >
-                      <expandMoreSvg></expandMoreSvg>
-                    </span>
-                  </div>
+                  <div class="left">Locked</div>
                   <div class="right">
                     <template v-if="isEthereumNetwork"> N/A </template>
                     <template v-else>

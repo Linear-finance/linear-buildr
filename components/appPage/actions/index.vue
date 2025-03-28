@@ -295,12 +295,8 @@ export default {
         { name: "Builder", url: "https://builder.linear.finance/" },
         { name: "Bridge", url: "https://builder.linear.finance/bridge" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
-        { name: "Dashboard", url: "https://dashboard.linear.finance/" },
-        // { name: "Vault", url: "https://vault.linear.finance/" },
         { name: "Liquidator", url: "https://liquidator.linear.finance/" },
-        { name: "Marketplace", url: "https://marketplace.linear.finance/" },
         { name: "PerpDEX", url: "https://perpdex.linear.finance/" },
-        { name: "DAO", url: "https://forum.linear.finance/" },
       ],
     };
   },

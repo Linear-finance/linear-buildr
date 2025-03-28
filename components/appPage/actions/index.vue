@@ -47,6 +47,77 @@
             src="@/static/logo/linear_builder_logo_dark.svg"
           />
         </a>
+        <transition name="tooltipModleFade">
+          <div v-show="isShowTooltipModle" class="tooltipModle">
+            <div class="tooltipModle-overlay" @click="closeTooltipModle"></div>
+            <div class="tooltipModle-container">
+              <div
+                @click="closeTooltipModle"
+                class="tooltipModle-container-close"
+              >
+                <font-awesome-icon
+                  class="tooltipModle-container-close-logo"
+                  :icon="['fas', 'times']"
+                  size="lg"
+                />
+                <!-- <img src="@/static/x_close.svg" /> -->
+              </div>
+              <div class="tooltipModle-container-content">
+                <div class="tooltipModle-container-content-img">
+                  <a href="https://linear.finance/" rel="noopener noreferrer">
+                    <img src="@/static/linear_logo.svg" />
+                  </a>
+                </div>
+                <ul class="tooltipModle-container-content-list">
+                  <li v-for="item in menuActions">
+                    <a
+                      class="white-text"
+                      :href="item.url"
+                      rel="noopener noreferrer"
+                      >{{ item.name }}</a
+                    >
+                  </li>
+                </ul>
+                <div class="tooltipModle-external">
+                  <a
+                    href="https://twitter.com/LinearFinance"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <font-awesome-icon
+                      class="tooltipModle-external-logo"
+                      :icon="['fab', 'twitter-square']"
+                      size="2x"
+                    />
+                  </a>
+                  <a
+                    href="https://discord.gg/nvCk356bky"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <font-awesome-icon
+                      class="tooltipModle-external-logo"
+                      :icon="['fab', 'discord']"
+                      fixedWidth
+                      size="2x"
+                    />
+                  </a>
+                  <a
+                    href="https://linear-finance.medium.com/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <font-awesome-icon
+                      class="tooltipModle-external-logo"
+                      :icon="['fab', 'medium']"
+                      size="2x"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
     <div class="actionsBox">
@@ -84,14 +155,10 @@ export default {
       ],
       menuActions: [
         { name: "Builder", url: "https://builder.linear.finance/" },
-        { name: "Bridge", url: "https://builder.linear.finance/bridge" },
+        { name: "Bridge", url: "https://bridge.linear.finance/" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
-        { name: "Dashboard", url: "https://dashboard.linear.finance/" },
-        // { name: "Vault", url: "https://vault.linear.finance/" },
         { name: "Liquidator", url: "https://liquidator.linear.finance/" },
-        { name: "Marketplace", url: "https://marketplace.linear.finance/" },
         { name: "PerpDEX", url: "https://perpdex.linear.finance/" },
-        { name: "DAO", url: "https://forum.linear.finance/" },
       ],
     };
   },

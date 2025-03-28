@@ -293,7 +293,7 @@ export default {
       ],
       menuActions: [
         { name: "Builder", url: "https://builder.linear.finance/" },
-        { name: "Bridge", url: "https://builder.linear.finance/bridge" },
+        { name: "Bridge", url: "https://bridge.linear.finance/" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
         { name: "Liquidator", url: "https://liquidator.linear.finance/" },
         { name: "PerpDEX", url: "https://perpdex.linear.finance/" },

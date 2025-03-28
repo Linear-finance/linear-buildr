@@ -531,16 +531,7 @@
                   class="tokenItems unobtrusive"
                   v-if="this.selectedAsset.key === 'LINA'"
                 >
-                  <div class="left">
-                    Locked
-                    <span
-                      v-show="walletDetails.lockLINA"
-                      @click="openUnlockSchedule"
-                      class="unlockScheduleButton"
-                    >
-                      <expandMoreSvg></expandMoreSvg>
-                    </span>
-                  </div>
+                  <div class="left">Locked</div>
                   <div class="right">
                     <template v-if="isEthereumNetwork"> N/A </template>
                     <template v-else>

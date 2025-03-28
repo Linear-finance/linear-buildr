@@ -2,20 +2,7 @@
   <div id="actions">
     <div class="header">
       <div class="headerBox">
-        <a v-if="!isBridge()" href="/" class="webLogo">
-          <img
-            v-if="$store.getters.isDarkTheme"
-            class="linearBuildrlogo"
-            src="@/static/logo/linear_builder_logo_dark.svg"
-          />
-
-          <img
-            v-else
-            class="linearBuildrlogo"
-            src="@/static/logo/linear_builder_logo.svg"
-          />
-        </a>
-        <a v-else href="/bridge" class="webLogo">
+        <a href="/bridge" class="webLogo">
           <img
             v-if="$store.getters.isDarkTheme"
             class="linearBuildrlogo"
@@ -27,241 +14,89 @@
             src="@/static/logo/linear_bridge_logo.svg"
           />
         </a>
-        <a href="/" class="mobileLogo">
-          <img
-            class="linearBuildrlogo"
-            src="@/static/logo/linear_builder_logo.svg"
-            v-show="
-              currentAction == 0 &&
-              othersAction == 0 &&
-              !$store.getters.isDarkTheme
-            "
-          />
-          <img
-            v-show="
-              currentAction == 0 &&
-              othersAction == 0 &&
-              $store.getters.isDarkTheme
-            "
-            class="linearBuildrlogo"
-            src="@/static/logo/linear_builder_logo_dark.svg"
-          />
-        </a>
-        <div class="internalRouting" v-if="!isMobile && !isBridge()">
-          <div
-            class="action"
-            v-for="(item, index) in actions"
-            :keys="index"
-            :class="{ activited: currentAction == index + 1 }"
-            @click="actionChange(index + 1)"
-          >
-            {{ item.name }}
-          </div>
-        </div>
-        <div
-          class="introductActionBox"
-          v-if="currentAction != 0 || othersAction != 0"
-        >
-          <div class="title" v-if="currentAction == 1 && othersAction == 0">
-            Build
-          </div>
-          <div class="title" v-if="currentAction == 2 && othersAction == 0">
-            Burn
-          </div>
-          <div class="title" v-if="currentAction == 3 && othersAction == 0">
-            Claim
-          </div>
-          <div class="title" v-if="currentAction == 4 && othersAction == 0">
-            Transfer
-          </div>
-          <div class="title" v-if="currentAction == 5 && othersAction == 0">
-            Bridge
-          </div>
-
-          <div class="title" v-if="othersAction == 1">Track Debt</div>
-          <div class="title" v-if="othersAction == 2">Transaction</div>
-
-          <img
-            class="info"
-            v-if="othersAction == 0"
-            src="@/static/info.svg"
-            @click="showIntroductActionModal"
-          />
-        </div>
-
-        <Modal
-          v-model="introductActionModal"
-          :footer-hide="true"
-          :closable="true"
-          :transfer="false"
-          :mask="true"
-          class="introductActionModal"
-        >
-          <div class="title" v-if="currentAction == 1">Build</div>
-          <div class="title" v-if="currentAction == 2">Burn</div>
-          <div class="title" v-if="currentAction == 3">Claim</div>
-          <div class="title" v-if="currentAction == 4">Transfer</div>
-          <div class="title" v-if="currentAction == 5">Swap</div>
-
-          <div class="context" v-if="currentAction == 1">
-            Build ℓUSD and earn staking rewards by staking LINA
-          </div>
-          <div class="context" v-if="currentAction == 2">
-            Burn ℓUSD to unlock staked LINA
-          </div>
-          <div class="context" v-if="currentAction == 3">
-            Claim rewards from staking your assets and building ℓUSD
-          </div>
-          <div class="context" v-if="currentAction == 4">
-            Transfer different currencies to specified wallet address
-          </div>
-          <div class="context" v-if="currentAction == 5">
-            You can select the type of liquids and enter the amount you want to
-            swap to the other chain.
-          </div>
-        </Modal>
-        <div class="mNavigate" v-if="mMenuState && isMobile">
-          <div class="mHead">
-            <div class="mLogo">
-              <img src="@/static/logo-crypto-linear-colour.svg" />
-              Menu
+        <transition name="tooltipModleFade">
+          <div v-show="isShowTooltipModle" class="tooltipModle">
+            <div class="tooltipModle-overlay" @click="closeTooltipModle"></div>
+            <div class="tooltipModle-container">
+              <div
+                @click="closeTooltipModle"
+                class="tooltipModle-container-close"
+              >
+                <font-awesome-icon
+                  class="tooltipModle-container-close-logo"
+                  :icon="['fas', 'times']"
+                  size="lg"
+                />
+                <!-- <img src="@/static/x_close.svg" /> -->
+              </div>
+              <div class="tooltipModle-container-content">
+                <div class="tooltipModle-container-content-img">
+                  <a href="https://linear.finance/" rel="noopener noreferrer">
+                    <img src="@/static/linear_logo.svg" />
+                  </a>
+                </div>
+                <ul class="tooltipModle-container-content-list">
+                  <li v-for="item in menuActions">
+                    <a
+                      class="white-text"
+                      :href="item.url"
+                      rel="noopener noreferrer"
+                      >{{ item.name }}</a
+                    >
+                  </li>
+                </ul>
+                <div class="tooltipModle-external">
+                  <a
+                    href="https://twitter.com/LinearFinance"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <font-awesome-icon
+                      class="tooltipModle-external-logo"
+                      :icon="['fab', 'twitter-square']"
+                      size="2x"
+                    />
+                  </a>
+                  <a
+                    href="https://discord.gg/nvCk356bky"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <font-awesome-icon
+                      class="tooltipModle-external-logo"
+                      :icon="['fab', 'discord']"
+                      fixedWidth
+                      size="2x"
+                    />
+                  </a>
+                  <a
+                    href="https://linear-finance.medium.com/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <font-awesome-icon
+                      class="tooltipModle-external-logo"
+                      :icon="['fab', 'medium']"
+                      size="2x"
+                    />
+                  </a>
+                </div>
+              </div>
             </div>
-            <theme-switch variant="mobile" />
-            <img
-              @click="mHideMenuFun"
-              class="mClose"
-              src="@/static/icon-cancel.svg"
-            />
           </div>
-          <div
-            class="mNavigateItem"
-            @click="actionChange(0)"
-            :class="{
-              activited: currentAction == 0,
-            }"
-          >
-            Home
-          </div>
-          <div
-            v-for="(item, index) in actions"
-            :key="index"
-            class="mNavigateItem"
-            :class="{
-              activited: currentAction == index + 1,
-            }"
-            @click="actionChange(index + 1)"
-          >
-            {{ item }}
-          </div>
-        </div>
-      </div>
-      <div class="internalRouting" v-if="isMobile && !isBridge()">
-        <div
-          class="action"
-          v-for="(item, index) in actions"
-          :keys="index"
-          :class="{ activited: currentAction == index + 1 }"
-          @click="actionChange(index + 1)"
-        >
-          {{ item.name }}
-        </div>
+        </transition>
       </div>
     </div>
-    <transition name="tooltipModleFade">
-      <div v-show="isShowTooltipModle" class="tooltipModle">
-        <div class="tooltipModle-overlay" @click="closeTooltipModle"></div>
-        <div class="tooltipModle-container">
-          <div @click="closeTooltipModle" class="tooltipModle-container-close">
-            <font-awesome-icon
-              class="tooltipModle-container-close-logo"
-              :icon="['fas', 'times']"
-              size="lg"
-            />
-            <!-- <img src="@/static/x_close.svg" /> -->
-          </div>
-          <div class="tooltipModle-container-content">
-            <div class="tooltipModle-container-content-img">
-              <a href="https://linear.finance/" rel="noopener noreferrer">
-                <img src="@/static/linear_logo.svg" />
-              </a>
-            </div>
-            <ul class="tooltipModle-container-content-list">
-              <li v-for="item in menuActions">
-                <a
-                  class="white-text"
-                  :href="item.url"
-                  rel="noopener noreferrer"
-                  >{{ item.name }}</a
-                >
-              </li>
-            </ul>
-            <div class="tooltipModle-external">
-              <a
-                href="https://twitter.com/LinearFinance"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <font-awesome-icon
-                  class="tooltipModle-external-logo"
-                  :icon="['fab', 'twitter-square']"
-                  size="2x"
-                />
-              </a>
-              <a
-                href="https://discord.gg/nvCk356bky"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <font-awesome-icon
-                  class="tooltipModle-external-logo"
-                  :icon="['fab', 'discord']"
-                  fixedWidth
-                  size="2x"
-                />
-              </a>
-              <a
-                href="https://linear-finance.medium.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <font-awesome-icon
-                  class="tooltipModle-external-logo"
-                  :icon="['fab', 'medium']"
-                  size="2x"
-                />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
     <div class="actionsBox">
-      <homePage v-if="currentAction == 0"></homePage>
-      <build v-else-if="currentAction == 1"></build>
-      <burn v-else-if="currentAction == 2"></burn>
-      <claim v-else-if="currentAction == 3"></claim>
-      <transfer v-else-if="currentAction == 4"></transfer>
-      <swap v-else></swap>
-
-      <transactionModal />
-      <trackModal />
+      <swap></swap>
     </div>
     <notificationQueue />
   </div>
 </template>
 
 <script>
-import homePage from "@/components/appPage/actions/homePage";
 import notificationQueue from "@/components/notification/notificationQueue.vue";
-import linkModal from "@/components/linkModal.vue";
-import build from "@/components/appPage/actions/build";
-import burn from "@/components/appPage/actions/burn";
-import claim from "@/components/appPage/actions/claim";
-import transfer from "@/components/appPage/actions/transfer";
 import swap from "@/components/appPage/actions/swap";
-
-import transactionModal from "@/components/appPage/walletDetails/actions/transactionModal";
-import trackModal from "@/components/appPage/walletDetails/actions/trackModal";
 
 import common from "@/config/common";
 import ThemeSwitch from "~/components/themeSwitch.vue";
@@ -269,17 +104,9 @@ import ThemeSwitch from "~/components/themeSwitch.vue";
 export default {
   name: "actions",
   components: {
-    homePage,
-    build,
-    burn,
-    claim,
-    transfer,
     swap,
-    trackModal,
     notificationQueue,
-    transactionModal,
     ThemeSwitch,
-    linkModal,
   },
   data() {
     return {
@@ -293,14 +120,10 @@ export default {
       ],
       menuActions: [
         { name: "Builder", url: "https://builder.linear.finance/" },
-        { name: "Bridge", url: "https://builder.linear.finance/bridge" },
+        { name: "Bridge", url: "https://bridge.linear.finance/" },
         { name: "Exchange", url: "https://exchange.linear.finance/" },
-        { name: "Dashboard", url: "https://dashboard.linear.finance/" },
-        // { name: "Vault", url: "https://vault.linear.finance/" },
         { name: "Liquidator", url: "https://liquidator.linear.finance/" },
-        { name: "Marketplace", url: "https://marketplace.linear.finance/" },
         { name: "PerpDEX", url: "https://perpdex.linear.finance/" },
-        { name: "DAO", url: "https://forum.linear.finance/" },
       ],
     };
   },
